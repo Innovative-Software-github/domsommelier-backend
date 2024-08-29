@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.entity;
 
+import com.innovativesoftware.domsommelier_backend.ProductCategory;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,6 +43,10 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "country_id", nullable = false)
     private ProductCountry productCountry;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private ProductCategory productCategory;
 
     @OneToMany(mappedBy = "product")
     private List<ProductPhoto> productPhoto;
