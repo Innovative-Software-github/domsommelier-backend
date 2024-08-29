@@ -39,6 +39,10 @@ public class Product {
     @Column(name = "discount")
     private Integer discount;
 
+    @ManyToOne
+    @JoinColumn(name = "country_id", nullable = false)
+    private ProductCountry productCountry;
+
     @OneToMany(mappedBy = "product")
     private List<ProductPhoto> productPhoto;
 
