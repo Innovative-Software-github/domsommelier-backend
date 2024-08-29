@@ -12,7 +12,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "addresses")
-@NoArgsConstructor
 @Getter
 @Setter
 public class Address {

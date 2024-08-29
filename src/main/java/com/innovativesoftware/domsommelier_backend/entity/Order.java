@@ -9,7 +9,6 @@ import org.hibernate.annotations.UuidGenerator;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-@NoArgsConstructor
 @Getter
 @Setter
 @Entity
