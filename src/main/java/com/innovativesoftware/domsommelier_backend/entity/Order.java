@@ -9,11 +9,11 @@ import org.hibernate.annotations.UuidGenerator;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-@Entity
-@Table(name = "orders")
 @NoArgsConstructor
 @Getter
 @Setter
+@Entity
+@Table(name = "orders")
 public class Order {
     @Id
     @UuidGenerator
@@ -21,9 +21,13 @@ public class Order {
     private UUID id;
 
     @Column(name = "created_at", columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    private OffsetDateTime created_at;
+    private OffsetDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
+
+    @ManyToOne
+    @JoinColumn(name = "order_status", nullable = false)
+    private OrderStatus orderStatus;
 }
