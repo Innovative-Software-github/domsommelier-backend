@@ -1,14 +1,12 @@
 package com.innovativesoftware.domsommelier_backend.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -28,7 +26,7 @@ public class Customer {
     private String firstName;
 
     @Column(name = "second_name", nullable = false)
-    private String secondNmae;
+    private String secondName;
 
     @Column(name = "middle_name")
     private String middleName;
@@ -41,4 +39,7 @@ public class Customer {
 
     @Column(name = "email")
     private String email;
+
+    @OneToMany(mappedBy = "customer")
+    private List<Order> orders;
 }

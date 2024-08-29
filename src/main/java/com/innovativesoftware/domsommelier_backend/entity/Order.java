@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -29,4 +30,11 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "order_status", nullable = false)
     private OrderStatus orderStatus;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
+
+    @OneToMany(mappedBy = "order")
+    private List<OrderItem> orderItems;
 }
