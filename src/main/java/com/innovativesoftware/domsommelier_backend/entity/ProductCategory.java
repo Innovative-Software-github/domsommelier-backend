@@ -1,12 +1,10 @@
-package com.innovativesoftware.domsommelier_backend;
+package com.innovativesoftware.domsommelier_backend.entity;
 
-import com.innovativesoftware.domsommelier_backend.entity.Product;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter

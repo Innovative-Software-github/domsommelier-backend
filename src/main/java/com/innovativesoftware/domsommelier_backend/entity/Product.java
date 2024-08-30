@@ -1,6 +1,5 @@
 package com.innovativesoftware.domsommelier_backend.entity;
 
-import com.innovativesoftware.domsommelier_backend.ProductCategory;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
