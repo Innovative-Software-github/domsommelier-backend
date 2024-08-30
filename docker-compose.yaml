@@ -9,7 +9,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/domsommelier
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=admin
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+      - SPRING_JPA_HIBERNATE_DDL-AUTO=update
     depends_on:
       db:
         condition: service_healthy
@@ -24,8 +24,12 @@ services:
       - "5432:5432"
     volumes:
       - ./infrastructure/db/create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
+      - db-data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -d domsommelier -U postgres"]
       interval: 1s
       timeout: 5s
       retries: 10
+
+volumes:
+  db-data:

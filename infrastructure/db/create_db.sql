@@ -1,1 +1,1 @@
-create database domsommelier;
+create database domsommelier owner postgres;
