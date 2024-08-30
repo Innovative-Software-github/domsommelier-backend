@@ -11,7 +11,8 @@ services:
       - SPRING_DATASOURCE_PASSWORD=admin
       - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   db:
     image: postgres:15-alpine
@@ -23,3 +24,8 @@ services:
       - "5432:5432"
     volumes:
       - ./infrastructure/db/create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d domsommelier -U postgres"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
