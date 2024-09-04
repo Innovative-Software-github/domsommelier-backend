@@ -1,4 +1,4 @@
-package com.innovativesoftware.domsommelier_backend.configuration;
+package com.innovativesoftware.domsommelier_backend.infrastructure;
 
 import io.minio.MinioClient;
 import org.slf4j.Logger;
