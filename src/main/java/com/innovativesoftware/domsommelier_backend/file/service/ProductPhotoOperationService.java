@@ -2,7 +2,6 @@ package com.innovativesoftware.domsommelier_backend.file.service;
 
 import com.innovativesoftware.domsommelier_backend.entity.Product;
 import com.innovativesoftware.domsommelier_backend.entity.ProductPhoto;
-import com.innovativesoftware.domsommelier_backend.file.interf.FileService;
 import com.innovativesoftware.domsommelier_backend.file.repository.ProductPhotoRepository;
 import com.innovativesoftware.domsommelier_backend.file.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class ProductPhotoOperationService {
-    @Autowired
-    private FileService fileService;
-
+public class ProductPhotoOperationService extends FileOperationBase {
     @Autowired
     private ProductPhotoRepository productPhotoRepository;
 

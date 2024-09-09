@@ -1,17 +1,18 @@
 package com.innovativesoftware.domsommelier_backend.file.service;
 
 import com.innovativesoftware.domsommelier_backend.file.interf.FileService;
-import io.minio.BucketExistsArgs;
-import io.minio.MakeBucketArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
+import io.minio.*;
+import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,20 @@ public class MinioService implements FileService {
             fileLinks.add(uploadOneFile(file, bucketName));
         }
         return fileLinks;
+    }
+
+    public byte[] getFileBytes(String bucket, String fileName) {
+        try (InputStream stream = minioClient.getObject(
+                GetObjectArgs.builder()
+                        .bucket(bucket)
+                        .object(fileName)
+                        .build())) {
+            return stream.readAllBytes();
+        } catch (ServerException | ErrorResponseException | InsufficientDataException | InternalException |
+                 InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException |
+                 XmlParserException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String uploadOneFile(MultipartFile file, String bucketName) {

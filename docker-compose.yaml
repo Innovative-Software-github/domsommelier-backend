@@ -9,11 +9,11 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/domsommelier
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=admin
-      - SPRING_JPA_HIBERNATE_DDL-AUTO=create-drop
+      - SPRING_JPA_HIBERNATE_DDL-AUTO=update
       - SPRING_JPA_PROPERTIES_HIBERNATE_JDBC_BATCH-SIZE=50
       - MINIO_URL=http://172.18.0.2:9000
-      - MINIO_ACCESS_NAME=ybgeWmISIHMJaJTWz2Vw
-      - MINIO_ACCESS_SECRET=r9hdRzxP7woX2vuUrGSTJBRWLWXMWLY5nnaP37kZ
+      - MINIO_ACCESS_NAME=5q3kIXr0YMJ2yaWV0ER0
+      - MINIO_ACCESS_SECRET=Iq5eYZGxONmWFmoXwyjOT0ZF1PHeYzy5ZWkX0LaV
     depends_on:
       db:
         condition: service_healthy
