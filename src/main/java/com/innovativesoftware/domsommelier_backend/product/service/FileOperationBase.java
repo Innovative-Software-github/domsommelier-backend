@@ -1,6 +1,6 @@
-package com.innovativesoftware.domsommelier_backend.file.service;
+package com.innovativesoftware.domsommelier_backend.product.service;
 
-import com.innovativesoftware.domsommelier_backend.file.interf.FileService;
+import com.innovativesoftware.domsommelier_backend.shared.interf.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class FileOperationBase {

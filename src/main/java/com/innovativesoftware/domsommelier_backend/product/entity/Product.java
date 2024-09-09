@@ -1,5 +1,7 @@
-package com.innovativesoftware.domsommelier_backend.entity;
+package com.innovativesoftware.domsommelier_backend.product.entity;
 
+import com.innovativesoftware.domsommelier_backend.entity.OrderItem;
+import com.innovativesoftware.domsommelier_backend.entity.ProductCountry;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

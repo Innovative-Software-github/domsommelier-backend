@@ -1,4 +1,4 @@
-package com.innovativesoftware.domsommelier_backend.file.interf;
+package com.innovativesoftware.domsommelier_backend.shared.interf;
 
 import org.springframework.web.multipart.MultipartFile;
 

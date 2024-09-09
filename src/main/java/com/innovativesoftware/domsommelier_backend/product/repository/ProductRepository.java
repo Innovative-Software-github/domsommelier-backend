@@ -1,6 +1,6 @@
-package com.innovativesoftware.domsommelier_backend.file.repository;
+package com.innovativesoftware.domsommelier_backend.product.repository;
 
-import com.innovativesoftware.domsommelier_backend.entity.Product;
+import com.innovativesoftware.domsommelier_backend.product.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

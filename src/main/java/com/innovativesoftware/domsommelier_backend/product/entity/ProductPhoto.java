@@ -1,4 +1,4 @@
-package com.innovativesoftware.domsommelier_backend.entity;
+package com.innovativesoftware.domsommelier_backend.product.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

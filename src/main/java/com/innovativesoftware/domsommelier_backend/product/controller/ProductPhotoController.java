@@ -1,13 +1,13 @@
-package com.innovativesoftware.domsommelier_backend.file.controller;
+package com.innovativesoftware.domsommelier_backend.product.controller;
 
-import com.innovativesoftware.domsommelier_backend.file.service.ProductPhotoOperationService;
+import com.innovativesoftware.domsommelier_backend.product.service.ProductPhotoOperationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
-@RequestMapping("/file/product-photo")
+@RequestMapping("/product/file")
 public class ProductPhotoController {
 
     private final String BUCKET = "product";

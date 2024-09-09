@@ -1,9 +1,9 @@
-package com.innovativesoftware.domsommelier_backend.file.service;
+package com.innovativesoftware.domsommelier_backend.product.service;
 
-import com.innovativesoftware.domsommelier_backend.entity.Product;
-import com.innovativesoftware.domsommelier_backend.entity.ProductPhoto;
-import com.innovativesoftware.domsommelier_backend.file.repository.ProductPhotoRepository;
-import com.innovativesoftware.domsommelier_backend.file.repository.ProductRepository;
+import com.innovativesoftware.domsommelier_backend.product.entity.Product;
+import com.innovativesoftware.domsommelier_backend.product.entity.ProductPhoto;
+import com.innovativesoftware.domsommelier_backend.product.repository.ProductPhotoRepository;
+import com.innovativesoftware.domsommelier_backend.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
