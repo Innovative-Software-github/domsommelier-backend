@@ -49,7 +49,7 @@ public class Product {
     @JoinColumn(name = "category_id", nullable = false)
     private ProductCategory productCategory;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "domain")
     private List<ProductPhoto> productPhoto;
 
     @OneToMany(mappedBy = "product")

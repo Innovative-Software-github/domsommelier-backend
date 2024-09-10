@@ -10,8 +10,6 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "product_photo")
-public class ProductPhoto extends File {
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+public class ProductPhoto extends File<Product> {
+
 }

@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.product.controller;
 
+import com.innovativesoftware.domsommelier_backend.product.entity.ProductPhoto;
 import com.innovativesoftware.domsommelier_backend.product.service.ProductPhotoOperationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class ProductPhotoController {
 
     @PostMapping("upload")
     public void uploadPhoto(@RequestBody MultipartFile[] files, @RequestParam String productId) {
-        fileOperationService.uploadFilesWithRef(files, BUCKET, productId);
+        fileOperationService.uploadFilesWithRef(files, BUCKET, productId, ProductPhoto.class);
     }
 
     @GetMapping("")
