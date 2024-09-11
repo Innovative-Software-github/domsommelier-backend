@@ -33,15 +33,15 @@ public class FileOperationService<TDomain, TFile extends File<TDomain>> {
     }
 
     public void uploadFilesWithRef(MultipartFile[] files, String bucket, String fileBindingId, Class<TFile> fileType) {
-        List<String> photoLinks = fileService.uploadFiles(files, bucket);
+        List<MultipartFile> uploadedFiles = fileService.uploadFiles(files, bucket);
         TDomain fileDomain = fileDomainRepository.getReferenceById(UUID.fromString(fileBindingId));
 
-        List<TFile> photos = photoLinks.stream()
-                .map(photoLink -> {
+        List<TFile> readyFiles = uploadedFiles.stream()
+                .map(uploadedFile -> {
                     try {
                         TFile file = fileType.getDeclaredConstructor().newInstance();
-                        file.setLink(photoLink);
-                        file.setName(photoLink);
+                        file.setName(uploadedFile.getOriginalFilename());
+                        file.setBucket(bucket);
                         file.setDomain(fileDomain);
                         return file;
                     } catch (InstantiationException e) {
@@ -55,6 +55,6 @@ public class FileOperationService<TDomain, TFile extends File<TDomain>> {
                     }
                 })
                 .toList();
-        fileRepository.saveAll(photos);
+        fileRepository.saveAll(readyFiles);
     }
 }

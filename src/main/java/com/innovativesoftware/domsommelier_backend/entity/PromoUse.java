@@ -13,11 +13,6 @@ import java.util.UUID;
 @Table(name = "promo_use")
 @IdClass(PromoUseId.class)
 public class PromoUse {
-//    @Id
-//    @UuidGenerator
-//    @Column(name = "id", nullable = false)
-//    private UUID id;
-
     @Id
     @ManyToOne
     @JoinColumn(name = "promo_id", nullable = false)

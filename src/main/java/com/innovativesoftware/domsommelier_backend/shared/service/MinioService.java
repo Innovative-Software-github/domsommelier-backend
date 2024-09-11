@@ -24,12 +24,12 @@ public class MinioService implements FileService {
     @Autowired
     private MinioClient minioClient;
 
-    public List<String> uploadFiles(MultipartFile[] files, String bucketName) {
-        List<String> fileLinks = new ArrayList<>();
+    public List<MultipartFile> uploadFiles(MultipartFile[] files, String bucketName) {
+        List<MultipartFile> uploadedFiles = new ArrayList<>();
         for (var file : files) {
-            fileLinks.add(uploadOneFile(file, bucketName));
+            uploadedFiles.add(uploadOneFile(file, bucketName));
         }
-        return fileLinks;
+        return uploadedFiles;
     }
 
     public byte[] getFileBytes(String bucket, String fileName) {
@@ -46,7 +46,7 @@ public class MinioService implements FileService {
         }
     }
 
-    private String uploadOneFile(MultipartFile file, String bucketName) {
+    private MultipartFile uploadOneFile(MultipartFile file, String bucketName) {
         try (InputStream stream = file.getInputStream()) {
             buildBucket(bucketName);
             minioClient.putObject(
@@ -54,7 +54,7 @@ public class MinioService implements FileService {
                                     stream, file.getSize(), -1)
                             .contentType(file.getContentType())
                             .build());
-            return bucketName + "/" + file.getOriginalFilename();
+            return file;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
