@@ -2,6 +2,7 @@ package com.innovativesoftware.domsommelier_backend.shared.service;
 
 import com.innovativesoftware.domsommelier_backend.shared.interf.FileService;
 import com.innovativesoftware.domsommelier_backend.shared.model.File;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,9 +33,11 @@ public class FileOperationService<TDomain, TFile extends File<TDomain>> {
         return fileService.getFileBytes(bucket, fileName);
     }
 
+    @Transactional
     public void uploadFilesWithRef(MultipartFile[] files, String bucket, String fileBindingId, Class<TFile> fileType) {
         List<MultipartFile> uploadedFiles = fileService.uploadFiles(files, bucket);
         TDomain fileDomain = fileDomainRepository.getReferenceById(UUID.fromString(fileBindingId));
+
 
         List<TFile> readyFiles = uploadedFiles.stream()
                 .map(uploadedFile -> {

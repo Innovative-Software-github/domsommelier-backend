@@ -3,6 +3,9 @@ package com.innovativesoftware.domsommelier_backend.shared.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
+
+import java.util.UUID;
 
 @MappedSuperclass
 @Getter
@@ -20,7 +23,7 @@ public class File<TDomain> {
     @Column(name = "description")
     protected String description;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "domain_id")
     private TDomain domain;
 }
