@@ -23,6 +23,8 @@ public class FileOperationService<TDomain, TFile extends File<TDomain>> {
 
     protected JpaRepository<TDomain, UUID> fileDomainRepository;
 
+
+    // TODO: eto ne nado vrode
     public FileOperationService(JpaRepository<TFile, String> fileRepository,
                                 JpaRepository<TDomain, UUID> fileDomainRepository) {
         this.fileRepository = fileRepository;
