@@ -1,5 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.user.controller;
 
+import com.innovativesoftware.domsommelier_backend.user.service.UserRecommendationsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -8,9 +10,12 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
-    @GetMapping("{id}/recommendations")
-    public void getUserRecommendations(@PathVariable("id") String userId) {
+    @Autowired
+    private UserRecommendationsService userRecommendationsService;
 
+    @GetMapping("{id}/recommendations")
+    public String getUserRecommendations(@PathVariable("id") String userId) {
+        return userRecommendationsService.getUserRecommendations(userId);
     }
 }
 
