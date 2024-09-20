@@ -44,6 +44,6 @@ public class RedisConfig {
     public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
         return (builder) -> builder
                 .withCacheConfiguration("userRecommendationsCache",
-                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofHours(24)));
+                        RedisCacheConfiguration.defaultCacheConfig());
     }
 }

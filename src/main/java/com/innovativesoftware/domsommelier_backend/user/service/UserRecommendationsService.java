@@ -32,6 +32,8 @@ public class UserRecommendationsService {
         cache.put("dkskkdskdjksjdk", "Amogus");
     }
 
+    // init: customers, products, product_categories, countries, orders
+
     public Optional<String> getUserRecommendations(String userId) {
         Cache cache = cacheManager.getCache("userRecommendationsCache");
         if (cache == null) {
