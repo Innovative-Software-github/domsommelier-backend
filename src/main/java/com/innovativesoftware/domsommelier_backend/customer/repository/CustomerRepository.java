@@ -1,7 +1,7 @@
-package com.innovativesoftware.domsommelier_backend.user;
+package com.innovativesoftware.domsommelier_backend.customer.repository;
 
 import com.innovativesoftware.domsommelier_backend.entity.Customer;
-import com.innovativesoftware.domsommelier_backend.user.model.ComplexDTO;
+import com.innovativesoftware.domsommelier_backend.customer.model.CustomerRecommendationsProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -18,5 +18,5 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID> {
             join product on grouped.product_id = product.id
             order by priority DESC
             limit ?2""", nativeQuery = true)
-    List<ComplexDTO> findPurchasesOfCustomer(UUID customerId, int limit);
+    List<CustomerRecommendationsProjection> findCustomerRecommendations(UUID customerId, int limit);
 }

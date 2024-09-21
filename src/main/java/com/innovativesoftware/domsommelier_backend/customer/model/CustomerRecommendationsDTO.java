@@ -1,4 +1,4 @@
-package com.innovativesoftware.domsommelier_backend.user.model;
+package com.innovativesoftware.domsommelier_backend.customer.model;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 @Data
-public class CustomerTopPurchasesDTO implements ComplexDTO, Serializable {
+public class CustomerRecommendationsDTO implements CustomerRecommendationsProjection, Serializable {
     private UUID customerId;
     private UUID productId;
     private Integer priority;

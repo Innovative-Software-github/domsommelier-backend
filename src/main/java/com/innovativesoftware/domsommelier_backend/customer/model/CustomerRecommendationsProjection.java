@@ -1,8 +1,8 @@
-package com.innovativesoftware.domsommelier_backend.user.model;
+package com.innovativesoftware.domsommelier_backend.customer.model;
 
 import java.util.UUID;
 
-public interface ComplexDTO {
+public interface CustomerRecommendationsProjection {
     UUID getProductId();
     UUID getCustomerId();
     Integer getPriority();
