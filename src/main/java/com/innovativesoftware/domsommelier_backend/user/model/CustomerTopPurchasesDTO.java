@@ -9,5 +9,8 @@ import java.util.UUID;
 public class CustomerTopPurchasesDTO implements ComplexDTO, Serializable {
     private UUID customerId;
     private UUID productId;
-    private Integer orderedCount;
+    private Integer priority;
+    private Integer productPrice;
+    private String productName;
+    private String productArticle;
 }

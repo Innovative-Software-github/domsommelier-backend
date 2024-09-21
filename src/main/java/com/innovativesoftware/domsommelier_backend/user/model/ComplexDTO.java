@@ -5,5 +5,8 @@ import java.util.UUID;
 public interface ComplexDTO {
     UUID getProductId();
     UUID getCustomerId();
-    Integer getOrderedCount();
+    Integer getPriority();
+    Integer getProductPrice();
+    String getProductName();
+    String getProductArticle();
 }
