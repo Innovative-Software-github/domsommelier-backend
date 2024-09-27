@@ -31,7 +31,7 @@ public class CustomerRecommendationsService {
 
     private final int LIMIT = 3;
 
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRate = 300000)
     public void runCustomerRecommendations() {
         log.info("Worker works!");
         Cache cache = cacheManager.getCache("customerRecommendationsCache");
