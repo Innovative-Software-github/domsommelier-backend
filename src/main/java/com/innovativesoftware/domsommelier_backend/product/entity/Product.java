@@ -2,6 +2,7 @@ package com.innovativesoftware.domsommelier_backend.product.entity;
 
 import com.innovativesoftware.domsommelier_backend.entity.OrderItem;
 import com.innovativesoftware.domsommelier_backend.entity.ProductCountry;
+import com.innovativesoftware.domsommelier_backend.storagehistory.entity.StorageHistory;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -59,4 +60,6 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<OrderItem> orderItems;
 
+    @OneToMany(mappedBy = "product")
+    private List<StorageHistory> products;
 }
