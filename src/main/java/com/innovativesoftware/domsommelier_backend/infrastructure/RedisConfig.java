@@ -50,6 +50,11 @@ public class RedisConfig {
                         RedisCacheConfiguration.defaultCacheConfig()
                         .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
                                 new GenericJackson2JsonRedisSerializer()))
+                )
+                .withCacheConfiguration("newProductsCache",
+                        RedisCacheConfiguration.defaultCacheConfig()
+                                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
+                                        new GenericJackson2JsonRedisSerializer()))
                 );
     }
 }
