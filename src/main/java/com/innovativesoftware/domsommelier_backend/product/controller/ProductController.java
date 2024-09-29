@@ -1,9 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.product.controller;
 
-import com.innovativesoftware.domsommelier_backend.product.DTO.ProductNewDTO;
-import com.innovativesoftware.domsommelier_backend.product.entity.Product;
+import com.innovativesoftware.domsommelier_backend.product.model.ProductNewDTO;
 import com.innovativesoftware.domsommelier_backend.product.service.ProductNewService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
