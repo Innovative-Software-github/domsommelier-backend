@@ -2,11 +2,13 @@ package com.innovativesoftware.domsommelier_backend.product.entity;
 
 import com.innovativesoftware.domsommelier_backend.entity.OrderItem;
 import com.innovativesoftware.domsommelier_backend.entity.ProductCountry;
+import com.innovativesoftware.domsommelier_backend.storagehistory.entity.StorageHistory;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,6 +43,9 @@ public class Product {
     @Column(name = "discount")
     private Integer discount;
 
+    @Column(name = "created_at")
+    private OffsetDateTime createdAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id", nullable = false)
     private ProductCountry productCountry;
@@ -55,4 +60,6 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<OrderItem> orderItems;
 
+    @OneToMany(mappedBy = "product")
+    private List<StorageHistory> products;
 }
