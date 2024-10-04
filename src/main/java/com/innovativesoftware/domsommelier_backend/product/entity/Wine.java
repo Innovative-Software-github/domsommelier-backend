@@ -19,4 +19,15 @@ public class Wine {
     @OneToOne
     @JoinColumn(name = "id")
     private Product product;
+
+    @Column(name = "production_year", nullable = false)
+    private Integer production_year;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "color", nullable = false)
+    private WineColor color;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "type")
+    private WineType type;
 }
