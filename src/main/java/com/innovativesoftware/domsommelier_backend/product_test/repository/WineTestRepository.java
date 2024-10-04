@@ -4,5 +4,7 @@ import com.innovativesoftware.domsommelier_backend.product_test.model.ProductTes
 import com.innovativesoftware.domsommelier_backend.product_test.model.WineTest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface WineTestRepository extends JpaRepository<WineTest, ProductTest> {
+import java.util.UUID;
+
+public interface WineTestRepository extends JpaRepository<WineTest, UUID> {
 }

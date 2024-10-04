@@ -13,9 +13,12 @@ import java.util.UUID;
 @Table(name = "wine_test")
 public class WineTest {
     @Id
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
+
     @MapsId
-    @JoinColumn(name = "id", referencedColumnName = "bubaid")
     @OneToOne
+    @JoinColumn(name = "id")
     private ProductTest product;
 
     @Column(name = "color")

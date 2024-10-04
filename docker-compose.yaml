@@ -16,7 +16,6 @@ services:
       - MINIO_ACCESS_SECRET=Iq5eYZGxONmWFmoXwyjOT0ZF1PHeYzy5ZWkX0LaV
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
-      - SPRING_SQL_INIT_MODE=always
     depends_on:
       db:
         condition: service_healthy
