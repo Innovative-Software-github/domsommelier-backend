@@ -1,9 +1,9 @@
 insert into product_category values ('white'), ('red'), ('dry');
 insert into product_country values ('russia'), ('france'), ('usa');
 
-insert into product (id, article, name, quantity, initial_price, price, category_id, country_id, created_at) values ('293b85d0-f739-4856-a09b-8495f2157e4d', 'product1', 'product1', 100, 1000, 1500, 'white', 'france', date '2024-09-27' + time '14:00');
-insert into product (id, article, name, quantity, initial_price, price, category_id, country_id, created_at) values ('ccfe12c7-2a16-4482-9c5b-ca57260fc475', 'product2', 'product2', 100, 20000, 20100, 'red', 'usa', date '2024-09-25' + time '14:00');
-insert into product (id, article, name, quantity, initial_price, price, category_id, country_id, created_at) values ('f3e364ff-b656-44a3-a16e-2263e560345c', 'product3', 'product3', 400, 5000, 7500, 'dry', 'russia', date '2024-08-27' + time '07:00');
+insert into product (id, article, name, initial_price, price, category_id, country_id, created_at) values ('293b85d0-f739-4856-a09b-8495f2157e4d', 'product1', 'product1', 1000, 1500, 'white', 'france', date '2024-09-27' + time '14:00');
+insert into product (id, article, name, initial_price, price, category_id, country_id, created_at) values ('ccfe12c7-2a16-4482-9c5b-ca57260fc475', 'product2', 'product2', 20000, 20100, 'red', 'usa', date '2024-09-25' + time '14:00');
+insert into product (id, article, name, initial_price, price, category_id, country_id, created_at) values ('f3e364ff-b656-44a3-a16e-2263e560345c', 'product3', 'product3', 5000, 7500, 'dry', 'russia', date '2024-08-27' + time '07:00');
 
 insert into storage_history (id, product_id, amount, created_at) values ('84644d5b-777a-4f62-bc5b-d2e1e346df6c', '293b85d0-f739-4856-a09b-8495f2157e4d', 200, date '2024-09-27' + time '18:20');
 insert into storage_history (id, product_id, amount, created_at) values ('b8049b3a-1e83-4110-b42f-9793c3ca1515', '293b85d0-f739-4856-a09b-8495f2157e4d', 400, date '2024-09-28' + time '14:10');

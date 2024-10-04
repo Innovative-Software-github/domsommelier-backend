@@ -28,9 +28,6 @@ public class Product {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
-
     @Column(name = "initial_price", nullable = false)
     private Integer initialPrice;
 
