@@ -5,6 +5,10 @@ insert into product (id, article, name, initial_price, price, category_id, count
 insert into product (id, article, name, initial_price, price, category_id, country_id, created_at) values ('ccfe12c7-2a16-4482-9c5b-ca57260fc475', 'product2', 'product2', 20000, 20100, 'red', 'usa', date '2024-09-25' + time '14:00');
 insert into product (id, article, name, initial_price, price, category_id, country_id, created_at) values ('f3e364ff-b656-44a3-a16e-2263e560345c', 'product3', 'product3', 5000, 7500, 'dry', 'russia', date '2024-08-27' + time '07:00');
 
+insert into wine (id) values ('293b85d0-f739-4856-a09b-8495f2157e4d');
+insert into wine (id) values ('ccfe12c7-2a16-4482-9c5b-ca57260fc475');
+insert into wine (id) values ('f3e364ff-b656-44a3-a16e-2263e560345c');
+
 insert into storage_history (id, product_id, amount, created_at) values ('84644d5b-777a-4f62-bc5b-d2e1e346df6c', '293b85d0-f739-4856-a09b-8495f2157e4d', 200, date '2024-09-27' + time '18:20');
 insert into storage_history (id, product_id, amount, created_at) values ('b8049b3a-1e83-4110-b42f-9793c3ca1515', '293b85d0-f739-4856-a09b-8495f2157e4d', 400, date '2024-09-28' + time '14:10');
 insert into storage_history (id, product_id, amount, created_at) values ('41bc7b82-e5e8-41f5-98a4-c288150aa061', 'f3e364ff-b656-44a3-a16e-2263e560345c', 150, date '2024-09-28' + time '14:10');
