@@ -12,7 +12,6 @@ import java.util.List;
 @Entity
 @Table(name = "product_country")
 public class ProductCountry {
-    // TODO: to enum
     @Id
     @Column(name = "name", nullable = false)
     private String name;

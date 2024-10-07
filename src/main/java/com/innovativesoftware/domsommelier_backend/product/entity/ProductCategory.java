@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.product.entity;
 
+import com.innovativesoftware.domsommelier_backend.product.enums.ProductCategories;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,11 +12,10 @@ import java.util.List;
 @Entity
 @Table(name = "product_category")
 public class ProductCategory {
-
-    // TODO: to enum
     @Id
+    @Enumerated(EnumType.STRING)
     @Column(name = "name", nullable = false)
-    private String name;
+    private ProductCategories name;
 
     @OneToMany(mappedBy = "productCategory")
     private List<Product> products;
