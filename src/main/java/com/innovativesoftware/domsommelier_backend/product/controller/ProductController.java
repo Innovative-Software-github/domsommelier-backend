@@ -4,6 +4,7 @@ import com.innovativesoftware.domsommelier_backend.product.enums.ProductCategori
 import com.innovativesoftware.domsommelier_backend.product.model.ProductNewDTO;
 import com.innovativesoftware.domsommelier_backend.product.model.ProductPhotoDTO;
 import com.innovativesoftware.domsommelier_backend.product.model.WineDTO;
+import com.innovativesoftware.domsommelier_backend.product.model.WineWithPhotoDTO;
 import com.innovativesoftware.domsommelier_backend.product.repository.ProductPhotoRepository;
 import com.innovativesoftware.domsommelier_backend.product.service.ProductNewService;
 import com.innovativesoftware.domsommelier_backend.product.service.WineService;
@@ -26,25 +27,14 @@ public class ProductController {
     @Autowired
     private WineService wineService;
 
-    @Autowired
-    private ProductPhotoRepository productPhotoRepository;
-
     @GetMapping("/new")
     public List<ProductNewDTO> getNewProducts() {
         return productNewService.getNewProducts();
     }
 
     @GetMapping("/wine")
-    public List<WineDTO> getWines() {
+    public List<WineWithPhotoDTO> getWines() {
         return wineService.findAllWines();
-    }
-
-    @GetMapping("/cat")
-    public List<ProductPhotoDTO> getProductPhotos() {
-        ModelMapper modelMappper = new ModelMapper();
-        return productPhotoRepository.findAllProductPhotosFor(ProductCategories.WINE).stream()
-                .map(photo -> modelMappper.map(photo, ProductPhotoDTO.class))
-                .toList();
     }
 }
 
