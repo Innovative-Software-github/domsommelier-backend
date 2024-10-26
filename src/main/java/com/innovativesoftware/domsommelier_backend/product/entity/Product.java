@@ -44,11 +44,11 @@ public class Product {
     private OffsetDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "country_id", nullable = false)
+    @JoinColumn(name = "country_name", nullable = false)
     private ProductCountry productCountry;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_name", nullable = false)
     private ProductCategory productCategory;
 
     @OneToMany(mappedBy = "domain")
