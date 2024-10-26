@@ -8,5 +8,5 @@ import java.util.List;
 @Getter
 @Setter
 public class WineWithPhotoDTO extends WineDTO {
-    private List<ProductPhotoDTO> productPhotos;
+    private List<ProductPhotoProjection> productPhotos;
 }
