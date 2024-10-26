@@ -1,8 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.product.repository;
 
 import com.innovativesoftware.domsommelier_backend.product.entity.Wine;
-import com.innovativesoftware.domsommelier_backend.product.model.ProductPhotoProjection;
-import com.innovativesoftware.domsommelier_backend.product.model.WineDTO;
 import com.innovativesoftware.domsommelier_backend.product.model.WineProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

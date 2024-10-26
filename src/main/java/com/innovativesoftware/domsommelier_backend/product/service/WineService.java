@@ -2,7 +2,7 @@ package com.innovativesoftware.domsommelier_backend.product.service;
 
 import com.innovativesoftware.domsommelier_backend.product.enums.ProductCategories;
 import com.innovativesoftware.domsommelier_backend.product.model.ProductPhotoProjection;
-import com.innovativesoftware.domsommelier_backend.product.model.WineDTO;
+import com.innovativesoftware.domsommelier_backend.product.model.WineProjection;
 import com.innovativesoftware.domsommelier_backend.product.model.WineWithPhotoDTO;
 import com.innovativesoftware.domsommelier_backend.product.repository.ProductPhotoRepository;
 import com.innovativesoftware.domsommelier_backend.product.repository.WineRepository;
@@ -26,26 +26,24 @@ public class WineService {
     @Autowired
     private ProductToPhotoUtil productToPhotoUtil;
 
-    private ModelMapper modelMapper = new ModelMapper();
-
     public List<WineWithPhotoDTO> findAllWines() {
 
-        List<WineDTO> wines = wineRepository.findAllWines().stream()
-                .map(wine -> modelMapper.map(wine, WineDTO.class))
-                .toList();
+        List<WineProjection> wines = wineRepository.findAllWines();
 
         LinkedHashMap<String, List<ProductPhotoProjection>> productToPhoto = productToPhotoUtil.getProductToPhotoMap(ProductCategories.WINE);
 
-       return wines.stream()
-                .map(wine -> {
-                    WineWithPhotoDTO wineWithPhotoDTO = new WineWithPhotoDTO();
-                    wineWithPhotoDTO.setId(wine.getId());
-                    wineWithPhotoDTO.setDiscount(wine.getDiscount());
-                    wineWithPhotoDTO.setName(wine.getName());
-                    wineWithPhotoDTO.setPrice(wine.getPrice());
-                    wineWithPhotoDTO.setProductPhotos(productToPhoto.get(wine.getId().toString()));
-                    return wineWithPhotoDTO;
-                })
+        return wines.stream()
+                .map(wine -> new WineWithPhotoDTO()
+                        .setProductPhotos(productToPhoto.get(wine.getId().toString()))
+                        .setId(wine.getId())
+                        .setDiscount(wine.getDiscount())
+                        .setName(wine.getName())
+                        .setPrice(wine.getPrice())
+                )
                 .toList();
+    }
+
+    public void findWinesByCountry(String country) {
+
     }
 }
