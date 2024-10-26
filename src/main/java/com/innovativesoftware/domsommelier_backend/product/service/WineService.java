@@ -43,7 +43,17 @@ public class WineService {
                 .toList();
     }
 
-    public void findWinesByCountry(String country) {
-
+    public List<WineWithPhotoDTO> findWinesByCountry(String country) {
+        List<WineProjection> winesForCountry = wineRepository.findWinesByCountry(country);
+        LinkedHashMap<String, List<ProductPhotoProjection>> productToPhoto = productToPhotoUtil.getProductToPhotoMap(ProductCategories.WINE);
+        return winesForCountry.stream()
+                .map(wine -> new WineWithPhotoDTO()
+                        .setProductPhotos(productToPhoto.get(wine.getId().toString()))
+                        .setId(wine.getId())
+                        .setDiscount(wine.getDiscount())
+                        .setName(wine.getName())
+                        .setPrice(wine.getPrice())
+                )
+                .toList();
     }
 }
