@@ -11,5 +11,5 @@ jobs:
         with:
           username: root
           host: 193.108.115.13
-          password: qV5RjiJ+R8huDU
+          password: zPve+hRLSx1Nq3
           script: 'mkdir testikkkk'
