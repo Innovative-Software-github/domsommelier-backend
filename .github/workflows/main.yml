@@ -6,13 +6,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Deploy
+      - name: SSHing
         uses: appleboy/ssh-action@master
         with:
           username: root
           host: 193.108.115.13
           password: ${{ secrets.SSH_PASSWORD }}
-          script: 'mkdir ssasas'
+      - name: Pull from GitHub
+        run: |
+          git clone git@github.com:Innovative-Software-github/domsommelier-backend.git /projects
