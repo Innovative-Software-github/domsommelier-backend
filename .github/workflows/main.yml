@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - DS-113
+      - main
 jobs:
   deploy:
     runs-on: ubuntu-latest
