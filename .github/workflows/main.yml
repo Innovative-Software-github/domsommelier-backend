@@ -6,12 +6,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: SSHing
+      - name: Deployment
         uses: appleboy/ssh-action@master
         with:
           username: root
           host: 193.108.115.13
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            git clone git@github.com:Innovative-Software-github/domsommelier-backend.git ~/projects
-
+            sh run.sh
+            
