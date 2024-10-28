@@ -1,0 +1,15 @@
+on:
+  push:
+    branches:
+      - test-actions
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          username: root
+          host: 193.108.115.13
+          password: zPve+hRLSx1Nq3
+          script: 'mkdir testikkkk'
