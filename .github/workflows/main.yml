@@ -15,6 +15,6 @@ jobs:
           script: |
             rm -rf ~/projects/domsommelier-backend
             git clone git@github.com:Innovative-Software-github/domsommelier-backend.git ~/projects/domsommelier-backend
-            cd ~/projects/domsommelier-backend
-            sh run.sh
+            cd ~/projects/domsommelier-backend && sh run.sh
+            
             
