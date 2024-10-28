@@ -6,7 +6,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: SSHing
+      - name: SSHingddd
         uses: appleboy/ssh-action@master
         with:
           username: root
