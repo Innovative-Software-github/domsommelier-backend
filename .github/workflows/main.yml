@@ -1,15 +1,20 @@
 on:
   push:
     branches:
-      - test-actions
+      - main
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy
+      - name: Deployment
         uses: appleboy/ssh-action@master
         with:
           username: root
           host: 193.108.115.13
-          password: zPve+hRLSx1Nq3
-          script: 'mkdir testikkkk'
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            rm -rf ~/projects/domsommelier-backend
+            git clone git@github.com:Innovative-Software-github/domsommelier-backend.git ~/projects/domsommelier-backend
+            cd ~/projects/domsommelier-backend && sh run.sh
+            
+            
