@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - test-actions
+      - DS-113
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -11,5 +11,5 @@ jobs:
         with:
           username: root
           host: 193.108.115.13
-          password: zPve+hRLSx1Nq3
-          script: 'mkdir testikkkk'
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: 'mkdir ssasas'
