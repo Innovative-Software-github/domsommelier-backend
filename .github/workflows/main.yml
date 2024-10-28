@@ -13,4 +13,4 @@ jobs:
           host: 193.108.115.13
           password: ${{ secrets.SSH_PASSWORD }}
           run: |
-            git clone git@github.com:Innovative-Software-github/domsommelier-backend.git ~/projects
+            git clone git@github.com:Innovative-Software-github/domsommelier-backend.git
