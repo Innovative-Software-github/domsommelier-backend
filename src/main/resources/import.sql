@@ -1,4 +1,4 @@
-insert into product_category values ('WINE'), ('SNACK');
+insert into product_category (name, label) values ('WINE', 'Вино'), ('SNACK', 'Снэки');
 insert into product_country values ('russia'), ('france'), ('usa');
 
 insert into product (id, article, name, initial_price, price, category_name, country_name, created_at) values ('293b85d0-f739-4856-a09b-8495f2157e4d', 'product1', 'product1', 1000, 1500, 'WINE', 'france', date '2024-09-27' + time '14:00');

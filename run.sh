@@ -5,7 +5,7 @@ if docker ps -a -q > /dev/null; then
 fi
 
 if docker images -q > /dev/null; then
-  docker rmi -f $(docker images -q)
+  docker rmi -f $(docker images | grep "domsommelier-backend-domsommelier-app" | awk 'NR>1 {print $3}')
 fi
 
 docker-compose up --build -d

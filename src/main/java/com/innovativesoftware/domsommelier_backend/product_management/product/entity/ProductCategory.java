@@ -17,6 +17,9 @@ public class ProductCategory {
     @Column(name = "name", nullable = false)
     private ProductCategories name;
 
+    @Column(name = "label", nullable = false)
+    private String label;
+
     @OneToMany(mappedBy = "productCategory")
     private List<Product> products;
 }
