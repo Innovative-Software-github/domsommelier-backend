@@ -21,12 +21,12 @@ public class WineController {
     @Autowired
     private WineService wineService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public List<WineWithPhotoDTO> getWines() {
         return wineService.findAllWines();
     }
 
-    @GetMapping(value = "/", params = { "country" })
+    @GetMapping(value = "", params = { "country" })
     public List<WineWithPhotoDTO> getWinesByCountry(@RequestParam String country) {
         return wineService.findWinesByCountry(country);
     }
