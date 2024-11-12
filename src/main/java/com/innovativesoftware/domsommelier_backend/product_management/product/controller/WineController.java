@@ -1,9 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.controller;
 
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCountryProjection;
-import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductNewDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.WineWithPhotoDTO;
-import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductNewService;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductService;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.WineService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,34 +13,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
-public class ProductController {
-
-    @Autowired
-    private ProductNewService productNewService;
-
+@RequestMapping("/products/wines")
+public class WineController {
     @Autowired
     private ProductService productService;
 
     @Autowired
     private WineService wineService;
 
-    @GetMapping("/new")
-    public List<ProductNewDTO> getNewProducts() {
-        return productNewService.getNewProducts();
-    }
-
-    @GetMapping("/wine")
+    @GetMapping("/")
     public List<WineWithPhotoDTO> getWines() {
         return wineService.findAllWines();
     }
 
-    @GetMapping(value = "/wine", params = { "country" })
+    @GetMapping(value = "/", params = { "country" })
     public List<WineWithPhotoDTO> getWinesByCountry(@RequestParam String country) {
         return wineService.findWinesByCountry(country);
     }
 
-    @GetMapping("/wine/countries")
+    @GetMapping("/countries")
     public List<ProductCountryProjection> getCountriesWithWines() {
         return productService.getCountriesWithWines();
     }

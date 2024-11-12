@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
-@RequestMapping("/product/file")
+@RequestMapping("/products/files")
 public class ProductPhotoController {
 
     private final String BUCKET = "product";
