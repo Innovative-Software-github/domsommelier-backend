@@ -1,4 +1,4 @@
-package com.innovativesoftware.domsommelier_backend.customer_management.customer.model;
+package com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.model;
 
 import lombok.Data;
 

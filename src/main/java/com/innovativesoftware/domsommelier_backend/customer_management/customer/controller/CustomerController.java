@@ -1,7 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.customer_management.customer.controller;
 
-import com.innovativesoftware.domsommelier_backend.customer_management.customer.model.CustomerRecommendationsDTO;
-import com.innovativesoftware.domsommelier_backend.customer_management.customer.service.CustomerRecommendationsService;
+import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.model.CustomerRecommendationsDTO;
+import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.service.CustomerRecommendationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

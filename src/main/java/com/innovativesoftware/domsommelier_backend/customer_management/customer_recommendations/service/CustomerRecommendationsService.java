@@ -1,9 +1,9 @@
-package com.innovativesoftware.domsommelier_backend.customer_management.customer.service;
+package com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.service;
 
 import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.Customer;
-import com.innovativesoftware.domsommelier_backend.customer_management.customer.repository.CustomerRepository;
-import com.innovativesoftware.domsommelier_backend.customer_management.customer.model.CustomerRecommendationsProjection;
-import com.innovativesoftware.domsommelier_backend.customer_management.customer.model.CustomerRecommendationsDTO;
+import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.repository.CustomerRepository;
+import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.model.CustomerRecommendationsProjection;
+import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.model.CustomerRecommendationsDTO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
