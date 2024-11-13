@@ -18,7 +18,7 @@ public class ProductPhotoController {
 
     @PostMapping("upload")
     public void uploadPhoto(@RequestBody MultipartFile[] files, @RequestParam String productId) {
-        fileOperationService.uploadFilesWithRef(files, BUCKET, productId, ProductPhoto.class);
+        fileOperationService.uploadFilesWithRef(files, BUCKET, productId);
     }
 
     @GetMapping("")

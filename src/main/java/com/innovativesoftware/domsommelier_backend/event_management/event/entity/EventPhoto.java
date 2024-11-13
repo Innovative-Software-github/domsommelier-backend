@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.event_management.event.entity;
 
+import com.innovativesoftware.domsommelier_backend.file_management.model.File;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,17 +12,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "event_photo")
-public class EventPhoto {
-    @Id
-    @Column(name = "id", nullable = false)
-    private UUID id;
-
-    @Column(name = "link", nullable = false)
-    private String link;
-
-    @Column(name = "description")
-    private String description;
-
+public class EventPhoto extends File {
     @OneToMany(mappedBy = "eventPhoto")
     private List<Event> events;
 }

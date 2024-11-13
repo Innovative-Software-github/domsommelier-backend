@@ -38,5 +38,4 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "photo_id")
     private EventPhoto eventPhoto;
-
 }

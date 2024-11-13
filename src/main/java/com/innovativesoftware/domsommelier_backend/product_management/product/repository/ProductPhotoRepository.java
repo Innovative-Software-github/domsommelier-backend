@@ -13,7 +13,7 @@ import java.util.List;
 public interface ProductPhotoRepository extends JpaRepository<ProductPhoto, String> {
     @Query("""
         select product.id as id, productPhoto.bucket as bucket, productPhoto.name as fileName from Product product
-        inner join ProductPhoto productPhoto on product.id = productPhoto.domain.id
+        inner join ProductPhoto productPhoto on product.id = productPhoto.product.id
         where product.productCategory.name = :cat
     """)
     List<ProductPhotoProjection> findAllProductPhotosFor(@Param("cat") ProductCategories category);
