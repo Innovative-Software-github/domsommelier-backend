@@ -17,6 +17,6 @@ public class EventStatus {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "eventStatus")
-    private List<Event> events;
+//    @OneToMany(mappedBy = "eventStatus")
+//    private List<Event> events;
 }

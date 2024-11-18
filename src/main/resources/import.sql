@@ -39,3 +39,7 @@ insert into order_item (id, quantity, order_id, product_id) values ('1f37d332-b9
 insert into order_item (id, quantity, order_id, product_id) values ('5a63bea2-7d4c-49f3-8b3e-c88ba5de7cfc', 30, 'e41ad356-2796-4d61-bb2d-553f1d699cb8', '293b85d0-f739-4856-a09b-8495f2157e4d');
 
 insert into order_item (id, quantity, order_id, product_id) values ('ec1c25cb-a5eb-495a-970d-43740da55b28', 15, '88f6f83f-bae6-436b-a891-a44deccc39e2', 'ccfe12c7-2a16-4482-9c5b-ca57260fc475');
+
+insert into event (id, description, started_at, finished_at) values ('00aa6ec9-e08f-4b1d-a1da-6b6cceec809f', 'Дегустация пивка и винца', date '2024-09-27' + time '14:00', date '2024-09-27' + time '18:00')
+insert into event (id, description, started_at, finished_at) values ('688784be-c2ab-411a-ac21-27bf7f7a99e9', 'Масленница', date '2024-11-27' + time '14:00', date '2024-12-04' + time '18:00')
+insert into event (id, description, started_at, finished_at) values ('89b96e1a-52f0-4816-89dc-1077c51d8942', 'Подготовка к Новому году!', date '2024-12-05' + time '14:00', date '2024-12-06' + time '18:00')

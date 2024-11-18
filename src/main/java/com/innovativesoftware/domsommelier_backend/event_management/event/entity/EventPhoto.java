@@ -13,6 +13,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "event_photo")
 public class EventPhoto extends File {
-    @OneToMany(mappedBy = "eventPhoto")
-    private List<Event> events;
+    @OneToOne()
+    @JoinColumn(name = "event_id")
+    private Event event;
 }

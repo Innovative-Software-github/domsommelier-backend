@@ -16,10 +16,10 @@ public class File {
     @Column(name = "id", nullable = false)
     protected UUID id;
 
-    @Column(name="bucket")
+    @Column(name="bucket", nullable = false)
     protected String bucket;
 
-    @Column(name= "name")
+    @Column(name= "name", nullable = false)
     protected String name;
 
     @Column(name = "description")
