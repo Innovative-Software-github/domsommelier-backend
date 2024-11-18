@@ -1,9 +1,9 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.service;
 
+import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategories;
-import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductPhotoProjection;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.WineProjection;
-import com.innovativesoftware.domsommelier_backend.product_management.product.model.WineWithPhotoDTO;
+import com.innovativesoftware.domsommelier_backend.product_management.product.model.WineWithPhotosDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductPhotoRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.WineRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.util.ProductToPhotoUtil;
@@ -25,15 +25,15 @@ public class WineService {
     @Autowired
     private ProductToPhotoUtil productToPhotoUtil;
 
-    public List<WineWithPhotoDTO> findAllWines() {
+    public List<WineWithPhotosDTO> findAllWines() {
 
         List<WineProjection> wines = wineRepository.findAllWines();
 
-        LinkedHashMap<String, List<ProductPhotoProjection>> productToPhoto = productToPhotoUtil.getProductToPhotoMap(ProductCategories.WINE);
+        LinkedHashMap<String, List<FileDTO>> productToPhoto = productToPhotoUtil.getProductToPhotoMap(ProductCategories.WINE);
 
         return wines.stream()
-                .map(wine -> new WineWithPhotoDTO()
-                        .setProductPhotos(productToPhoto.get(wine.getId().toString()))
+                .map(wine -> new WineWithPhotosDTO()
+                        .setFiles(productToPhoto.get(wine.getId().toString()))
                         .setId(wine.getId())
                         .setDiscount(wine.getDiscount())
                         .setName(wine.getName())
@@ -42,12 +42,12 @@ public class WineService {
                 .toList();
     }
 
-    public List<WineWithPhotoDTO> findWinesByCountry(String country) {
+    public List<WineWithPhotosDTO> findWinesByCountry(String country) {
         List<WineProjection> winesForCountry = wineRepository.findWinesByCountry(country);
-        LinkedHashMap<String, List<ProductPhotoProjection>> productToPhoto = productToPhotoUtil.getProductToPhotoMap(ProductCategories.WINE);
+        LinkedHashMap<String, List<FileDTO>> productToPhoto = productToPhotoUtil.getProductToPhotoMap(ProductCategories.WINE);
         return winesForCountry.stream()
-                .map(wine -> new WineWithPhotoDTO()
-                        .setProductPhotos(productToPhoto.get(wine.getId().toString()))
+                .map(wine -> new WineWithPhotosDTO()
+                        .setFiles(productToPhoto.get(wine.getId().toString()))
                         .setId(wine.getId())
                         .setDiscount(wine.getDiscount())
                         .setName(wine.getName())

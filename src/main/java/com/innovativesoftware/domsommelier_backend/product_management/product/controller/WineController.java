@@ -1,7 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.controller;
 
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCountryProjection;
-import com.innovativesoftware.domsommelier_backend.product_management.product.model.WineWithPhotoDTO;
+import com.innovativesoftware.domsommelier_backend.product_management.product.model.WineWithPhotosDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductService;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.WineService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +22,12 @@ public class WineController {
     private WineService wineService;
 
     @GetMapping("")
-    public List<WineWithPhotoDTO> getWines() {
+    public List<WineWithPhotosDTO> getWines() {
         return wineService.findAllWines();
     }
 
     @GetMapping(value = "", params = { "country" })
-    public List<WineWithPhotoDTO> getWinesByCountry(@RequestParam String country) {
+    public List<WineWithPhotosDTO> getWinesByCountry(@RequestParam String country) {
         return wineService.findWinesByCountry(country);
     }
 

@@ -1,7 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.event_management.event.repository;
 
 import com.innovativesoftware.domsommelier_backend.event_management.event.entity.Event;
-import com.innovativesoftware.domsommelier_backend.event_management.event.model.EventProjection;
+import com.innovativesoftware.domsommelier_backend.event_management.event.model.EventWithFileProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,8 +15,11 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
             event.description as description,
             event.startedAt as startedAt,
             event.finishedAt as finishedAt,
-            event.eventPhoto.id as photoId
-          from Event event
+            eventPhoto.id as eventFileId,
+            eventPhoto.bucket as bucket,
+            eventPhoto.name as fileName,
+            eventPhoto.description as eventFileDescription
+          from Event event left join EventPhoto eventPhoto on event.id = eventPhoto.event.id
     """)
-    List<EventProjection> findAllEvents();
+    List<EventWithFileProjection> findAllEvents();
 }

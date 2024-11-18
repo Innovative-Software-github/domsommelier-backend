@@ -14,14 +14,14 @@ public class File {
     @Id
     @UuidGenerator
     @Column(name = "id", nullable = false)
-    protected UUID id;
+    public UUID id;
 
     @Column(name="bucket", nullable = false)
-    protected String bucket;
+    public String bucket;
 
     @Column(name= "name", nullable = false)
-    protected String name;
+    public String name;
 
     @Column(name = "description")
-    protected String description;
+    public String description;
 }

@@ -8,5 +8,4 @@ public interface EventProjection {
     String getDescription();
     OffsetDateTime getStartedAt();
     OffsetDateTime getFinishedAt();
-    UUID getPhotoId();
 }
