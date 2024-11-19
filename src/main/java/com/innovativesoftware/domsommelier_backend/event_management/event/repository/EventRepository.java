@@ -20,6 +20,8 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
             eventPhoto.name as fileName,
             eventPhoto.description as eventFileDescription
           from Event event left join EventPhoto eventPhoto on event.id = eventPhoto.event.id
+          where current_timestamp < event.finishedAt
+          order by event.startedAt
     """)
     List<EventWithFileProjection> findAllEvents();
 }
