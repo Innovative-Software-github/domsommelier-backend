@@ -1,21 +1,48 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.service;
 
+import com.innovativesoftware.domsommelier_backend.file_management.service.FileOperationService;
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.ProductPhoto;
-import com.innovativesoftware.domsommelier_backend.file_management.service.FileOperationService;
+import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductPhotoRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-public class ProductPhotoOperationService extends FileOperationService<Product, ProductPhoto> {
+public class ProductPhotoOperationService extends FileOperationService {
     @Autowired
-    public ProductPhotoOperationService(JpaRepository<ProductPhoto, String> fileRepository,
-                                        JpaRepository<Product, UUID> fileDomainRepository) {
-        super(fileRepository, fileDomainRepository);
+    private ProductPhotoRepository productPhotoRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Transactional
+    public void uploadFilesWithRef(MultipartFile[] files, String bucket, String productId) {
+        List<MultipartFile> uploadedFiles = fileService.uploadFiles(files, bucket);
+        Product product = productRepository.getReferenceById(UUID.fromString(productId));
+
+        List<ProductPhoto> readyFiles = uploadedFiles.stream()
+                .map(uploadedFile -> {
+                    try {
+                        ProductPhoto productPhoto = new ProductPhoto();
+                        productPhoto.setName(uploadedFile.getOriginalFilename());
+                        productPhoto.setBucket(bucket);
+                        productPhoto.setProduct(product);
+                        return productPhoto;
+                    }
+                    catch(Exception e) {
+                        throw new RuntimeException("Problem with uploading product photos");
+                    }
+                })
+                .toList();
+        productPhotoRepository.saveAll(readyFiles);
     }
 }

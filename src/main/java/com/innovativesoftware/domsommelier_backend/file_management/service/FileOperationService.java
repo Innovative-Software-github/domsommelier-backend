@@ -15,51 +15,11 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-public class FileOperationService<TDomain, TFile extends File<TDomain>> {
+public class FileOperationService {
     @Autowired
     protected FileService fileService;
 
-    protected JpaRepository<TFile, String> fileRepository;
-
-    protected JpaRepository<TDomain, UUID> fileDomainRepository;
-
-
-    // TODO: eto ne nado vrode
-    public FileOperationService(JpaRepository<TFile, String> fileRepository,
-                                JpaRepository<TDomain, UUID> fileDomainRepository) {
-        this.fileRepository = fileRepository;
-        this.fileDomainRepository = fileDomainRepository;
-    }
-
     public byte[] getBytesFromFile(String bucket, String fileName) {
         return fileService.getFileBytes(bucket, fileName);
-    }
-
-    @Transactional
-    public void uploadFilesWithRef(MultipartFile[] files, String bucket, String fileBindingId, Class<TFile> fileType) {
-        List<MultipartFile> uploadedFiles = fileService.uploadFiles(files, bucket);
-        TDomain fileDomain = fileDomainRepository.getReferenceById(UUID.fromString(fileBindingId));
-
-
-        List<TFile> readyFiles = uploadedFiles.stream()
-                .map(uploadedFile -> {
-                    try {
-                        TFile file = fileType.getDeclaredConstructor().newInstance();
-                        file.setName(uploadedFile.getOriginalFilename());
-                        file.setBucket(bucket);
-                        file.setDomain(fileDomain);
-                        return file;
-                    } catch (InstantiationException e) {
-                        throw new RuntimeException(e);
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    } catch (InvocationTargetException e) {
-                        throw new RuntimeException(e);
-                    } catch (NoSuchMethodException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .toList();
-        fileRepository.saveAll(readyFiles);
     }
 }

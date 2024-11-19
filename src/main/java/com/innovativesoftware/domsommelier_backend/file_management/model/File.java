@@ -3,24 +3,25 @@ package com.innovativesoftware.domsommelier_backend.file_management.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
+
+import java.util.UUID;
 
 @MappedSuperclass
 @Getter
 @Setter
-@IdClass(FileId.class)
-public class File<TDomain> {
+public class File {
     @Id
-    @Column(name="bucket")
-    protected String bucket;
+    @UuidGenerator
+    @Column(name = "id", nullable = false)
+    public UUID id;
 
-    @Id
-    @Column(name= "name")
-    protected String name;
+    @Column(name="bucket", nullable = false)
+    public String bucket;
+
+    @Column(name= "name", nullable = false)
+    public String name;
 
     @Column(name = "description")
-    protected String description;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "domain_id")
-    private TDomain domain;
+    public String description;
 }

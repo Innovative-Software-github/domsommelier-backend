@@ -51,7 +51,7 @@ public class Product {
     @JoinColumn(name = "category_name", nullable = false)
     private ProductCategory productCategory;
 
-    @OneToMany(mappedBy = "domain")
+    @OneToMany(mappedBy = "product")
     private List<ProductPhoto> productPhoto;
 
     @OneToMany(mappedBy = "product")

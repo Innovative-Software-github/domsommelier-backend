@@ -23,7 +23,7 @@ public class Event {
     private OffsetDateTime startedAt;
 
     @Column(name = "finished_at")
-    private OffsetDateTime finished_at;
+    private OffsetDateTime finishedAt;
 
     @Column(name = "size")
     private Integer size;
@@ -31,12 +31,10 @@ public class Event {
     @Column(name = "event_host")
     private String eventHost;
 
-    @ManyToOne
-    @JoinColumn(name = "status_id", nullable = false)
-    private EventStatus eventStatus;
+//    @ManyToOne
+//    @JoinColumn(name = "status_id", nullable = false)
+//    private EventStatus eventStatus;
 
-    @ManyToOne
-    @JoinColumn(name = "photo_id")
+    @OneToOne(mappedBy = "event")
     private EventPhoto eventPhoto;
-
 }
