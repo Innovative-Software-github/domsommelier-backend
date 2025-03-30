@@ -12,6 +12,8 @@ import java.util.List;
 @Entity
 @Table(name = "product_category")
 public class ProductCategory {
+    //TODO: enum
+
     @Id
     @Enumerated(EnumType.STRING)
     @Column(name = "name", nullable = false)

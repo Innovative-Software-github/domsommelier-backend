@@ -12,7 +12,7 @@ import java.util.List;
 @Table(name = "wine_color")
 public class WineColor {
     enum Color {RED, WHITE, PINK;}
-
+    //TODO: enum
     @Id
     @Enumerated(EnumType.STRING)
     @Column(name = "name", nullable = false)

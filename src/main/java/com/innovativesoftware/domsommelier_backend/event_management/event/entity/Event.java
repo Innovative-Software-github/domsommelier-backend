@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.event_management.event.entity;
 
+import com.innovativesoftware.domsommelier_backend.event_management.event.enums.EventStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,9 +32,9 @@ public class Event {
     @Column(name = "event_host")
     private String eventHost;
 
-//    @ManyToOne
-//    @JoinColumn(name = "status_id", nullable = false)
-//    private EventStatus eventStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "event_status")
+    private EventStatus eventStatus;
 
     @OneToOne(mappedBy = "event")
     private EventPhoto eventPhoto;

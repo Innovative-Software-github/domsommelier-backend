@@ -1,7 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.entity;
 
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.OrderItem;
-import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.ProductCountry;
 import com.innovativesoftware.domsommelier_backend.product_management.warehouse.entity.StorageHistory;
 import jakarta.persistence.*;
 import lombok.Getter;

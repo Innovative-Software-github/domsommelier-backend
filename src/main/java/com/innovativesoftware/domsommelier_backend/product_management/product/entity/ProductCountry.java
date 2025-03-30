@@ -1,4 +1,4 @@
-package com.innovativesoftware.domsommelier_backend.customer_management.customer.entity;
+package com.innovativesoftware.domsommelier_backend.product_management.product.entity;
 
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import jakarta.persistence.*;
@@ -12,6 +12,8 @@ import java.util.List;
 @Entity
 @Table(name = "product_country")
 public class ProductCountry {
+
+    //TODO: enum
     @Id
     @Column(name = "name", nullable = false)
     private String name;

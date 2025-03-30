@@ -12,7 +12,7 @@ import java.util.List;
 @Table(name = "order_status")
 public class OrderStatus {
 
-    // TODO: to enum
+    //TODO: to enum
     @Id
     @Column(name = "name", nullable = false)
     private String name;
