@@ -10,11 +10,13 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           username: root
-          host: 194.87.190.20
+          host: ${{ secrets.HOST }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            rm -rf ~/projects/domsommelier-backend
-            git clone git@github.com:Innovative-Software-github/domsommelier-backend.git ~/projects/domsommelier-backend
-            cd ~/projects/domsommelier-backend && sh run.sh
+            echo test
+#          script: |
+#            rm -rf ~/projects/domsommelier-backend
+#            git clone git@github.com:Innovative-Software-github/domsommelier-backend.git ~/projects/domsommelier-backend
+#            cd ~/projects/domsommelier-backend && sh run.sh
             
             
