@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - main
+      - test
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -10,7 +10,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           username: root
-          host: 193.108.115.13
+          host: 194.87.190.20
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             rm -rf ~/projects/domsommelier-backend
