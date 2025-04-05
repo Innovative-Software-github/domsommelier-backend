@@ -1,11 +1,14 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.service;
 
+import com.google.gson.Gson;
+import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.ProductCategory;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategories;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCategoryProjection;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCountryProjection;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductCategoryRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductCountryRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,10 +18,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class ProductService {
-
+    private final Gson gson;
+    @Autowired
+    private final ProductRepository productRepository;
     @Autowired
     private ProductCountryRepository productCountryRepository;
-
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
 
@@ -28,5 +32,10 @@ public class ProductService {
 
     public List<ProductCategoryProjection> getProductCategories() {
         return productCategoryRepository.findAllCategories();
+    }
+
+    public String searchProductsByName(String name) {
+        List<Product> products = productRepository.findByNameContainingIgnoreCase(name);
+        return gson.toJson(products);
     }
 }
