@@ -30,4 +30,14 @@ public class Wine {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type")
     private WineType type;
+
+    @Column(name = "sugar")
+    private Integer sugar;
+
+    @Column(name = "volume")
+    private Float volume;
+
+
+
+
 }

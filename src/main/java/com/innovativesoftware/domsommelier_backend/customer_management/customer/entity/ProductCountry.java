@@ -4,8 +4,10 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.en
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -13,6 +15,10 @@ import java.util.List;
 @Table(name = "product_country")
 public class ProductCountry {
     @Id
+    @UuidGenerator
+    @Column(name = "id", nullable = false)
+    private UUID id;
+
     @Column(name = "name", nullable = false)
     private String name;
 

@@ -11,7 +11,7 @@ import java.util.List;
 public interface ProductCountryRepository extends JpaRepository<ProductCountry, String> {
     @Query("""
         select distinct productCountry.name as name from ProductCountry productCountry inner join Product product
-        on productCountry.name = product.productCountry.name
+        on productCountry.id = product.productCountry.id
         where product.productCategory.name = :productCategory
     """)
     List<ProductCountryProjection> getCountriesWithProductCategory(ProductCategories productCategory);
