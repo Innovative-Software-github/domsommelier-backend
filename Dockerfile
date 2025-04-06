@@ -5,9 +5,9 @@ COPY mvnw pom.xml ./
 COPY ./src ./src
 # If mvnw was created on Windows, it might have CRLF line endings, which can break execution in Linux (Docker)
 RUN sed -i 's/\r$//' mvnw && chmod +x mvnw
-RUN ./mvnw dependency:go-offline
+RUN ./mvnw dependency:go-offline -B
 # skip tests надо, т.к. мавен начинает чекать на тесты до запуска приложения
-RUN ./mvnw clean install -Dmaven.test.skip=true
+RUN ./mvnw clean install -DskipTests
 
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app

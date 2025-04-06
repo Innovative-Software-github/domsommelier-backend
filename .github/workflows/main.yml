@@ -10,7 +10,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           username: root
-          host: 193.108.115.13
+          host: ${{ secrets.HOST }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             rm -rf ~/projects/domsommelier-backend
