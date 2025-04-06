@@ -36,8 +36,4 @@ public class Wine {
 
     @Column(name = "volume")
     private Float volume;
-
-
-
-
 }

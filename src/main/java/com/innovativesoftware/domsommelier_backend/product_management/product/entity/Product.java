@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.entity;
 
+import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.Region;
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.OrderItem;
 import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.ProductCountry;
 import com.innovativesoftware.domsommelier_backend.product_management.warehouse.entity.StorageHistory;
@@ -43,6 +44,10 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id", nullable = false)
     private ProductCountry productCountry;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "region_id", nullable = false)
+    private Region region;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_name", nullable = false)
