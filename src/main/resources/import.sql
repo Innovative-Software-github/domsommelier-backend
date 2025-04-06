@@ -12,9 +12,15 @@ insert into wine_color (name) values ('PINK');
 
 insert into wine_type (name) values ('SWEET'), ('SEMISWEET'), ('DRY');
 
+insert into wine_sort (id, name, percent) values ('9026c81d-42b4-40eb-a8fd-410048796182', 'Дюриф', 100), ('825e95a3-4fdd-4984-b293-88d5cbc7ca65', 'Шардоне', 75);
+
 insert into wine (id, production_year, color, type) values ('293b85d0-f739-4856-a09b-8495f2157e4d', 1999, 'RED', 'DRY');
 insert into wine (id, production_year, color, type) values ('ccfe12c7-2a16-4482-9c5b-ca57260fc475', 1999, 'WHITE', 'SEMISWEET');
 insert into wine (id, production_year, color, type) values ('f3e364ff-b656-44a3-a16e-2263e560345c', 1999, 'PINK', 'SWEET');
+
+insert into wine_wine_sort (wine_id, wine_sort_id) values ('293b85d0-f739-4856-a09b-8495f2157e4d', '9026c81d-42b4-40eb-a8fd-410048796182');
+insert into wine_wine_sort (wine_id, wine_sort_id) values ('293b85d0-f739-4856-a09b-8495f2157e4d', '825e95a3-4fdd-4984-b293-88d5cbc7ca65');
+insert into wine_wine_sort (wine_id, wine_sort_id) values ('ccfe12c7-2a16-4482-9c5b-ca57260fc475', '9026c81d-42b4-40eb-a8fd-410048796182');
 
 insert into storage_history (id, product_id, amount, created_at) values ('84644d5b-777a-4f62-bc5b-d2e1e346df6c', '293b85d0-f739-4856-a09b-8495f2157e4d', 200, date '2024-09-27' + time '18:20');
 insert into storage_history (id, product_id, amount, created_at) values ('b8049b3a-1e83-4110-b42f-9793c3ca1515', '293b85d0-f739-4856-a09b-8495f2157e4d', 400, date '2024-09-28' + time '14:10');
