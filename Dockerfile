@@ -2,7 +2,7 @@ FROM eclipse-temurin:17-jdk-jammy AS builder
 WORKDIR /opt/app
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
-RUN ./mvnw dependency:go-offline -B
+RUN ./mvnw dependency:go-offline
 COPY ./src ./src
 # skip tests надо, т.к. мавен начинает чекать на тесты до запуска приложения
 RUN ./mvnw clean install -DskipTests
