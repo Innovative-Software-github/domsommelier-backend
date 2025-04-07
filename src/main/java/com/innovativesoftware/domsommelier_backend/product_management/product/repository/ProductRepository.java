@@ -17,6 +17,15 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             "LOWER(p.productCategory.name) LIKE LOWER(concat('%', :filter, '%')) OR " +
             "LOWER(p.productCountry.name) LIKE LOWER(concat('%', :filter, '%')) OR " +
             "LOWER(p.description) LIKE LOWER(concat('%', :filter, '%')) OR " +
-            "LOWER(p.article) LIKE LOWER(concat('%', :filter, '%'))")
+            "LOWER(p.article) LIKE LOWER(concat('%', :filter, '%'))" +
+            "ORDER BY " +
+            "CASE " +
+            "  WHEN LOWER(p.name) LIKE LOWER(CONCAT('%', :filter, '%')) THEN 1 " +
+            "  WHEN LOWER(p.productCategory.name) LIKE LOWER(CONCAT('%', :filter, '%')) THEN 2 " +
+            "  WHEN LOWER(p.productCountry.name) LIKE LOWER(CONCAT('%', :filter, '%')) THEN 3 " +
+            "  WHEN LOWER(p.description) LIKE LOWER(CONCAT('%', :filter, '%')) THEN 4 " +
+            "  WHEN LOWER(p.article) LIKE LOWER(CONCAT('%', :filter, '%')) THEN 5 " +
+            "  ELSE 6 " +
+            "END ASC")
     List<UUID> findByFilterContainingIgnoreCase(@Param("filter") String filter);
 }
