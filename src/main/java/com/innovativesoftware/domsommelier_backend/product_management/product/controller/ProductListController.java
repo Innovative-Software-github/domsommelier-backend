@@ -7,10 +7,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.se
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,8 +32,8 @@ public class ProductListController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<String> searchProductsByName(@RequestHeader String name) {
-        String jsonResponse = productService.searchProductsByName(name);
+    public ResponseEntity<String> searchProductsByName(@RequestParam String filter) {
+        String jsonResponse = productService.searchProductsByFilter(filter);
         return ResponseEntity.ok(jsonResponse);
     }
 }
