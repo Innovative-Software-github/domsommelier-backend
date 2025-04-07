@@ -33,8 +33,8 @@ public class ProductService {
         return productCategoryRepository.findAllCategories();
     }
 
-    public String searchProductsByName(String name) {
-        List<UUID> products = productRepository.findByNameContainingIgnoreCase(name);
+    public String searchProductsByFilter(String filter) {
+        List<UUID> products = productRepository.findByFilterContainingIgnoreCase(filter);
         return gson.toJson(products);
     }
 }

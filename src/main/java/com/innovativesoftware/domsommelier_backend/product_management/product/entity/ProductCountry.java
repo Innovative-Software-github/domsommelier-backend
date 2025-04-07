@@ -1,4 +1,4 @@
-package com.innovativesoftware.domsommelier_backend.customer_management.customer.entity;
+package com.innovativesoftware.domsommelier_backend.product_management.product.entity;
 
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import jakarta.persistence.*;

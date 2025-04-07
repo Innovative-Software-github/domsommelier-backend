@@ -1,6 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.repository;
 
-import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.ProductCountry;
+import com.innovativesoftware.domsommelier_backend.product_management.product.entity.ProductCountry;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategories;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCountryProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
