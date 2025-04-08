@@ -2,8 +2,10 @@ FROM eclipse-temurin:17-jdk-jammy AS builder
 WORKDIR /opt/app
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
-RUN ./mvnw dependency:go-offline
 COPY ./src ./src
+# If mvnw was created on Windows, it might have CRLF line endings, which can break execution in Linux (Docker)
+RUN sed -i 's/\r$//' mvnw && chmod +x mvnw
+RUN ./mvnw dependency:go-offline -B
 # skip tests надо, т.к. мавен начинает чекать на тесты до запуска приложения
 RUN ./mvnw clean install -DskipTests
 
