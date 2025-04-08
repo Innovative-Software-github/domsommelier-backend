@@ -18,7 +18,7 @@ public interface WineRepository extends JpaRepository<Wine, UUID> {
     @Query("""
         select product.id as id, product.name as name, product.price as price, product.discount as discount from Product product
          inner join Wine wine on product.id = wine.id
-         where product.productCountry.name = :country
+         where product.country.name = :country
     """)
     List<WineProjection> findWinesByCountry(String country);
 }

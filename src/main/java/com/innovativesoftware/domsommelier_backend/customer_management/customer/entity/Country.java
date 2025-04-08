@@ -12,8 +12,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "product_country")
-public class ProductCountry {
+@Table(name = "country")
+public class Country {
     @Id
     @UuidGenerator
     @Column(name = "id", nullable = false)
@@ -22,6 +22,6 @@ public class ProductCountry {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "productCountry")
+    @OneToMany(mappedBy = "country")
     private List<Product> products;
 }

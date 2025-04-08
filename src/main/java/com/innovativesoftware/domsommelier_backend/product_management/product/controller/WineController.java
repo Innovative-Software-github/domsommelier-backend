@@ -1,6 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.controller;
 
-import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCountryProjection;
+import com.innovativesoftware.domsommelier_backend.product_management.product.model.CountryProjection;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.WineWithPhotosDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductService;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.WineService;
@@ -32,7 +32,7 @@ public class WineController {
     }
 
     @GetMapping("/countries")
-    public List<ProductCountryProjection> getCountriesWithWines() {
+    public List<CountryProjection> getCountriesWithWines() {
         return productService.getCountriesWithWines();
     }
 }
