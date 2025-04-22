@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -30,4 +31,17 @@ public class Wine {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type")
     private WineType type;
+
+    @Column(name = "sugar")
+    private Integer sugar;
+
+    @Column(name = "volume")
+    private Float volume;
+
+    @ManyToMany
+    @JoinTable(
+    name = "wine_wine_sort",
+    joinColumns = @JoinColumn(name = "wine_id"),
+    inverseJoinColumns = @JoinColumn(name = "wine_sort_id"))
+    private List<WineSort> wineSorts;
 }

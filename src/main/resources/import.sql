@@ -1,9 +1,10 @@
 insert into product_category (name, label) values ('WINE', 'Вино'), ('SNACK', 'Снэки');
-insert into product_country values ('russia'), ('france'), ('usa');
+insert into country values ('ba4964db-9137-4824-a517-ba03f35e9f3d', 'russia'), ('248cfa17-6ec1-4ba6-a37c-27041c9bd068', 'france'), ('08ded10b-4160-4092-bb2e-d24e59e4dd2b', 'usa');
+insert into region values ('e9122b0f-eed1-4b80-a785-16bb39c73b76', 'Southern Australia');
 
-insert into product (id, article, name, initial_price, price, category_name, country_name, created_at) values ('293b85d0-f739-4856-a09b-8495f2157e4d', 'product1', 'product1', 1000, 1500, 'WINE', 'france', date '2024-09-27' + time '14:00');
-insert into product (id, article, name, initial_price, price, category_name, country_name, created_at) values ('ccfe12c7-2a16-4482-9c5b-ca57260fc475', 'product2', 'product2', 20000, 20100, 'WINE', 'usa', date '2024-09-25' + time '14:00');
-insert into product (id, article, name, initial_price, price, category_name, country_name, created_at) values ('f3e364ff-b656-44a3-a16e-2263e560345c', 'product3', 'product3', 5000, 7500, 'WINE', 'russia', date '2024-08-27' + time '07:00');
+insert into product (id, article, name, price, discount, category_name, country_id, region_id, created_at) values ('293b85d0-f739-4856-a09b-8495f2157e4d', 'product1', 'product1', 1000, 10, 'WINE', '248cfa17-6ec1-4ba6-a37c-27041c9bd068', 'e9122b0f-eed1-4b80-a785-16bb39c73b76', date '2024-09-27' + time '14:00');
+insert into product (id, article, name, price, discount, category_name, country_id, region_id, created_at) values ('ccfe12c7-2a16-4482-9c5b-ca57260fc475', 'product2', 'product2', 20000, 25, 'WINE', '08ded10b-4160-4092-bb2e-d24e59e4dd2b', 'e9122b0f-eed1-4b80-a785-16bb39c73b76', date '2024-09-25' + time '14:00');
+insert into product (id, article, name, price, discount, category_name, country_id, region_id, created_at) values ('f3e364ff-b656-44a3-a16e-2263e560345c', 'product3', 'product3', 5000, 5, 'WINE', 'ba4964db-9137-4824-a517-ba03f35e9f3d', 'e9122b0f-eed1-4b80-a785-16bb39c73b76', date '2024-08-27' + time '07:00');
 
 insert into wine_color (name) values ('RED');
 insert into wine_color (name) values ('WHITE');
@@ -11,9 +12,15 @@ insert into wine_color (name) values ('PINK');
 
 insert into wine_type (name) values ('SWEET'), ('SEMISWEET'), ('DRY');
 
-insert into wine (id, production_year, color, type) values ('293b85d0-f739-4856-a09b-8495f2157e4d', 1999, 'RED', 'DRY');
-insert into wine (id, production_year, color, type) values ('ccfe12c7-2a16-4482-9c5b-ca57260fc475', 1999, 'WHITE', 'SEMISWEET');
-insert into wine (id, production_year, color, type) values ('f3e364ff-b656-44a3-a16e-2263e560345c', 1999, 'PINK', 'SWEET');
+insert into wine_sort (id, name, percent) values ('9026c81d-42b4-40eb-a8fd-410048796182', 'Дюриф', 100), ('825e95a3-4fdd-4984-b293-88d5cbc7ca65', 'Шардоне', 75);
+
+insert into wine (id, production_year, color, type, sugar, volume) values ('293b85d0-f739-4856-a09b-8495f2157e4d', 1999, 'RED', 'DRY', 200, 140.5);
+insert into wine (id, production_year, color, type, sugar, volume) values ('ccfe12c7-2a16-4482-9c5b-ca57260fc475', 1999, 'WHITE', 'SEMISWEET', 200, 140.5);
+insert into wine (id, production_year, color, type, sugar, volume) values ('f3e364ff-b656-44a3-a16e-2263e560345c', 1999, 'PINK', 'SWEET', 200, 140.5);
+
+insert into wine_wine_sort (wine_id, wine_sort_id) values ('293b85d0-f739-4856-a09b-8495f2157e4d', '9026c81d-42b4-40eb-a8fd-410048796182');
+insert into wine_wine_sort (wine_id, wine_sort_id) values ('293b85d0-f739-4856-a09b-8495f2157e4d', '825e95a3-4fdd-4984-b293-88d5cbc7ca65');
+insert into wine_wine_sort (wine_id, wine_sort_id) values ('ccfe12c7-2a16-4482-9c5b-ca57260fc475', '9026c81d-42b4-40eb-a8fd-410048796182');
 
 insert into storage_history (id, product_id, amount, created_at) values ('84644d5b-777a-4f62-bc5b-d2e1e346df6c', '293b85d0-f739-4856-a09b-8495f2157e4d', 200, date '2024-09-27' + time '18:20');
 insert into storage_history (id, product_id, amount, created_at) values ('b8049b3a-1e83-4110-b42f-9793c3ca1515', '293b85d0-f739-4856-a09b-8495f2157e4d', 400, date '2024-09-28' + time '14:10');

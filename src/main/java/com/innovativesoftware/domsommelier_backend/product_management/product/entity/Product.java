@@ -1,7 +1,8 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.entity;
 
+import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.Region;
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.OrderItem;
-import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.ProductCountry;
+import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.Country;
 import com.innovativesoftware.domsommelier_backend.product_management.warehouse.entity.StorageHistory;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -28,9 +29,6 @@ public class Product {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "initial_price", nullable = false)
-    private Integer initialPrice;
-
     @Column(name = "price", nullable = false)
     private Integer price;
 
@@ -44,8 +42,12 @@ public class Product {
     private OffsetDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "country_name", nullable = false)
-    private ProductCountry productCountry;
+    @JoinColumn(name = "country_id", nullable = false)
+    private Country country;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "region_id", nullable = false)
+    private Region region;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_name", nullable = false)

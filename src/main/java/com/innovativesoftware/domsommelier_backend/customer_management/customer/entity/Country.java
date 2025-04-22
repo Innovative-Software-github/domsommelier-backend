@@ -4,18 +4,24 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.en
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "product_country")
-public class ProductCountry {
+@Table(name = "country")
+public class Country {
     @Id
+    @UuidGenerator
+    @Column(name = "id", nullable = false)
+    private UUID id;
+
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "productCountry")
+    @OneToMany(mappedBy = "country")
     private List<Product> products;
 }

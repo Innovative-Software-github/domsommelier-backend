@@ -16,5 +16,11 @@ public class WineWithPhotosDTO implements WineProjection, EntityWithFiles<FileDT
     private String name;
     private Integer price;
     private Integer discount;
+    private String description;
+    private String countryName;
+    private String regionName;
+    private String color;
+    private Integer sugar;
+    private Float volume;
     private List<FileDTO> files;
 }
