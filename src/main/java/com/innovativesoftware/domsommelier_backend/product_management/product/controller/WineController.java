@@ -5,10 +5,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.mo
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductService;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.WineService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,5 +32,10 @@ public class WineController {
     public List<CountryProjection> getCountriesWithWines() {
         return productService.getCountriesWithWines();
     }
+
+//    @GetMapping("{id}")
+//    public WineWithPhotosDTO getWineById(@PathVariable String id) {
+//
+//    }
 }
 

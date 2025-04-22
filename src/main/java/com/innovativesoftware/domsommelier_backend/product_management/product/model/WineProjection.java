@@ -7,4 +7,10 @@ public interface WineProjection {
     String getName();
     Integer getPrice();
     Integer getDiscount();
+    String getDescription();
+    String getCountryName();
+    String getRegionName();
+    String getColor();
+    Integer getSugar();
+    Float getVolume();
 }
