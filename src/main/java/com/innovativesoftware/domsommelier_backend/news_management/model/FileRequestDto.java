@@ -8,7 +8,6 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 public class FileRequestDto {
-    private String bucket;
     private String name;
     private String description;
 }
