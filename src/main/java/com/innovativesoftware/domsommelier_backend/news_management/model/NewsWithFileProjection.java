@@ -7,4 +7,5 @@ public interface NewsWithFileProjection extends NewsProjection {
     String getBucket();
     String getFileName();
     String getNewFileDescription();
+    String getReference();
 }

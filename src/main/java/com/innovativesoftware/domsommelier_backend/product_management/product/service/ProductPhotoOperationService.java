@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,14 +28,14 @@ public class ProductPhotoOperationService extends FileOperationService {
         List<MultipartFile> uploadedFiles = fileService.uploadFiles(files, bucket);
         Product product = productRepository.getReferenceById(UUID.fromString(productId));
 
-        List<ProductPhoto> readyFiles = uploadedFiles.stream()
+        List<ProductPhoto> readyFiles = (List<ProductPhoto>) uploadedFiles.stream()
                 .map(uploadedFile -> {
                     try {
-                        ProductPhoto productPhoto = new ProductPhoto();
-                        productPhoto.setName(uploadedFile.getOriginalFilename());
-                        productPhoto.setBucket(bucket);
-                        productPhoto.setProduct(product);
-                        return productPhoto;
+                        return ProductPhoto.builder()
+                                .name(uploadedFile.getOriginalFilename())
+                                .bucket(bucket)
+                                .product(product)
+                                .build();
                     }
                     catch(Exception e) {
                         throw new RuntimeException("Problem with uploading product photos");

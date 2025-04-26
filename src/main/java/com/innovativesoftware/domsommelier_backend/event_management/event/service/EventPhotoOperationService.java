@@ -28,14 +28,14 @@ public class EventPhotoOperationService extends FileOperationService {
         List<MultipartFile> uploadedFiles = fileService.uploadFiles(files, bucket);
         Event event = eventRepository.getReferenceById(UUID.fromString(eventId));
 
-        List<EventPhoto> readyFiles = uploadedFiles.stream()
+        List<EventPhoto> readyFiles = (List<EventPhoto>) uploadedFiles.stream()
                 .map(uploadedFile -> {
                     try {
-                        EventPhoto eventPhoto = new EventPhoto();
-                        eventPhoto.setName(uploadedFile.getOriginalFilename());
-                        eventPhoto.setBucket(bucket);
-                        eventPhoto.setEvent(event);
-                        return eventPhoto;
+                        return EventPhoto.builder()
+                                .name(uploadedFile.getOriginalFilename())
+                                .bucket(bucket)
+                                .event(event)
+                                .build();
                     }
                     catch(Exception e) {
                         throw new RuntimeException("Problem with uploading event photos");

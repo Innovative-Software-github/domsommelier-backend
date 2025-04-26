@@ -28,14 +28,14 @@ public class NewsPhotoOperationService extends FileOperationService {
         List<MultipartFile> uploadedFiles = fileService.uploadFiles(files, bucket);
         News news = newsRepository.getReferenceById(UUID.fromString(eventId));
 
-        List<NewsPhoto> readyFiles = uploadedFiles.stream()
+        List<NewsPhoto> readyFiles = (List<NewsPhoto>) uploadedFiles.stream()
                 .map(uploadedFile -> {
                     try {
-                        NewsPhoto newsPhoto = new NewsPhoto();
-                        newsPhoto.setName(uploadedFile.getOriginalFilename());
-                        newsPhoto.setBucket(bucket);
-                        newsPhoto.setANews(news);
-                        return newsPhoto;
+                        return NewsPhoto.builder()
+                                .name(uploadedFile.getOriginalFilename())
+                                .bucket(bucket)
+                                .aNews(news)
+                                .build();
                     }
                     catch(Exception e) {
                         throw new RuntimeException("Problem with uploading news photos");
