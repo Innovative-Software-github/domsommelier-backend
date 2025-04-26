@@ -27,11 +27,13 @@ public class EventService {
                         .setFinishedAt(eventWithFile.getFinishedAt())
                         .setFiles(
                                 new ArrayList<>(List.of(
-                                        new FileDTO()
-                                                .setId(eventWithFile.getEventFileId())
-                                                .setBucket(eventWithFile.getBucket())
-                                                .setName(eventWithFile.getFileName())
-                                                .setDescription(eventWithFile.getEventFileDescription()))))
+                                        FileDTO.builder()
+                                                .id(eventWithFile.getEventFileId())
+                                                .bucket(eventWithFile.getBucket())
+                                                .name(eventWithFile.getFileName())
+                                                .description(eventWithFile.getEventFileDescription())
+                                                .build()
+                                )))
                 )
                 .toList();
     }

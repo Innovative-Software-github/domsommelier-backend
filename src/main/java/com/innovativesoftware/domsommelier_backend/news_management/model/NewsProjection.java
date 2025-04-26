@@ -6,4 +6,5 @@ public interface NewsProjection {
     UUID getId();
     String getDescription();
     String getTitle();
+    String getReference();
 }

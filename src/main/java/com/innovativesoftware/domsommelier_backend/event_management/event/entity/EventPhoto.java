@@ -1,17 +1,18 @@
 package com.innovativesoftware.domsommelier_backend.event_management.event.entity;
 
 import com.innovativesoftware.domsommelier_backend.file_management.model.File;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serializable;
-import java.util.List;
-import java.util.UUID;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @Entity
+@SuperBuilder
 @Table(name = "event_photo")
 public class EventPhoto extends File {
     @OneToOne()
