@@ -21,6 +21,8 @@ import java.util.UUID;
 @Service
 public class NewService {
 
+    private static final String BUCKET_NAME = "news";
+
     @Autowired
     private final NewsRepository newsRepository;
     @Autowired
@@ -88,7 +90,7 @@ public class NewService {
         newsPhotoRepository.deleteFilesByNewsId(UUID.fromString(newsWithFilesRequest.getId()));
         for (var file : newsWithFilesRequest.getFiles()) {
             var newsPhoto = NewsPhoto.builder()
-                    .bucket(file.getBucket())
+                    .bucket(BUCKET_NAME)
                     .name(file.getName())
                     .description(file.getDescription())
                     .aNews(news)
