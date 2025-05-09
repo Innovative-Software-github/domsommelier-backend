@@ -2,6 +2,7 @@ package com.innovativesoftware.domsommelier_backend.file_management.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.UuidGenerator;
@@ -11,6 +12,7 @@ import java.util.UUID;
 @MappedSuperclass
 @Getter
 @Setter
+@NoArgsConstructor
 @SuperBuilder
 public class File {
     @Id
