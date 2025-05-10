@@ -24,14 +24,15 @@ public class FilterMapper {
                 .build();
     }
 
-    public static Filter toEntityCreate(FilterDtoRequest dto) {
+    public static Filter toEntityCreate(FilterDtoCreateRequest dto) {
         if(dto == null) return null;
+
         Filter filter = new Filter();
         filter.setName(dto.getName());
         filter.setField(dto.getField());
         filter.setType(dto.getFilterType());
         filter.setProductCategory(dto.getProductCategory());
-        // options не выставляем (их ассоциируем отдельно)
+
         return filter;
     }
 
