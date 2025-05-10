@@ -9,12 +9,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductFilterValueDtoResponse {
-    private UUID id;
+public class ProductFilterValueDtoCreateRequest {
     private UUID productId;
-    private String productName;
     private UUID filterId;
-    private String filterName;
-    private UUID optionId;
-    private String value;
+    private UUID filterOptionId; // для LIST/STRING
+    private String value;        // для RANGE
 }

@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.filter_management.controller;
 
+import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterDtoCreateRequest;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterDtoRequest;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterDtoResponse;
 import com.innovativesoftware.domsommelier_backend.filter_management.service.FilterService;
@@ -22,7 +23,9 @@ public class FilterController {
     }
 
     @PostMapping
-    public ResponseEntity<FilterDtoResponse> create(@RequestBody FilterDtoRequest filterDTO) {
+    public ResponseEntity<FilterDtoResponse> create(
+            @RequestBody FilterDtoCreateRequest filterDTO
+    ) {
         return ResponseEntity.ok(filterService.create(filterDTO));
     }
 

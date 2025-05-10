@@ -29,4 +29,6 @@ public class ProductFilterValue {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "filter_option_id")
     private FilterOption option;
+
+    private String value;
 }

@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.filter_management.controller;
 
+import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterOptionDtoCreateRequest;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterOptionDtoRequest;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterOptionDtoResponse;
 import com.innovativesoftware.domsommelier_backend.filter_management.service.FilterOptionService;
@@ -22,7 +23,7 @@ public class FilterOptionController {
     }
 
     @PostMapping
-    public ResponseEntity<FilterOptionDtoResponse> create(@RequestBody FilterOptionDtoRequest filterOptionDTO) {
+    public ResponseEntity<FilterOptionDtoResponse> create(@RequestBody FilterOptionDtoCreateRequest filterOptionDTO) {
         return ResponseEntity.ok(service.create(filterOptionDTO));
     }
 

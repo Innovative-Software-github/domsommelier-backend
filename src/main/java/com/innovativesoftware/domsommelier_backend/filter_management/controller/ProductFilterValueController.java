@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.filter_management.controller;
 
+import com.innovativesoftware.domsommelier_backend.filter_management.model.ProductFilterValueDtoCreateRequest;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.ProductFilterValueDtoRequest;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.ProductFilterValueDtoResponse;
 import com.innovativesoftware.domsommelier_backend.filter_management.service.ProductFilterValueService;
@@ -8,12 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/product-filter-values")
 @RequiredArgsConstructor
 public class ProductFilterValueController {
+
     private final ProductFilterValueService service;
 
     @GetMapping
@@ -27,7 +30,42 @@ public class ProductFilterValueController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductFilterValueDtoResponse> create(@RequestBody ProductFilterValueDtoRequest dto) {
+    public ResponseEntity<ProductFilterValueDtoResponse> create(
+            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = """
+                Метод для создания фильтра.
+                **Пример тела запроса для разных типов фильтров:**
+
+                - Если тип **LIST** — укажите id продукта, фильтра и конкретное значение фильтра (id):
+                  ```json
+                  {
+                    "productId": "293b85d0-f739-4856-a09b-8495f2157e4d",
+                    "filterId": "7e28e572-df42-467a-b6ee-5098ce07048b",
+                    "filterOptionId": "4d0c40ec-200e-48c1-9680-413281b73d39"
+                  }
+                  ```
+
+                - Если тип **RANGE** — укажите id продукта, фильтра и конкретное значение фильтра
+                (числовое значение, по нему будет осуществляться поиск диапазонного значения):
+                  ```json
+                  {
+                    "productId": "293b85d0-f739-4856-a09b-8495f2157e4d",
+                    "filterId": "7e28e572-df42-467a-b6ee-5098ce07048b",
+                    "value": "999.99"
+                  }
+                  ```
+
+                - Если тип **STRING** — укажите id продукта, фильтра и конкретное значение фильтра (id):
+                - Пока в разработке
+                  ```json
+                  {
+                    "productId": "293b85d0-f739-4856-a09b-8495f2157e4d",
+                    "filterId": "7e28e572-df42-467a-b6ee-5098ce07048b",
+                    "filterOptionId": "4d0c40ec-200e-48c1-9680-413281b73d39"
+                  }
+                  ```
+                """
+            ) ProductFilterValueDtoCreateRequest dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
@@ -47,7 +85,35 @@ public class ProductFilterValueController {
 
     @PostMapping("/filter")
     public ResponseEntity<List<UUID>> getByFilterIdAndFilterOptionId(
-            @RequestParam UUID filterId, @RequestParam UUID filterOptionId) {
-        return ResponseEntity.ok(service.getAllByFilterIdAndFilterOptionId(filterId, filterOptionId));
+            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = """
+                Метод для получения по фильтру. Возвращает список UUID продуктов.
+
+                **Список фильтров в формате:**
+
+                - Если тип **LIST**:
+                  ```json
+                  {
+                    "Название фильтра (name или field или UUID, не имеет значения)": ["Опция1", "Опция2"]
+                  }
+                  ```
+
+                - Если тип **RANGE**:
+                  ```json
+                  {
+                    "Название фильтра (name или field или UUID, не имеет значения)": ["Нижняя граница", "Верхняя граница"]
+                  }
+                  ```
+
+                - Если тип **STRING**:
+                  ```json
+                  {
+                    "Название фильтра (name или field или UUID, не имеет значения)": ["Поисковая строка"]
+                  }
+                  ```
+                """
+            ) Map<String, List<String>> params
+    ) {
+        return ResponseEntity.ok(service.getAllByFilterIdAndFilterOptionId(params));
     }
 }

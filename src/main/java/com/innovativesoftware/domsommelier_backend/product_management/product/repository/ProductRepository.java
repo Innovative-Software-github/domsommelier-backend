@@ -26,4 +26,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     @NotNull Optional<Product> findById(@NotNull UUID productId);
     @NotNull List<Product> findAll();
+
+    @Query("SELECT p.id FROM Product p")
+    List<UUID> findAllIds();
 }

@@ -2,6 +2,7 @@ package com.innovativesoftware.domsommelier_backend.filter_management.service;
 
 import com.innovativesoftware.domsommelier_backend.filter_management.entity.Filter;
 import com.innovativesoftware.domsommelier_backend.filter_management.entity.FilterOption;
+import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterOptionDtoCreateRequest;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterOptionDtoRequest;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterOptionDtoResponse;
 import com.innovativesoftware.domsommelier_backend.filter_management.repository.FilterOptionRepository;
@@ -27,8 +28,12 @@ public class FilterOptionService {
         return FilterMapper.toDTO(filterOptionRepository.findById(id).orElseThrow());
     }
 
-    public FilterOptionDtoResponse create(FilterOptionDtoRequest dto) {
+    public FilterOptionDtoResponse create(FilterOptionDtoCreateRequest dto) {
         Filter filter = filterRepository.findById(dto.getFilterId()).orElseThrow();
+        if (filterOptionRepository.existsByFilterIdAndValue(filter.getId(), dto.getValue())) {
+            throw new IllegalArgumentException("Option name already exists in the filter");
+        }
+
         FilterOption entity = FilterMapper.toEntityCreate(dto, filter);
         FilterOption saved = filterOptionRepository.save(entity);
         return FilterMapper.toDTO(saved);
