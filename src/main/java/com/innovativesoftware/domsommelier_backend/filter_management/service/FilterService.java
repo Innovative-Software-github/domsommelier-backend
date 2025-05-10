@@ -35,9 +35,9 @@ public class FilterService {
         List<FilterOption> options = dto.getOptions().stream().map(
                 option -> FilterOption.builder().value(option).filter(saved).build()
         ).toList();
+
         filterOptionRepository.saveAll(options);
         saved.setOptions(options);
-
         return FilterMapper.toDTO(saved);
     }
 

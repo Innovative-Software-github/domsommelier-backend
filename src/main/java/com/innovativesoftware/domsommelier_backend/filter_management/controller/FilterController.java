@@ -23,7 +23,64 @@ public class FilterController {
     }
 
     @PostMapping
-    public ResponseEntity<FilterDtoResponse> create(@RequestBody FilterDtoCreateRequest filterDTO) {
+    public ResponseEntity<FilterDtoResponse> create(
+            @RequestBody
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = """
+                Метод для создания фильтра.  
+                Возвращает id созданного фильтра.
+
+                **Пример тела запроса для разных типов фильтров:**
+
+                - Если тип **LIST** — укажите перечень допустимых значений:
+                  ```json
+                  {
+                    "name": "string",
+                    "field": "string",
+                    "productCategory": "WINE",
+                    "filterType": "LIST",
+                    "options": [
+                      "string1", "string2", "string3"
+                    ]
+                  }
+                  ```
+
+                - Если тип **RANGE** — два значения (границы диапазона; порядок не важен, будет обработан на бэке):
+                  ```json
+                  {
+                    "name": "string",
+                    "field": "string",
+                    "productCategory": "WINE",
+                    "filterType": "RANGE",
+                    "options": [
+                      "left", "right"
+                    ]
+                  }
+                  ```
+
+                - Если тип **STRING** — одно значение (поисковая строка):
+                  ```json
+                  {
+                    "name": "string",
+                    "field": "string",
+                    "productCategory": "WINE",
+                    "filterType": "STRING",
+                    "options": [
+                      "string"
+                    ]
+                  }
+                  ```
+
+                - Обязательные поля: `name`, `field`, `productCategory`, `filterType`, `options`
+                - Поле `options`:
+                  - Для **LIST** — список возможных значений
+                  - Для **RANGE** — две границы диапазона (числа или строки)
+                  - Для **STRING** — только одно значение
+
+                """
+            )
+            FilterDtoCreateRequest filterDTO
+    ) {
         return ResponseEntity.ok(filterService.create(filterDTO));
     }
 

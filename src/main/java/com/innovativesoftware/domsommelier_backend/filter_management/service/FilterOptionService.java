@@ -33,6 +33,7 @@ public class FilterOptionService {
         if (filterOptionRepository.existsByFilterIdAndValue(filter.getId(), dto.getValue())) {
             throw new IllegalArgumentException("Option name already exists in the filter");
         }
+
         FilterOption entity = FilterMapper.toEntityCreate(dto, filter);
         FilterOption saved = filterOptionRepository.save(entity);
         return FilterMapper.toDTO(saved);
