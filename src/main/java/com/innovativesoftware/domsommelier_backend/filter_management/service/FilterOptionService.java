@@ -29,6 +29,9 @@ public class FilterOptionService {
 
     public FilterOptionDtoResponse create(FilterOptionDtoRequest dto) {
         Filter filter = filterRepository.findById(dto.getFilterId()).orElseThrow();
+        if (filterOptionRepository.existsByFilterIdAndValue(filter.getId(), dto.getValue())) {
+            throw new IllegalArgumentException("Option name already exists in the filter");
+        }
         FilterOption entity = FilterMapper.toEntityCreate(dto, filter);
         FilterOption saved = filterOptionRepository.save(entity);
         return FilterMapper.toDTO(saved);
