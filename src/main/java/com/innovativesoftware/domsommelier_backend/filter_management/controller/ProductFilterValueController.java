@@ -44,4 +44,10 @@ public class ProductFilterValueController {
 
     @DeleteMapping("/{id}")
     public UUID delete(@PathVariable UUID id) { return service.delete(id); }
+
+    @PostMapping("/filter")
+    public ResponseEntity<List<UUID>> getByFilterIdAndFilterOptionId(
+            @RequestParam UUID filterId, @RequestParam UUID filterOptionId) {
+        return ResponseEntity.ok(service.getAllByFilterIdAndFilterOptionId(filterId, filterOptionId));
+    }
 }

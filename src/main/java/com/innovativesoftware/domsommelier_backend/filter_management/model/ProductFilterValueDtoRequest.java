@@ -16,4 +16,5 @@ public class ProductFilterValueDtoRequest {
     private UUID id;
     private UUID productId;
     private UUID filterId;
+    private UUID filterOptionId;
 }

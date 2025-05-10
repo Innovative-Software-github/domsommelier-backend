@@ -1,8 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.entity;
 
-import com.innovativesoftware.domsommelier_backend.filter_management.entity.ProductFilterValue;
-import com.innovativesoftware.domsommelier_backend.order_management.order.entity.OrderItem;
 import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.ProductCountry;
+import com.innovativesoftware.domsommelier_backend.order_management.order.entity.OrderItem;
 import com.innovativesoftware.domsommelier_backend.product_management.warehouse.entity.StorageHistory;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -60,7 +59,4 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     private List<StorageHistory> products;
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductFilterValue> filterValues;
 }
