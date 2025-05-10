@@ -15,4 +15,5 @@ public class ProductFilterValueDtoResponse {
     private String productName;
     private UUID filterId;
     private String filterName;
+    private UUID optionId;
 }

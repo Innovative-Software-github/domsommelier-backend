@@ -80,6 +80,7 @@ public class FilterMapper {
         Filter filter = entity.getFilter();
         return ProductFilterValueDtoResponse.builder()
                 .id(entity.getId())
+                .optionId(entity.getOption().getId())
                 .productId(product != null ? product.getId() : null)
                 .productName(product != null ? product.getName() : null)
                 .filterId(filter != null ? filter.getId() : null)

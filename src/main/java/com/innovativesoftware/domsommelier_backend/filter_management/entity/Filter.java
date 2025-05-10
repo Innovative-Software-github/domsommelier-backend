@@ -1,6 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.filter_management.entity;
 
 import com.innovativesoftware.domsommelier_backend.filter_management.enums.FilterType;
+import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategories;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
@@ -24,8 +25,9 @@ public class Filter {
     @Column(nullable = false)
     private String field;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String productCategory;
+    private ProductCategories productCategory;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -33,4 +35,7 @@ public class Filter {
 
     @OneToMany(mappedBy = "filter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FilterOption> options;
+
+    @OneToMany(mappedBy = "filter", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductFilterValue> productFilterValues;
 }
