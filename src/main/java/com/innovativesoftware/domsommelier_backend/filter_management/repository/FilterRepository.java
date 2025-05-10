@@ -13,8 +13,8 @@ import java.util.UUID;
 public interface FilterRepository extends JpaRepository<Filter, UUID> {
     @Query("""
             SELECT f FROM Filter f WHERE
-            LOWER(f.name) LIKE LOWER(CONCAT('%', :name, '%')) OR
-            LOWER(f.field) LIKE LOWER(CONCAT('%', :field, '%'))
+            f.name = :name OR
+            f.field = :field
             """)
     List<Filter> findByNameOrFieldIgnoreCase(String name, String field);
 

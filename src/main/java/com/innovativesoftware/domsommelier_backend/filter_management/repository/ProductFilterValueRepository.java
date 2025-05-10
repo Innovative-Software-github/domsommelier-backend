@@ -29,10 +29,12 @@ public interface ProductFilterValueRepository extends JpaRepository<ProductFilte
 
     // Логика такая: есть фильтр и промежуток, где надо посмотреть все продукты, которые подходят под этот промежуток
     @Query(value = """
-        SELECT DISTINCT *
+        SELECT pfv.*
         FROM product_filter_value pfv
+        JOIN filter_option fo ON pfv.filter_option_id = fo.id
         WHERE pfv.filter_id = :filterId
-        AND CAST(pfv.option AS FLOAT) BETWEEN :left AND :right
+        AND fo.value ~ '^\\d+(\\.\\d+)?$'
+        AND CAST(fo.value AS FLOAT) BETWEEN :left AND :right
     """, nativeQuery = true)
     Set<ProductFilterValue> findAllByFilterIdAndValueBetween(UUID filterId, float left, float right);
 

@@ -12,5 +12,6 @@ import java.util.UUID;
 public class ProductFilterValueDtoCreateRequest {
     private UUID productId;
     private UUID filterId;
-    private UUID filterOptionId;
+    private UUID filterOptionId; // для LIST/STRING
+    private String value;        // для RANGE
 }

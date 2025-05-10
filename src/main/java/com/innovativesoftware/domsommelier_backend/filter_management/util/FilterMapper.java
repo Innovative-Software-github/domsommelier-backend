@@ -23,18 +23,16 @@ public class FilterMapper {
                         : null)
                 .build();
     }
-
     public static Filter toEntityCreate(FilterDtoCreateRequest dto) {
-        if(dto == null) return null;
+        Filter.FilterBuilder builder = Filter.builder()
+                .name(dto.getName())
+                .field(dto.getField())
+                .productCategory(dto.getProductCategory())
+                .type(dto.getFilterType());
 
-        Filter filter = new Filter();
-        filter.setName(dto.getName());
-        filter.setField(dto.getField());
-        filter.setType(dto.getFilterType());
-        filter.setProductCategory(dto.getProductCategory());
-
-        return filter;
+        return builder.build();
     }
+
 
     public static Filter toEntityUpdate(FilterDtoRequest dto) {
         if(dto == null) return null;
@@ -81,6 +79,7 @@ public class FilterMapper {
         Filter filter = entity.getFilter();
         return ProductFilterValueDtoResponse.builder()
                 .id(entity.getId())
+                .value(entity.getValue())
                 .optionId(entity.getOption().getId())
                 .productId(product != null ? product.getId() : null)
                 .productName(product != null ? product.getName() : null)
