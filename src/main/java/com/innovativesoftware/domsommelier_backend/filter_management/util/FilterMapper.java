@@ -58,7 +58,7 @@ public class FilterMapper {
                 .build();
     }
 
-    public static FilterOption toEntityCreate(FilterOptionDtoRequest dto, Filter filter) {
+    public static FilterOption toEntityCreate(FilterOptionDtoCreateRequest dto, Filter filter) {
         if(dto == null) return null;
         return FilterOption.builder()
                 .value(dto.getValue())

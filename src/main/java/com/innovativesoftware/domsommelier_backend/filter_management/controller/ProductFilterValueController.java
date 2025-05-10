@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.filter_management.controller;
 
+import com.innovativesoftware.domsommelier_backend.filter_management.model.ProductFilterValueDtoCreateRequest;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.ProductFilterValueDtoRequest;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.ProductFilterValueDtoResponse;
 import com.innovativesoftware.domsommelier_backend.filter_management.service.ProductFilterValueService;
@@ -29,7 +30,7 @@ public class ProductFilterValueController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductFilterValueDtoResponse> create(@RequestBody ProductFilterValueDtoRequest dto) {
+    public ResponseEntity<ProductFilterValueDtoResponse> create(@RequestBody ProductFilterValueDtoCreateRequest dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 

@@ -4,6 +4,7 @@ import com.innovativesoftware.domsommelier_backend.filter_management.entity.Filt
 import com.innovativesoftware.domsommelier_backend.filter_management.entity.FilterOption;
 import com.innovativesoftware.domsommelier_backend.filter_management.entity.ProductFilterValue;
 import com.innovativesoftware.domsommelier_backend.filter_management.enums.FilterType;
+import com.innovativesoftware.domsommelier_backend.filter_management.model.ProductFilterValueDtoCreateRequest;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.ProductFilterValueDtoRequest;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.ProductFilterValueDtoResponse;
 import com.innovativesoftware.domsommelier_backend.filter_management.repository.FilterOptionRepository;
@@ -42,7 +43,7 @@ public class ProductFilterValueService {
         return FilterMapper.toDTO(productFilterValueRepository.findById(id).orElseThrow());
     }
 
-    public ProductFilterValueDtoResponse create(ProductFilterValueDtoRequest dto) {
+    public ProductFilterValueDtoResponse create(ProductFilterValueDtoCreateRequest dto) {
         log.info("Creating product filter value.");
         Product product = productRepository.findById(dto.getProductId()).orElseThrow();
         Filter filter = filterRepository.findById(dto.getFilterId()).orElseThrow();

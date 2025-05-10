@@ -9,9 +9,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductFilterValueDtoRequest {
-
-    private UUID id;
+public class ProductFilterValueDtoCreateRequest {
     private UUID productId;
     private UUID filterId;
     private UUID filterOptionId;
