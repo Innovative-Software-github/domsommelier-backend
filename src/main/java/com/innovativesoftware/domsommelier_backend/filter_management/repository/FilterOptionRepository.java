@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface FilterOptionRepository extends JpaRepository<FilterOption, UUID> {
@@ -17,6 +18,12 @@ public interface FilterOptionRepository extends JpaRepository<FilterOption, UUID
             SELECT EXISTS(SELECT *
             FROM filter_option fo
             WHERE fo.value = :value AND fo.filter_id = :filterId)
-            """, nativeQuery = true)
+    """, nativeQuery = true)
     boolean existsByFilterIdAndValue(UUID filterId, String value);
+
+    @Query(value = """
+            SELECT * FROM filter_option fo
+            WHERE fo.filter_id = :filterId AND fo.value = :value
+    """, nativeQuery = true)
+    Optional<FilterOption> findByFilterIdAndValue(UUID filterId, String value);
 }

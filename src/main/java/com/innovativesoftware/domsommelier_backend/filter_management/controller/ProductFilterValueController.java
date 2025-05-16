@@ -33,10 +33,10 @@ public class ProductFilterValueController {
     public ResponseEntity<ProductFilterValueDtoResponse> create(
             @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = """
-                Метод для создания фильтра.
+                Метод для присвоения фильтров продукту.
                 **Пример тела запроса для разных типов фильтров:**
 
-                - Если тип **LIST** — укажите id продукта, фильтра и конкретное значение фильтра (id):
+                - Если тип **LIST** — укажите id продукта, фильтра и конкретное значение фильтра (id опции):
                   ```json
                   {
                     "productId": "293b85d0-f739-4856-a09b-8495f2157e4d",
@@ -44,6 +44,13 @@ public class ProductFilterValueController {
                     "filterOptionId": "4d0c40ec-200e-48c1-9680-413281b73d39"
                   }
                   ```
+                  Можно указать конкретное значение опции в value, не указывая filterOptionId:
+                  ```json
+                  {
+                    "productId": "293b85d0-f739-4856-a09b-8495f2157e4d",
+                    "filterId": "7e28e572-df42-467a-b6ee-5098ce07048b",
+                    "value": "string1"
+                  }
 
                 - Если тип **RANGE** — укажите id продукта, фильтра и конкретное значение фильтра
                 (числовое значение, по нему будет осуществляться поиск диапазонного значения):
@@ -52,16 +59,6 @@ public class ProductFilterValueController {
                     "productId": "293b85d0-f739-4856-a09b-8495f2157e4d",
                     "filterId": "7e28e572-df42-467a-b6ee-5098ce07048b",
                     "value": "999.99"
-                  }
-                  ```
-
-                - Если тип **STRING** — укажите id продукта, фильтра и конкретное значение фильтра (id):
-                - Пока в разработке
-                  ```json
-                  {
-                    "productId": "293b85d0-f739-4856-a09b-8495f2157e4d",
-                    "filterId": "7e28e572-df42-467a-b6ee-5098ce07048b",
-                    "filterOptionId": "4d0c40ec-200e-48c1-9680-413281b73d39"
                   }
                   ```
                 """
@@ -102,13 +99,6 @@ public class ProductFilterValueController {
                   ```json
                   {
                     "Название фильтра (name или field или UUID, не имеет значения)": ["Нижняя граница", "Верхняя граница"]
-                  }
-                  ```
-
-                - Если тип **STRING**:
-                  ```json
-                  {
-                    "Название фильтра (name или field или UUID, не имеет значения)": ["Поисковая строка"]
                   }
                   ```
                 """
