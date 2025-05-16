@@ -24,7 +24,38 @@ public class FilterController {
 
     @PostMapping
     public ResponseEntity<FilterDtoResponse> create(
-            @RequestBody FilterDtoCreateRequest filterDTO
+            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = """
+                Метод для создания фильтра.
+                **Пример тела запроса для разных типов фильтров:**
+
+                - Если тип **LIST** — укажите name, field, productCategory 
+                (productCategory из списка WINE, SNACK, SPIRIT, CHAMPAGNE_AND_SPARKLING, LOW_ALCOHOL, ACCESSORIES), 
+                filterType (LIST) и options (варианты для выбора):
+                  ```json
+                  {
+                    "name": "string",
+                    "field": "string",
+                    "productCategory": "WINE",
+                    "filterType": "LIST",
+                    "options": [
+                      "string1", "string2", "string3"
+                    ]
+                  }
+                  ```
+
+                - Если тип **RANGE** — укажите name, field, productCategory 
+                (productCategory из списка WINE, SNACK, SPIRIT, CHAMPAGNE_AND_SPARKLING, LOW_ALCOHOL, ACCESSORIES), 
+                filterType (RANGE), options указывать не нужно:
+                  ```json
+                  {
+                    "name": "string",
+                    "field": "string",
+                    "productCategory": "WINE",
+                    "filterType": "RANGE",
+                  }
+                  ```
+                """) FilterDtoCreateRequest filterDTO
     ) {
         return ResponseEntity.ok(filterService.create(filterDTO));
     }

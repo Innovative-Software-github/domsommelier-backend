@@ -1,5 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.filter_management.service;
 
+import com.innovativesoftware.domsommelier_backend.exceptions.InvalidIdException;
+import com.innovativesoftware.domsommelier_backend.exceptions.InvalidValueException;
 import com.innovativesoftware.domsommelier_backend.filter_management.entity.Filter;
 import com.innovativesoftware.domsommelier_backend.filter_management.entity.FilterOption;
 import com.innovativesoftware.domsommelier_backend.filter_management.entity.ProductFilterValue;
@@ -45,15 +47,39 @@ public class ProductFilterValueService {
 
     public ProductFilterValueDtoResponse create(ProductFilterValueDtoCreateRequest dto) {
         log.info("Creating product filter value.");
-        Product product = productRepository.findById(dto.getProductId()).orElseThrow();
-        Filter filter = filterRepository.findById(dto.getFilterId()).orElseThrow();
+        Product product = productRepository.findById(dto.getProductId()).orElseThrow(
+                () -> new InvalidIdException(
+                        "Отсутствует id продукта.",
+                        "ID_MISSING",
+                        "Передан пустой или отсутствующий идентификатор."
+                )
+        );
+        Filter filter = filterRepository.findById(dto.getFilterId()).orElseThrow(
+                () -> new InvalidIdException(
+                        "Отсутствует id фильтра.",
+                        "ID_MISSING",
+                        "Передан пустой или отсутствующий идентификатор."
+                )
+        );
+
+        if (!product.getProductCategory().getName().equals(filter.getProductCategory())) {
+            throw new InvalidValueException(
+                    "Несовпадение категории продукта и фильтра.",
+                    "INVALID_CATEGORY",
+                    "Несовпадение категории продукта и фильтра."
+            );
+        }
 
         FilterOption option;
 
         if (filter.getType() == FilterType.RANGE) {
             // Для RANGE используем value и создаём/ищем FilterOption с этим value
             if (dto.getValue() == null || dto.getValue().isBlank()) {
-                throw new IllegalArgumentException("For RANGE filter, 'value' must be provided.");
+                throw new InvalidValueException(
+                        "Несовпадение категории продукта и фильтра.",
+                        "INVALID_CATEGORY",
+                        "Несовпадение категории продукта и фильтра."
+                );
             }
 
             // Пытаемся найти уже существующую опцию с этим значением
@@ -65,21 +91,34 @@ public class ProductFilterValueService {
                     ));
 
         } else {
-            // Для LIST/STRING используем filterOptionId
-            if (dto.getFilterOptionId() == null) {
-                throw new IllegalArgumentException("For non-RANGE filter, 'filterOptionId' must be provided.");
+            // Для LIST используем filterOptionId
+            if (dto.getFilterOptionId() == null && (dto.getValue() == null || dto.getValue().isBlank())) {
+                throw new InvalidIdException(
+                        "Отсутствует значение опции.",
+                        "ID_MISSING",
+                        "Передан пустой или отсутствующий идентификатор."
+                );
+            } else if (dto.getValue() != null && !dto.getValue().isBlank()) {
+                option = filterOptionRepository.findByFilterIdAndValue(filter.getId(), dto.getValue()).orElseThrow(
+                        () -> new InvalidIdException(
+                                "Отсутствует значение опции.",
+                                "ID_MISSING",
+                                "Передан пустой или отсутствующий идентификатор."
+                        )
+                );
+            } else {
+                option = filterOptionRepository.findById(dto.getFilterOptionId())
+                        .orElseThrow(() -> new IllegalArgumentException("FilterOption not found."));
             }
-            option = filterOptionRepository.findById(dto.getFilterOptionId())
-                    .orElseThrow(() -> new IllegalArgumentException("FilterOption not found."));
-        }
-
-        if (!product.getProductCategory().getName().equals(filter.getProductCategory())) {
-            throw new IllegalArgumentException("Product filter value filter and product category mismatch.");
         }
 
         if (productFilterValueRepository
                 .existsByProductIdAndFilterIdAndOption(product.getId(), filter.getId(), option.getId())) {
-            throw new IllegalArgumentException("Product filter value already exists.");
+            throw new InvalidValueException(
+                    "Фильтр уже существует.",
+                    "PRODUCT_FILTER_VALUE_EXISTS",
+                    "Фильтр уже существует."
+            );
         }
 
         ProductFilterValue entity = ProductFilterValue.builder()
@@ -147,23 +186,45 @@ public class ProductFilterValueService {
                     .stream()
                     .map(ProductFilterValue::getProduct)
                     .toList();
-        } else if (filterType.equals(FilterType.STRING)) {
+        }/* else if (filterType.equals(FilterType.STRING)) {
             return productFilterValueRepository
                     .findAllByFilterIdAndOptionValue(filter.getId(), value.get(0))
                     .stream()
                     .map(ProductFilterValue::getProduct).toList();
-        } else {
+        }*/ else {
             return new ArrayList<>();
         }
     }
 
     public ProductFilterValueDtoResponse update(UUID id, ProductFilterValueDtoRequest dto) {
-        Product product = productRepository.findById(dto.getProductId()).orElseThrow();
-        Filter filter = filterRepository.findById(dto.getFilterId()).orElseThrow();
-        FilterOption option = filterOptionRepository.findById(dto.getFilterOptionId()).orElseThrow();
+        Product product = productRepository.findById(dto.getProductId()).orElseThrow(
+                () -> new InvalidIdException(
+                        "Не найден продукт.",
+                        "INVALID_ID",
+                        "Не найден продукт."
+                )
+        );
+        Filter filter = filterRepository.findById(dto.getFilterId()).orElseThrow(
+                () -> new InvalidIdException(
+                        "Не найден фильтр.",
+                        "INVALID_ID",
+                        "Не найден фильтр."
+                )
+        );
+        FilterOption option = filterOptionRepository.findById(dto.getFilterOptionId()).orElseThrow(
+                () -> new InvalidIdException(
+                        "Не найден фильтр.",
+                        "INVALID_ID",
+                        "Не найден фильтр."
+                )
+        );
 
         if (!product.getProductCategory().getName().equals(filter.getProductCategory())) {
-            throw new IllegalArgumentException("Product filter value filter and product category mismatch.");
+            throw new InvalidValueException(
+                    "Категория продукта и фильтра не совпадают.",
+                    "INVALID_CATEGORY",
+                    "Категория продукта и фильтра не совпадают."
+            );
         }
 
         ProductFilterValue entity = ProductFilterValue.builder()

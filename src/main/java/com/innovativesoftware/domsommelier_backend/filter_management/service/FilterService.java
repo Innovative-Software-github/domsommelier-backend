@@ -36,7 +36,7 @@ public class FilterService {
         Filter saved = filterRepository.save(FilterMapper.toEntityCreate(dto));
         List<FilterOption> options = new ArrayList<>();
 
-        if (dto.getFilterType() == FilterType.LIST || dto.getFilterType() == FilterType.STRING) {
+        if (dto.getFilterType() == FilterType.LIST) { // || dto.getFilterType() == FilterType.STRING) {
             options = dto.getOptions().stream()
                     .map(option -> FilterOption.builder().value(option).filter(saved).build())
                     .toList();
