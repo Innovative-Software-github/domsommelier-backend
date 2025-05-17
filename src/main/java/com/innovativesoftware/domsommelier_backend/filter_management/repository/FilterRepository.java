@@ -19,5 +19,11 @@ public interface FilterRepository extends JpaRepository<Filter, UUID> {
     List<Filter> findByNameOrFieldIgnoreCase(String name, String field);
 
     @Query("SELECT f FROM Filter f WHERE f.productCategory = :productCategories")
-    Filter findByProductCategories(ProductCategories productCategories);
+    List<Filter> findByProductCategories(ProductCategories productCategories);
+
+    @Query("SELECT EXISTS(SELECT 1 FROM Filter f WHERE f.name = :name AND f.productCategory = :productCategory)")
+    boolean existsByNameAndProductCategories(String name, ProductCategories productCategory);
+
+    @Query("SELECT EXISTS(SELECT 1 FROM Filter f WHERE f.field = :field AND f.productCategory = :productCategory)")
+    boolean existsByFieldAndProductCategories(String field, ProductCategories productCategory);
 }

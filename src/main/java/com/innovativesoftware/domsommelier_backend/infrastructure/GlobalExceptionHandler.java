@@ -16,25 +16,22 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("Ошибка: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(InvalidIdException.class)
-    public ResponseEntity<ApiErrorResponse> handleInvalidId(InvalidIdException ex) {
-        ApiErrorResponse response = new ApiErrorResponse(
-                "Ошибка идентификатора",
-                ex.getErrorCode(),
-                ex.getMessage(),
-                ex.getDetails()
-        );
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(InvalidValueException.class)
-    public ResponseEntity<ApiErrorResponse> handleInvalidValue(InvalidValueException ex) {
-        ApiErrorResponse response = new ApiErrorResponse(
-                "Ошибка значения",
-                ex.getErrorCode(),
-                ex.getMessage(),
-                ex.getDetails()
-        );
+    @ExceptionHandler({InvalidIdException.class, InvalidValueException.class})
+    public ResponseEntity<ApiErrorResponse> handleInvalidException(RuntimeException ex) {
+        ApiErrorResponse response = new ApiErrorResponse();
+        if (ex instanceof InvalidIdException invalidIdException) {
+            response = new ApiErrorResponse(
+                    "Ошибка идентификатора",
+                    invalidIdException.getErrorCode(),
+                    invalidIdException.getMessage(),
+                    invalidIdException.getDetails());
+        } else if (ex instanceof InvalidValueException invalidValueException) {
+            response = new ApiErrorResponse(
+                    "Ошибка значения",
+                    invalidValueException.getErrorCode(),
+                    invalidValueException.getMessage(),
+                    invalidValueException.getDetails());
+        }
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
