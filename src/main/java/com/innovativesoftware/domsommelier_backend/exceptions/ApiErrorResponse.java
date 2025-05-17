@@ -1,12 +1,14 @@
 package com.innovativesoftware.domsommelier_backend.exceptions;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ApiErrorResponse {
     private String error;
     private String errorCode;

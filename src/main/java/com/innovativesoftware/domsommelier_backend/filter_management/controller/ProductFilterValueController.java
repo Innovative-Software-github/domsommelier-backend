@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -79,31 +78,4 @@ public class ProductFilterValueController {
 
     @DeleteMapping("/{id}")
     public UUID delete(@PathVariable UUID id) { return service.delete(id); }
-
-    @PostMapping("/filter")
-    public ResponseEntity<List<UUID>> getByFilterIdAndFilterOptionId(
-            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = """
-                Метод для получения по фильтру. Возвращает список UUID продуктов.
-
-                **Список фильтров в формате:**
-
-                - Если тип **LIST**:
-                  ```json
-                  {
-                    "Название фильтра (name или field или UUID, не имеет значения)": ["Опция1", "Опция2"]
-                  }
-                  ```
-
-                - Если тип **RANGE**:
-                  ```json
-                  {
-                    "Название фильтра (name или field или UUID, не имеет значения)": ["Нижняя граница", "Верхняя граница"]
-                  }
-                  ```
-                """
-            ) Map<String, List<String>> params
-    ) {
-        return ResponseEntity.ok(service.getAllByFilterIdAndFilterOptionId(params));
-    }
 }
