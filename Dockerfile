@@ -1,21 +1,16 @@
 FROM eclipse-temurin:17-jdk-jammy AS builder
 WORKDIR /opt/app
-
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
-
-# Кэшируем зависимости Maven
-RUN --mount=type=cache,target=/root/.m2/repository \
-    ./mvnw dependency:go-offline -B \
-    -Dmaven.wagon.http.connectionTimeout=60000 \
-    -Dmaven.wagon.http.readTimeout=60000
-
 COPY ./src ./src
-RUN --mount=type=cache,target=/root/.m2/repository \
-    ./mvnw clean install -DskipTests
+# If mvnw was created on Windows, it might have CRLF line endings, which can break execution in Linux (Docker)
+RUN sed -i 's/\r$//' mvnw && chmod +x mvnw
+RUN ./mvnw dependency:go-offline -B
+# skip tests надо, т.к. мавен начинает чекать на тесты до запуска приложения
+RUN ./mvnw clean install -DskipTests
 
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
-COPY --from=builder /opt/app/target/*.jar /app/app.jar
+COPY --from=builder /opt/app/target/*.jar /app/*.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/*.jar"]
