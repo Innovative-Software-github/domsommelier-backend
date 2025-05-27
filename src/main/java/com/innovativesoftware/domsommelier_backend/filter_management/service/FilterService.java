@@ -1,86 +1,241 @@
 package com.innovativesoftware.domsommelier_backend.filter_management.service;
 
 import com.innovativesoftware.domsommelier_backend.exceptions.InvalidValueException;
+import com.innovativesoftware.domsommelier_backend.filter_management.entity.CheckboxFilter;
 import com.innovativesoftware.domsommelier_backend.filter_management.entity.Filter;
-import com.innovativesoftware.domsommelier_backend.filter_management.entity.FilterOption;
+import com.innovativesoftware.domsommelier_backend.filter_management.entity.MultiSelectFilter;
+import com.innovativesoftware.domsommelier_backend.filter_management.entity.RangeFilter;
 import com.innovativesoftware.domsommelier_backend.filter_management.enums.FilterType;
-import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterDtoCreateRequest;
-import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterDtoRequest;
-import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterDtoResponse;
-import com.innovativesoftware.domsommelier_backend.filter_management.repository.FilterOptionRepository;
+import com.innovativesoftware.domsommelier_backend.filter_management.model.types.CheckboxFilterDto;
+import com.innovativesoftware.domsommelier_backend.filter_management.model.types.FilterDto;
+import com.innovativesoftware.domsommelier_backend.filter_management.model.types.MultiSelectFilterDto;
+import com.innovativesoftware.domsommelier_backend.filter_management.model.types.RangeFilterDto;
+import com.innovativesoftware.domsommelier_backend.filter_management.repository.CheckboxFilterRepository;
 import com.innovativesoftware.domsommelier_backend.filter_management.repository.FilterRepository;
+import com.innovativesoftware.domsommelier_backend.filter_management.repository.MultiSelectFilterRepository;
+import com.innovativesoftware.domsommelier_backend.filter_management.repository.RangeFilterRepository;
 import com.innovativesoftware.domsommelier_backend.filter_management.util.FilterMapper;
-import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategories;
+import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class FilterService {
     private final FilterRepository filterRepository;
-    private final FilterOptionRepository filterOptionRepository;
+    private final CheckboxFilterRepository checkboxFilterRepository;
+    private final MultiSelectFilterRepository multiSelectFilterRepository;
+    private final RangeFilterRepository rangeFilterRepository;
 
-    public List<FilterDtoResponse> getAllFilters() {
-        return filterRepository.findAll().stream()
-                .map(FilterMapper::toDTO)
-                .toList();
+    @Transactional(readOnly = true)
+    public List<FilterDto> getAllFilters() {
+        List<UUID> filterIds = filterRepository.findAll().stream().map(Filter::getId).toList();
+        List<FilterDto> filters = new ArrayList<>();
+
+        filterIds.forEach(filterId -> {
+            switch (filterRepository.findById(filterId).get().getType()) {
+                case CHECKBOX -> filters.add(FilterMapper.toDto(checkboxFilterRepository.getReferenceById(filterId)));
+                case MULTISELECT -> filters.add(FilterMapper.toDto(multiSelectFilterRepository.getReferenceById(filterId)));
+                case RANGE -> filters.add(FilterMapper.toDto(rangeFilterRepository.getReferenceById(filterId)));
+                default -> throw new RuntimeException("Неизвестный тип фильтра");
+            }
+        });
+
+        return filters;
     }
 
-    public FilterDtoResponse getById(UUID id) {
-        return FilterMapper.toDTO(filterRepository.findById(id).orElseThrow());
+    @Transactional(readOnly = true)
+    public FilterDto getById(UUID id) {
+        switch (filterRepository.findById(id).get().getType()) {
+            case CHECKBOX -> {
+                CheckboxFilter checkboxFilter = checkboxFilterRepository.findById(id).orElseThrow(
+                        () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
+                );
+                return FilterMapper.toDto(checkboxFilter);
+            }
+            case MULTISELECT -> {
+                MultiSelectFilter multiSelectFilter = multiSelectFilterRepository.findById(id).orElseThrow(
+                        () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
+                );
+                return FilterMapper.toDto(multiSelectFilter);
+            }
+            case RANGE -> {
+                RangeFilter rangeFilter = rangeFilterRepository.findById(id).orElseThrow(
+                        () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
+                );
+                return FilterMapper.toDto(rangeFilter);
+            }
+            default -> throw new RuntimeException("Неизвестный тип фильтра");
+        }
     }
 
-    public FilterDtoResponse create(FilterDtoCreateRequest dto) {
+    @Transactional
+    public UUID create(HashMap<String, Object> obj) {
+        FilterDto dto;
+
+
+        switch (FilterType.valueOf(obj.get("type").toString())) {
+            case RANGE -> dto = new RangeFilterDto(obj);
+            case CHECKBOX -> dto = new CheckboxFilterDto(obj);
+            case MULTISELECT -> dto = new MultiSelectFilterDto(obj);
+            default -> throw new RuntimeException("Неизвестный тип фильтра");
+        }
+
+        dto.setName(obj.get("name").toString());
+        dto.setCategory(ProductCategoryEnum.valueOf(obj.get("category").toString()));
+        dto.setType(FilterType.valueOf(obj.get("type").toString()));
+
         // Проверяем что в данной категории отсутствует такой же name или field
-        if (filterRepository.existsByNameAndProductCategories(dto.getName(), dto.getProductCategory())) {
+        if (filterRepository.existsByNameAndProductCategories(dto.getName(), dto.getCategory())) {
             throw new InvalidValueException("Фильтр с таким именем уже существует",
                     "INVALID_NAME",
                     "Фильтр с таким именем уже существует"
             );
-        } else if (filterRepository.existsByFieldAndProductCategories(dto.getField(), dto.getProductCategory())) {
-            throw new InvalidValueException("Фильтр с таким полем уже существует",
-                    "INVALID_FIELD",
-                    "Фильтр с таким полем уже существует"
-            );
         }
-        Filter saved = filterRepository.save(FilterMapper.toEntityCreate(dto));
 
-        List<FilterOption> options = new ArrayList<>();
+        Filter filter = Filter.builder().name(dto.getName()).type(dto.getType())
+                .productCategoryEnum(dto.getCategory()).build();
+        UUID id = filterRepository.save(filter).getId();
 
-        if (dto.getFilterType() == FilterType.LIST) { // || dto.getFilterType() == FilterType.STRING) {
-            options = dto.getOptions().stream()
-                    .map(option -> FilterOption.builder().value(option).filter(saved).build())
-                    .toList();
-            filterOptionRepository.saveAll(options);
+        switch (dto.getType()) {
+            case RANGE -> rangeFilterRepository.save(FilterMapper.fromDto((RangeFilterDto) dto, filter));
+            case CHECKBOX -> checkboxFilterRepository.save(FilterMapper.fromDto((CheckboxFilterDto) dto, filter));
+            case MULTISELECT -> multiSelectFilterRepository.save(FilterMapper.fromDto((MultiSelectFilterDto) dto, filter));
+            default -> throw new RuntimeException("Неизвестный тип фильтра");
         }
-        saved.setOptions(options);
-        return FilterMapper.toDTO(saved);
+
+        return id;
     }
 
-
-
+    @Transactional
     public UUID delete(UUID id) {
+        var filter = filterRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
+        );
+        FilterType type = filter.getType();
+
+        switch (type) {
+            case RANGE -> rangeFilterRepository.deleteById(id);
+            case CHECKBOX -> checkboxFilterRepository.deleteById(id);
+            case MULTISELECT -> multiSelectFilterRepository.deleteById(id);
+        }
+
         filterRepository.deleteById(id);
         return id;
     }
 
-    public FilterDtoResponse update(UUID id, FilterDtoRequest dto) {
-        Filter entity = FilterMapper.toEntityUpdate(dto);
-        entity.setId(id);
-        Filter saved = filterRepository.save(entity);
-        return FilterMapper.toDTO(saved);
+    @Transactional
+    public FilterDto update(UUID id, Map<String, Object> dto) {
+        Filter filter = filterRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
+        );
+        filter.setName(dto.get("name").toString());
+        filter.setType(FilterType.valueOf(dto.get("type").toString()));
+        filter.setProductCategoryEnum(ProductCategoryEnum.valueOf(dto.get("category").toString()));
+
+        switch (filter.getType()) {
+            case RANGE -> {
+                RangeFilter rangeFilter = rangeFilterRepository.findById(id).orElseThrow(
+                        () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
+                );
+                rangeFilter.setFilter(filter);
+                rangeFilter.setMin(Double.valueOf(dto.get("min").toString()));
+                rangeFilter.setMax(Double.valueOf(dto.get("max").toString()));
+                rangeFilter.setUnit(dto.get("unit").toString());
+                Object stepsObj = dto.get("steps");
+                if (stepsObj instanceof List<?> stepsList) {
+                    List<RangeFilter.Step> steps = stepsList.stream()
+                            .filter(item -> item instanceof Map)
+                            .map(item -> {
+                                Map<String, Object> map = (Map<String, Object>) item;
+                                Double min = map.get("min") != null ? Double.valueOf(map.get("min").toString()) : null;
+                                Double max = map.get("max") != null ? Double.valueOf(map.get("max").toString()) : null;
+                                String label = (String) map.get("label");
+                                return new RangeFilter.Step(min, max, label);
+                            })
+                            .collect(Collectors.toCollection(ArrayList::new));
+                    rangeFilter.setSteps(steps);
+                } else {
+                    rangeFilter.setSteps(null);
+                }
+                rangeFilterRepository.save(rangeFilter);
+                return FilterMapper.toDto(rangeFilter);
+            }
+            case CHECKBOX -> {
+                CheckboxFilter checkboxFilter = checkboxFilterRepository.getReferenceById(filter.getId());
+                checkboxFilter.setFilter(filter);
+                checkboxFilterRepository.save(checkboxFilter);
+                return FilterMapper.toDto(checkboxFilter);
+            }
+            case MULTISELECT -> {
+                MultiSelectFilter multiSelectFilter = multiSelectFilterRepository.findById(filter.getId())
+                        .orElseThrow(() -> new NoSuchElementException("Фильтр с таким идентификатором не найден"));
+                multiSelectFilter.setFilter(filter);
+
+                Object optionsObj = dto.get("options");
+                if (optionsObj instanceof List<?> optionsList) {
+                    List<MultiSelectFilter.Option> options = optionsList.stream()
+                            .filter(item -> item instanceof Map)
+                            .map(item -> {
+                                Map<String, Object> map = (Map<String, Object>) item;
+                                String value = (String) map.get("value");
+                                String label = (String) map.get("label");
+                                return new MultiSelectFilter.Option(value, label);
+                            })
+                            .collect(Collectors.toCollection(ArrayList::new));
+                    multiSelectFilter.setOptions(options);
+                } else {
+                    multiSelectFilter.setOptions(null);
+                }
+                multiSelectFilterRepository.save(multiSelectFilter);
+                return FilterMapper.toDto(multiSelectFilter);
+            }
+
+            default ->
+                    throw new InvalidValueException("Неизвестный тип фильтра", "INVALID_TYPE", "Неизвестный тип фильтра");
+        }
     }
 
-    public List<UUID> getFiltersByProductCategory(ProductCategories productCategory) {
-        return filterRepository.findByProductCategories(productCategory).stream().map(Filter::getId).toList();
+    @Transactional(readOnly = true)
+    public List<UUID> getFiltersByProductCategory(ProductCategoryEnum productCategoryEnum) {
+        return filterRepository.findByProductCategories(productCategoryEnum).stream().map(Filter::getId).toList();
     }
 
+    @Transactional(readOnly = true)
     public List<String> getFilterTypes() {
         return Arrays.stream(FilterType.values()).map(FilterType::name).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public FilterDto getByName(String name) {
+        Filter filter = filterRepository.findByName(name);
+        UUID id = filter.getId();
+        switch (filter.getType()) {
+            case CHECKBOX -> {
+                CheckboxFilter checkboxFilter = checkboxFilterRepository.findById(id).orElseThrow(
+                        () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
+                );
+                return FilterMapper.toDto(checkboxFilter);
+            }
+            case MULTISELECT -> {
+                MultiSelectFilter multiSelectFilter = multiSelectFilterRepository.findById(id).orElseThrow(
+                        () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
+                );
+                return FilterMapper.toDto(multiSelectFilter);
+            }
+            case RANGE -> {
+                RangeFilter rangeFilter = rangeFilterRepository.findById(id).orElseThrow(
+                        () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
+                );
+                return FilterMapper.toDto(rangeFilter);
+            }
+            default -> throw new RuntimeException("Неизвестный тип фильтра");
+        }
     }
 }

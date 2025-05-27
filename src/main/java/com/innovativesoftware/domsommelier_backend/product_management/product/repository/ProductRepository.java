@@ -1,13 +1,14 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.repository;
 
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
-import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategories;
+import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     List<UUID> findByNameContainingIgnoreCase(@Param("name") String name);
 
     @Query("SELECT p.id FROM Product p WHERE p.productCategory.name = :category")
-    List<UUID> findByProductCategory(@Param("category") ProductCategories category);
+    List<UUID> findByProductCategory(@Param("category") ProductCategoryEnum category);
 
     @Query("SELECT p.id FROM Product p WHERE p.productCountry.name = :country")
     List<UUID> findByProductCountry(@Param("country") String country);

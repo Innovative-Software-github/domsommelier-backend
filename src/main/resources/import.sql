@@ -5,19 +5,19 @@ insert into product (id, article, name, initial_price, price, category_name, cou
 insert into product (id, article, name, initial_price, price, category_name, country_name, created_at) values ('ccfe12c7-2a16-4482-9c5b-ca57260fc475', 'product2', 'product2', 20000, 20100, 'WINE', 'usa', date '2024-09-25' + time '14:00');
 insert into product (id, article, name, initial_price, price, category_name, country_name, created_at) values ('f3e364ff-b656-44a3-a16e-2263e560345c', 'product3', 'product3', 5000, 7500, 'WINE', 'russia', date '2024-08-27' + time '07:00');
 
-insert into filter (id, field, name, product_category, type) values ('a1fa77c5-d220-4ca4-a70a-f5a212456ee3', 'Цена', 'price', 'WINE', 'RANGE');
-insert into filter (id, field, name, product_category, type) values ('7d5017fb-6631-4b7b-b5a3-c0244240fc0a', 'Цена', 'price', 'SNACK', 'RANGE');
-insert into filter (id, field, name, product_category, type) values ('d6276f43-7283-4d1f-8924-539171565247', 'Цена', 'price', 'SPIRIT', 'RANGE');
-insert into filter (id, field, name, product_category, type) values ('45d6ec7c-0c6c-482b-bdb7-1e22a05ef567', 'Цена', 'price', 'CHAMPAGNE_AND_SPARKLING', 'RANGE');
-insert into filter (id, field, name, product_category, type) values ('d1bdbb2e-733f-4ea5-8290-5e63eea7470a', 'Цена', 'price', 'LOW_ALCOHOL', 'RANGE');
-insert into filter (id, field, name, product_category, type) values ('5ef0cce6-d562-43a0-91a4-b29226b1fd14', 'Цена', 'price', 'ACCESSORIES', 'RANGE');
+insert into filter (id, name, product_category, type) values ('a1fa77c5-d220-4ca4-a70a-f5a212456ee3', 'Цена', 'WINE', 'RANGE');
+insert into filter (id, name, product_category, type) values ('7d5017fb-6631-4b7b-b5a3-c0244240fc0a', 'Цена', 'SNACK', 'RANGE');
+insert into filter (id, name, product_category, type) values ('d6276f43-7283-4d1f-8924-539171565247', 'Цена', 'SPIRIT', 'RANGE');
+insert into filter (id, name, product_category, type) values ('45d6ec7c-0c6c-482b-bdb7-1e22a05ef567', 'Цена', 'CHAMPAGNE_AND_SPARKLING', 'RANGE');
+insert into filter (id, name, product_category, type) values ('d1bdbb2e-733f-4ea5-8290-5e63eea7470a', 'Цена', 'LOW_ALCOHOL', 'RANGE');
+insert into filter (id, name, product_category, type) values ('5ef0cce6-d562-43a0-91a4-b29226b1fd14', 'Цена', 'ACCESSORIES', 'RANGE');
 
-insert into filter (id, field, name, product_category, type) values ('b539659c-6b64-47f5-8e05-bab35beab9f0', 'Страна', 'country', 'WINE', 'LIST');
-insert into filter (id, field, name, product_category, type) values ('3ce3d37e-73ff-4f1a-9d0a-711e78517a34', 'Страна', 'country', 'SNACK', 'LIST');
-insert into filter (id, field, name, product_category, type) values ('a275f8a8-cc18-44a6-9d04-09bb0863ed91', 'Страна', 'country', 'SPIRIT', 'LIST');
-insert into filter (id, field, name, product_category, type) values ('450f021e-bb72-49bd-8c6d-57b159fe34a5', 'Страна', 'country', 'CHAMPAGNE_AND_SPARKLING', 'LIST');
-insert into filter (id, field, name, product_category, type) values ('a185191d-7647-4a0a-8631-40a27ac20499', 'Страна', 'country', 'LOW_ALCOHOL', 'LIST');
-insert into filter (id, field, name, product_category, type) values ('fedccfe2-98d3-4a1a-a3c7-db24ac9e4c7f', 'Страна', 'country', 'ACCESSORIES', 'LIST');
+insert into filter (id, name, product_category, type) values ('b539659c-6b64-47f5-8e05-bab35beab9f0', 'Страна', 'WINE', 'CHECKBOX');
+insert into filter (id, name, product_category, type) values ('3ce3d37e-73ff-4f1a-9d0a-711e78517a34', 'Страна', 'SNACK', 'CHECKBOX');
+insert into filter (id, name, product_category, type) values ('a275f8a8-cc18-44a6-9d04-09bb0863ed91', 'Страна', 'SPIRIT', 'CHECKBOX');
+insert into filter (id, name, product_category, type) values ('450f021e-bb72-49bd-8c6d-57b159fe34a5', 'Страна', 'CHAMPAGNE_AND_SPARKLING', 'CHECKBOX');
+insert into filter (id, name, product_category, type) values ('a185191d-7647-4a0a-8631-40a27ac20499', 'Страна', 'LOW_ALCOHOL', 'CHECKBOX');
+insert into filter (id, name, product_category, type) values ('fedccfe2-98d3-4a1a-a3c7-db24ac9e4c7f', 'Страна', 'ACCESSORIES', 'CHECKBOX');
 
 insert into wine_color (name) values ('RED');
 insert into wine_color (name) values ('WHITE');

@@ -1,8 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.model;
 import com.innovativesoftware.domsommelier_backend.file_management.model.EntityWithFiles;
 import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.util.List;
@@ -11,6 +10,9 @@ import java.util.UUID;
 @Accessors(chain = true)
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class WineWithPhotosDTO implements WineProjection, EntityWithFiles<FileDTO> {
     private UUID id;
     private String name;

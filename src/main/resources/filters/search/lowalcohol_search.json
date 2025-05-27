@@ -1,0 +1,9 @@
+{
+  "priceMin": 500,
+  "priceMax": 3000,
+  "categoryLow": ["Вермут", "Аперитивы"],
+  "manufacturer": ["Martini"],
+  "volume": ["0.5", "1"],
+  "region": ["Италия"],
+  "strength": ["до 15%", "15-20%"]
+}

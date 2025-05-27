@@ -1,0 +1,8 @@
+{
+  "priceMin": 700,
+  "priceMax": 2500,
+  "categorySnack": ["Сыр", "Ассорти"],
+  "drinkPairing": ["для Красного вина"],
+  "region": ["Франция", "Швейцария"],
+  "manufacturer": ["Campari", "Martini"]
+}

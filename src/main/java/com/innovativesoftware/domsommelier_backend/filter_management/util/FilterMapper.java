@@ -1,90 +1,113 @@
 package com.innovativesoftware.domsommelier_backend.filter_management.util;
 
+import com.innovativesoftware.domsommelier_backend.filter_management.entity.CheckboxFilter;
 import com.innovativesoftware.domsommelier_backend.filter_management.entity.Filter;
-import com.innovativesoftware.domsommelier_backend.filter_management.entity.FilterOption;
-import com.innovativesoftware.domsommelier_backend.filter_management.entity.ProductFilterValue;
-import com.innovativesoftware.domsommelier_backend.filter_management.model.*;
-import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
+import com.innovativesoftware.domsommelier_backend.filter_management.entity.MultiSelectFilter;
+import com.innovativesoftware.domsommelier_backend.filter_management.entity.RangeFilter;
+import com.innovativesoftware.domsommelier_backend.filter_management.model.types.CheckboxFilterDto;
+import com.innovativesoftware.domsommelier_backend.filter_management.model.types.FilterDto;
+import com.innovativesoftware.domsommelier_backend.filter_management.model.types.MultiSelectFilterDto;
+import com.innovativesoftware.domsommelier_backend.filter_management.model.types.RangeFilterDto;
 
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 public class FilterMapper {
 
-    public static FilterDtoResponse toDTO(Filter entity) {
-        if(entity == null) return null;
-        return FilterDtoResponse.builder()
-                .id(entity.getId())
-                .name(entity.getName())
-                .field(entity.getField())
-                .type(entity.getType())
-                .productCategory(entity.getProductCategory())
-                .options(entity.getOptions() != null
-                        ? entity.getOptions().stream().map(FilterMapper::toDTO).collect(Collectors.toList())
-                        : null)
-                .build();
-    }
-    public static Filter toEntityCreate(FilterDtoCreateRequest dto) {
-        Filter.FilterBuilder builder = Filter.builder()
-                .name(dto.getName())
-                .field(dto.getField())
-                .productCategory(dto.getProductCategory())
-                .type(dto.getFilterType());
+    public static RangeFilter fromDto(RangeFilterDto dto, Filter filter) {
+        List<RangeFilter.Step> steps = null;
+        if (dto.getSteps() != null) {
+            steps = Arrays.stream(dto.getSteps())
+                    .map(s -> new RangeFilter.Step(s.getMin(), s.getMax(), s.getLabel()))
+                    .toList();
+        }
 
-        return builder.build();
-    }
-
-
-    public static Filter toEntityUpdate(FilterDtoRequest dto) {
-        if(dto == null) return null;
-        Filter filter = new Filter();
-        filter.setId(dto.getId());
-        filter.setName(dto.getName());
-        filter.setField(dto.getField());
-        filter.setType(dto.getFilterType());
-        filter.setProductCategory(dto.getProductCategory());
-        // options не выставляем (их ассоциируем отдельно)
-        return filter;
-    }
-
-    public static FilterOptionDtoResponse toDTO(FilterOption entity) {
-        if(entity == null) return null;
-        return FilterOptionDtoResponse.builder()
-                .id(entity.getId())
-                .value(entity.getValue())
-                .filterId(entity.getFilter() != null ? entity.getFilter().getId() : null)
-                .filterName(entity.getFilter() != null ? entity.getFilter().getName() : null)
-                .build();
-    }
-
-    public static FilterOption toEntityCreate(FilterOptionDtoCreateRequest dto, Filter filter) {
-        if(dto == null) return null;
-        return FilterOption.builder()
-                .value(dto.getValue())
-                .filter(filter)
-                .build();
-    }
-
-    public static FilterOption toEntityUpdate(FilterOptionDtoRequest dto, Filter filter) {
-        if(dto == null) return null;
-        return FilterOption.builder()
+        return RangeFilter.builder()
                 .id(dto.getId())
-                .value(dto.getValue())
+                .filter(filter)
+                .min(dto.getMin())
+                .max(dto.getMax())
+                .unit(dto.getUnit())
+                .steps(steps)
+                .build();
+    }
+
+    public static CheckboxFilter fromDto(CheckboxFilterDto dto, Filter filter) {
+        return CheckboxFilter.builder()
+                .id(dto.getId())
                 .filter(filter)
                 .build();
     }
 
-    public static ProductFilterValueDtoResponse toDTO(ProductFilterValue entity) {
-        if(entity == null) return null;
-        Product product = entity.getProduct();
-        Filter filter = entity.getFilter();
-        return ProductFilterValueDtoResponse.builder()
-                .id(entity.getId())
-                .value(entity.getValue())
-                .optionId(entity.getOption().getId())
-                .productId(product != null ? product.getId() : null)
-                .productName(product != null ? product.getName() : null)
-                .filterId(filter != null ? filter.getId() : null)
-                .filterName(filter != null ? filter.getName() : null)
+    public static MultiSelectFilter fromDto(MultiSelectFilterDto dto, Filter filter) {
+        List<MultiSelectFilter.Option> options = null;
+        if (dto.getOptions() != null) {
+            options = Arrays.stream(dto.getOptions())
+                    .map(o -> new MultiSelectFilter.Option(o.getValue(), o.getLabel()))
+                    .toList();
+        }
+
+        return MultiSelectFilter.builder()
+                .id(dto.getId())
+                .options(options)
+                .filter(filter)
                 .build();
+    }
+
+    private static RangeFilter fromFilter(Filter filter, Double min, Double max, String unit, RangeFilter.Step[] steps) {
+        return RangeFilter.builder()
+                .id(UUID.randomUUID())
+                .filter(filter)
+                .min(min)
+                .max(max)
+                .unit(unit)
+                .steps(List.of(steps))
+                .build();
+    }
+
+    private static CheckboxFilter fromFilter(Filter filter) {
+        return CheckboxFilter.builder()
+                .id(UUID.randomUUID())
+                .filter(filter)
+                .build();
+    }
+
+    private static MultiSelectFilter fromFilter(Filter filter, MultiSelectFilter.Option[] options) {
+        return MultiSelectFilter.builder()
+                .id(UUID.randomUUID())
+                .options(List.of(options))
+                .filter(filter)
+                .build();
+    }
+    public static FilterDto toDto(CheckboxFilter filter) {
+        return CheckboxFilterDto.builder().id(filter.getId())
+                .category(filter.getFilter().getProductCategoryEnum()).name(filter.getFilter().getName())
+                .type(filter.getFilter().getType()).build();
+    }
+
+    public static FilterDto toDto(MultiSelectFilter filter) {
+        return MultiSelectFilterDto.builder().id(filter.getId())
+                .category(filter.getFilter().getProductCategoryEnum()).name(filter.getFilter().getName())
+                .type(filter.getFilter().getType()).options(
+                        toOptionDto(filter.getOptions()).toArray(MultiSelectFilterDto.Option[]::new)).build();
+    }
+
+    private static List<MultiSelectFilterDto.Option> toOptionDto(List<MultiSelectFilter.Option> options) {
+        return options.stream().map(o -> MultiSelectFilterDto.Option.
+                builder().value(o.getValue()).label(o.getLabel()).build()).toList();
+    }
+
+    public static FilterDto toDto(RangeFilter filter) {
+        return RangeFilterDto.builder().id(filter.getId())
+                .category(filter.getFilter().getProductCategoryEnum()).name(filter.getFilter().getName())
+                .type(filter.getFilter().getType()).min(filter.getMin()).max(filter.getMax())
+                .unit(filter.getUnit()).steps(
+                        toStepDto(filter.getSteps()).toArray(RangeFilterDto.Step[]::new)).build();
+    }
+
+    private static List<RangeFilterDto.Step> toStepDto(List<RangeFilter.Step> steps) {
+        return steps.stream().map(s -> RangeFilterDto.Step.
+                builder().min(s.getMin()).max(s.getMax()).label(s.getLabel()).build()).toList();
     }
 }

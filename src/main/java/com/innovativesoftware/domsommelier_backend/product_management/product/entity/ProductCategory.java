@@ -1,6 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.entity;
 
-import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategories;
+import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +15,7 @@ public class ProductCategory {
     @Id
     @Enumerated(EnumType.STRING)
     @Column(name = "name", nullable = false)
-    private ProductCategories name;
+    private ProductCategoryEnum name;
 
     @Column(name = "label", nullable = false)
     private String label;

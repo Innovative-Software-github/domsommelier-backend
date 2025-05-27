@@ -1,8 +1,9 @@
 package com.innovativesoftware.domsommelier_backend.filter_management.controller;
 
 import com.innovativesoftware.domsommelier_backend.filter_management.service.FilterService;
-import com.innovativesoftware.domsommelier_backend.filter_management.service.ProductFilterValueService;
-import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategories;
+import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
+import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCardDto;
+import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +20,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserUiFilterController {
     private final FilterService filterService;
-    private final ProductFilterValueService productFilterValueService;
+    private final ProductService productService;
 
     @GetMapping("/productCategory")
     @Operation(summary = "Получение всех фильтров по категории продукта")
     public ResponseEntity<List<UUID>> getFiltersByProductCategory(
-            @RequestParam("productCategoryId") ProductCategories productCategory
+            @RequestParam("productCategoryId") ProductCategoryEnum productCategoryEnum
     ) {
-        return ResponseEntity.ok(filterService.getFiltersByProductCategory(productCategory));
+        return ResponseEntity.ok(filterService.getFiltersByProductCategory(productCategoryEnum));
     }
 
     @GetMapping("/filterTypes")
@@ -36,30 +37,11 @@ public class UserUiFilterController {
     }
 
     @PostMapping("/filter")
-    @Operation(summary = "Получение продуктов по фильтру")
-    public ResponseEntity<List<UUID>> getByFilterIdAndFilterOptionId(
-            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = """
-                Метод для получения по фильтру. Возвращает список UUID продуктов.
-
-                **Список фильтров в формате:**
-
-                - Если тип **LIST**:
-                  ```json
-                  {
-                    "Название фильтра (name или field или UUID, не имеет значения)": ["Опция1", "Опция2"]
-                  }
-                  ```
-
-                - Если тип **RANGE**:
-                  ```json
-                  {
-                    "Название фильтра (name или field или UUID, не имеет значения)": ["Нижняя граница", "Верхняя граница"]
-                  }
-                  ```
-                """
-            ) Map<String, List<String>> params
+    @Operation(summary = "Поиск продуктов по фильтру")
+    public ResponseEntity<List<ProductCardDto>> getByFilterIdAndFilterOptionId(
+            @RequestParam("category") ProductCategoryEnum category,
+            @RequestBody Map<String, Object> params
     ) {
-        return ResponseEntity.ok(productFilterValueService.getAllByFilterIdAndFilterOptionId(params));
+        return ResponseEntity.ok(productService.getAllByFilters(category, params));
     }
 }

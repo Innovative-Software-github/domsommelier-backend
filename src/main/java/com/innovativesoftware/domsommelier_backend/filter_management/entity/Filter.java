@@ -1,19 +1,19 @@
 package com.innovativesoftware.domsommelier_backend.filter_management.entity;
 
 import com.innovativesoftware.domsommelier_backend.filter_management.enums.FilterType;
-import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategories;
+import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.List;
+import lombok.experimental.SuperBuilder;
+
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "filter")
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class Filter {
     @Id
     @GeneratedValue
@@ -22,20 +22,20 @@ public class Filter {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String field;
+//    @Column(nullable = false)
+//    private String field;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ProductCategories productCategory;
+    @Column(name = "product_category", nullable = false)
+    private ProductCategoryEnum productCategoryEnum;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private FilterType type;
 
-    @OneToMany(mappedBy = "filter", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FilterOption> options;
-
-    @OneToMany(mappedBy = "filter", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductFilterValue> productFilterValues;
+//    @OneToMany(mappedBy = "filter", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<FilterOption> options;
+//
+//    @OneToMany(mappedBy = "filter", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<ProductFilterValue> productFilterValues;
 }

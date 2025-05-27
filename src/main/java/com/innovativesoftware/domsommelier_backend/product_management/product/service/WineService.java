@@ -1,7 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.service;
 
 import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO;
-import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategories;
+import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.WineProjection;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.WineWithPhotosDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductPhotoRepository;
@@ -11,7 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -29,7 +30,7 @@ public class WineService {
 
         List<WineProjection> wines = wineRepository.findAllWines();
 
-        LinkedHashMap<String, List<FileDTO>> productToPhoto = productToPhotoUtil.getProductToPhotoMap(ProductCategories.WINE);
+        LinkedHashMap<String, List<FileDTO>> productToPhoto = productToPhotoUtil.getProductToPhotoMap(ProductCategoryEnum.WINE);
 
         return wines.stream()
                 .map(wine -> new WineWithPhotosDTO()
@@ -44,7 +45,7 @@ public class WineService {
 
     public List<WineWithPhotosDTO> findWinesByCountry(String country) {
         List<WineProjection> winesForCountry = wineRepository.findWinesByCountry(country);
-        LinkedHashMap<String, List<FileDTO>> productToPhoto = productToPhotoUtil.getProductToPhotoMap(ProductCategories.WINE);
+        LinkedHashMap<String, List<FileDTO>> productToPhoto = productToPhotoUtil.getProductToPhotoMap(ProductCategoryEnum.WINE);
         return winesForCountry.stream()
                 .map(wine -> new WineWithPhotosDTO()
                         .setFiles(productToPhoto.get(wine.getId().toString()))

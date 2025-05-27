@@ -1,14 +1,14 @@
 package com.innovativesoftware.domsommelier_backend.filter_management.controller;
 
-import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterDtoCreateRequest;
-import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterDtoRequest;
-import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterDtoResponse;
+import com.innovativesoftware.domsommelier_backend.filter_management.model.types.FilterDto;
 import com.innovativesoftware.domsommelier_backend.filter_management.service.FilterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -18,55 +18,29 @@ public class FilterController {
     private final FilterService filterService;
 
     @GetMapping
-    public ResponseEntity<List<FilterDtoResponse>> getAll() {
+    public ResponseEntity<List<FilterDto>> getAll() {
         return ResponseEntity.ok(filterService.getAllFilters());
     }
 
     @PostMapping
-    public ResponseEntity<FilterDtoResponse> create(
-            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = """
-                Метод для создания фильтра.
-                **Пример тела запроса для разных типов фильтров:**
-
-                - Если тип **LIST** — укажите name, field, productCategory 
-                (productCategory из списка WINE, SNACK, SPIRIT, CHAMPAGNE_AND_SPARKLING, LOW_ALCOHOL, ACCESSORIES), 
-                filterType (LIST) и options (варианты для выбора):
-                  ```json
-                  {
-                    "name": "string",
-                    "field": "string",
-                    "productCategory": "WINE",
-                    "filterType": "LIST",
-                    "options": [
-                      "string1", "string2", "string3"
-                    ]
-                  }
-                  ```
-
-                - Если тип **RANGE** — укажите name, field, productCategory 
-                (productCategory из списка WINE, SNACK, SPIRIT, CHAMPAGNE_AND_SPARKLING, LOW_ALCOHOL, ACCESSORIES), 
-                filterType (RANGE), options указывать не нужно:
-                  ```json
-                  {
-                    "name": "string",
-                    "field": "string",
-                    "productCategory": "WINE",
-                    "filterType": "RANGE",
-                  }
-                  ```
-                """) FilterDtoCreateRequest filterDTO
+    public ResponseEntity<UUID> create(
+            @RequestBody HashMap<String, Object> filterDTO
     ) {
         return ResponseEntity.ok(filterService.create(filterDTO));
     }
 
+    @GetMapping("/name/{name}")
+    public ResponseEntity<FilterDto> getByName(@PathVariable String name) {
+        return ResponseEntity.ok(filterService.getByName(name));
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<FilterDtoResponse> getById(@PathVariable UUID id) {
+    public ResponseEntity<FilterDto> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(filterService.getById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FilterDtoResponse> update(@PathVariable UUID id, @RequestBody FilterDtoRequest filterDTO) {
+    public ResponseEntity<FilterDto> update(@PathVariable UUID id, @RequestBody Map<String, Object> filterDTO) {
         return ResponseEntity.ok(filterService.update(id, filterDTO));
     }
 
