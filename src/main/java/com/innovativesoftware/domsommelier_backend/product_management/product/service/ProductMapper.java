@@ -12,12 +12,6 @@ import lombok.experimental.UtilityClass;
 public class ProductMapper {
 
     public static ProductCardDto toCardDto(Product product) {
-       switch (product.getProductCategory().getName()) {
-           case WINE:
-       }
-    }
-
-    /*public static ProductCardDto toCardDto(Product product) {
         return ProductCardDto.builder()
                 .id(product.getId()).name(product.getName()).article(product.getArticle())
                 .productCategoryName(String.valueOf(product.getProductCategory().getName()))
@@ -30,7 +24,7 @@ public class ProductMapper {
                                 .build()).toList()
                 )
                 .productCountry(product.getProductCountry().getName()).build();
-    }*/
+    }
 
     public static ProductDTO toProductDto(Product product) {
         return ProductDTO.builder()

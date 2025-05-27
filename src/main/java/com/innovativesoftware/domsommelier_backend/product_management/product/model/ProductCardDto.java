@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Data
 @SuperBuilder
-public abstract class ProductCardDto {
+public class ProductCardDto {
     private UUID id;
     private String article;
     private String name;
