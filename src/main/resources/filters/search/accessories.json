@@ -1,0 +1,6 @@
+{
+  "priceMin": 1000,
+  "priceMax": 7000,
+  "region": ["Италия", "Россия"],
+  "manufacturer": ["Pulltex"]
+}

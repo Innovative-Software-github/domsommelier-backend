@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.controller;
 
+import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCardDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCategoryProjection;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductNewDTO;
@@ -44,19 +45,19 @@ public class ProductListController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<UUID>> getAllProducts() {
+    public ResponseEntity<List<ProductCardDto>> getAllProducts() {
         return ResponseEntity.ok(productService.getAllProducts());
     }
     
     @GetMapping("/all/category")
-    public ResponseEntity<List<UUID>> getAllProductCategories(
+    public ResponseEntity<List<ProductCardDto>> getAllProductCategories(
             @RequestParam("productCategory") String productCategory
     ) {
         return ResponseEntity.ok(productService.getAllProductsByCategory(productCategory));
     }
 
     @GetMapping("/all/country")
-    public ResponseEntity<List<UUID>> getAllProductCountries(
+    public ResponseEntity<List<ProductCardDto>> getAllProductCountries(
             @RequestParam("country") String country
     ) {
         return ResponseEntity.ok(productService.getAllProductsByCountry(country));

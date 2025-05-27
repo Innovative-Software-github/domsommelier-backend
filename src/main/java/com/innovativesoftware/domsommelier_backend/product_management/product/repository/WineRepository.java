@@ -2,10 +2,12 @@ package com.innovativesoftware.domsommelier_backend.product_management.product.r
 
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.wine.Wine;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.WineProjection;
+import com.innovativesoftware.domsommelier_backend.product_management.product.model.WineWithPhotosDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface WineRepository extends JpaRepository<Wine, UUID> {

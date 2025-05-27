@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.NoSuchElementException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -33,5 +35,15 @@ public class GlobalExceptionHandler {
                     invalidValueException.getDetails());
         }
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ApiErrorResponse> handleNoSuchElementException(RuntimeException ex) {
+        ApiErrorResponse response = new ApiErrorResponse(
+                "Ошибка: Элемент не найден",
+                String.valueOf(HttpStatus.NOT_FOUND.value()),
+                "Элемент не найден",
+                null);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

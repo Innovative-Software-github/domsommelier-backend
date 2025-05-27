@@ -1,0 +1,29 @@
+package com.innovativesoftware.domsommelier_backend.filter_management.model.types;
+
+import com.innovativesoftware.domsommelier_backend.filter_management.enums.FilterType;
+import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+import java.util.HashMap;
+import java.util.UUID;
+
+@Data
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
+public abstract class FilterDto {
+    private UUID id;
+    private FilterType type;
+    private String name;
+    private ProductCategoryEnum category;
+
+    public FilterDto(HashMap<String, Object> obj) {
+        //this.id = UUID.fromString((String) obj.get("id"));
+        this.name = (String) obj.get("name");
+        this.category = ProductCategoryEnum.valueOf((String) obj.get("category"));
+        this.type = FilterType.valueOf((String) obj.get("type"));
+    }
+}

@@ -1,0 +1,10 @@
+{
+  "priceMin": 2000,
+  "priceMax": 10000,
+  "categorySpirit": ["Виски", "Коньяк"],
+  "strength": ["30-40%", "40-50%"],
+  "manufacturer": ["Jameson", "Hennessy"],
+  "countries": ["Шотландия", "Ирландия"],
+  "volume": ["0.5", "1.75"],
+  "features": ["Подарочный набор"]
+}

@@ -3,7 +3,7 @@ package com.innovativesoftware.domsommelier_backend.product_management.product.r
 
 import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.ProductPhoto;
-import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategories;
+import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,5 +16,5 @@ public interface ProductPhotoRepository extends JpaRepository<ProductPhoto, Stri
         inner join ProductPhoto productPhoto on product.id = productPhoto.product.id
         where product.productCategory.name = :cat
     """)
-    List<FileDTO> findAllProductPhotosFor(@Param("cat") ProductCategories category);
+    List<FileDTO> findAllProductPhotosFor(@Param("cat") ProductCategoryEnum category);
 }

@@ -2,6 +2,7 @@ package com.innovativesoftware.domsommelier_backend.product_management.product.e
 
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name = "wine")
 public class Wine {
     @Id
@@ -22,7 +24,7 @@ public class Wine {
     private Product product;
 
     @Column(name = "production_year", nullable = false)
-    private Integer production_year;
+    private Integer productionYear;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "color", nullable = false)

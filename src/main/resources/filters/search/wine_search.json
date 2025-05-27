@@ -1,0 +1,8 @@
+{
+  "price": [10, 50000],
+  "countries": ["france", "usa"],
+  "type": ["DRY", "SEMISWEET", "SWEET"],
+  "color": ["RED", "WHITE"],
+  "volume": ["0.75", "1.5"],
+  "features": ["Подарочный набор", "Коллекционное"]
+}

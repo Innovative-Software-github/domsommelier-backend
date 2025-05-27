@@ -1,7 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.util;
 
 import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO;
-import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategories;
+import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductPhotoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,9 +16,9 @@ public class ProductToPhotoUtil {
     @Autowired
     private ProductPhotoRepository productPhotoRepository;
 
-    public LinkedHashMap<String, List<FileDTO>> getProductToPhotoMap(ProductCategories productCategory) {
+    public LinkedHashMap<String, List<FileDTO>> getProductToPhotoMap(ProductCategoryEnum productCategoryEnum) {
         LinkedHashMap<String, List<FileDTO>> productToPhoto = new LinkedHashMap<>();
-        List<FileDTO> productPhotos = productPhotoRepository.findAllProductPhotosFor(productCategory);
+        List<FileDTO> productPhotos = productPhotoRepository.findAllProductPhotosFor(productCategoryEnum);
         for (FileDTO photo : productPhotos) {
             String photoKey = photo.getId().toString();
             if (!productToPhoto.containsKey(photoKey)) {
