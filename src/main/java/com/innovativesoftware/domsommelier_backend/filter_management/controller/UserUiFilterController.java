@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@Tag(name = "UserUiFilterController", description = "Контроллер управления фильтрами для пользователя (поиск)")
+@Tag(name = "user-ui-filter-controller", description = "Контроллер управления фильтрами для пользователя (поиск)")
 @RequestMapping("/api/v1/user/filters")
 @RequiredArgsConstructor
 public class UserUiFilterController {

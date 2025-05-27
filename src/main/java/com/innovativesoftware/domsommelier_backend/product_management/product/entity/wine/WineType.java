@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Table(name = "wine_type")
 public class WineType {
-    enum Type { SWEET, SEMISWEET, DRY }
+    enum Type { SWEET, SEMISWEET, DRY, SEMIDRY }
 
     @Id
     @Enumerated(EnumType.STRING)
