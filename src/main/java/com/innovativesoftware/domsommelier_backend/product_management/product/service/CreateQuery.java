@@ -39,11 +39,11 @@ public class CreateQuery {
             }
         }
 
-        if (params.containsKey("countries")) {
+        /*if (params.containsKey("countries")) {
             List<String> countries = (List<String>) params.get("countries");
             if (!countries.isEmpty())
                 predicates.add(product.get("productCountry").get("name").as(String.class).in(countries));
-        }
+        }*/
 
         switch (category) {
             case WINE:

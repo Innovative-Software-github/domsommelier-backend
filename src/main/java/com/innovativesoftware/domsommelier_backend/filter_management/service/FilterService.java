@@ -238,4 +238,24 @@ public class FilterService {
             default -> throw new RuntimeException("Неизвестный тип фильтра");
         }
     }
+
+    public List<FilterDto> getByCategory(ProductCategoryEnum categoryName) {
+        var filters = filterRepository.findByProductCategories(categoryName);
+        return filters.stream().map(filter -> {
+            switch (filter.getType()) {
+                case RANGE -> {
+                    return FilterMapper.toDto(rangeFilterRepository.findById(filter.getId()).orElseThrow());
+                }
+                case CHECKBOX -> {
+                    return FilterMapper.toDto(checkboxFilterRepository.findById(filter.getId()).orElseThrow());
+                }
+                case MULTISELECT -> {
+                    return FilterMapper.toDto(multiSelectFilterRepository.findById(filter.getId()).orElseThrow());
+                }
+                default -> {
+                    return null;
+                }
+            }
+        }).toList();
+    }
 }
