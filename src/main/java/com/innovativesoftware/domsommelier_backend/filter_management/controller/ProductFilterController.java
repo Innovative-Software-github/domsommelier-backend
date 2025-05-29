@@ -7,6 +7,8 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.se
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +17,10 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@Tag(name = "user-ui-filter-controller", description = "Контроллер управления фильтрами для пользователя (поиск)")
+@Tag(name = "product-filter-controller", description = "Контроллер управления фильтрами для пользователя (поиск)")
 @RequestMapping("/api/v1/user/filters")
 @RequiredArgsConstructor
-public class UserUiFilterController {
+public class ProductFilterController {
     private final FilterService filterService;
     private final ProductService productService;
 
@@ -40,8 +42,11 @@ public class UserUiFilterController {
     @Operation(summary = "Поиск продуктов по фильтру")
     public ResponseEntity<List<ProductCardDto>> getByFilterIdAndFilterOptionId(
             @RequestParam("category") ProductCategoryEnum category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
             @RequestBody Map<String, Object> params
     ) {
-        return ResponseEntity.ok(productService.getAllByFilters(category, params));
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(productService.getAllByFilters(category, params, pageable));
     }
 }

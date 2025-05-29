@@ -7,6 +7,8 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.mo
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductNewService;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,8 +36,13 @@ public class ProductListController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<String> searchProductsByName(@RequestHeader String name) {
-        String jsonResponse = productService.searchProductsByName(name);
+    public ResponseEntity<String> searchProductsByName(
+            @RequestHeader String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        String jsonResponse = productService.searchProductsByName(name, pageable);
         return ResponseEntity.ok(jsonResponse);
     }
 
@@ -45,21 +52,31 @@ public class ProductListController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<ProductCardDto>> getAllProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
+    public ResponseEntity<List<ProductCardDto>> getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(productService.getAllProducts(pageable));
     }
-    
+
     @GetMapping("/all/category")
     public ResponseEntity<List<ProductCardDto>> getAllProductCategories(
-            @RequestParam("productCategory") String productCategory
+            @RequestParam("productCategory") String productCategory,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
     ) {
-        return ResponseEntity.ok(productService.getAllProductsByCategory(productCategory));
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(productService.getAllProductsByCategory(productCategory, pageable));
     }
 
     @GetMapping("/all/country")
     public ResponseEntity<List<ProductCardDto>> getAllProductCountries(
-            @RequestParam("country") String country
+            @RequestParam("country") String country,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
     ) {
-        return ResponseEntity.ok(productService.getAllProductsByCountry(country));
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(productService.getAllProductsByCountry(country, pageable));
     }
 }

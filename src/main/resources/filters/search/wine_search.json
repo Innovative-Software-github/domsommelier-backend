@@ -1,8 +1,13 @@
 {
   "price": [10, 50000],
-  "countries": ["france", "usa"],
-  "type": ["DRY", "SEMISWEET", "SWEET"],
-  "color": ["RED", "WHITE"],
-  "volume": ["0.75", "1.5"],
-  "features": ["Подарочный набор", "Коллекционное"]
+  "countries": ["france", "usa", "italy", "russia", "spain", "chile"],
+  "type": ["DRY", "SEMIDRY", "SEMISWEET", "SWEET"],
+  "color": ["RED", "WHITE", "PINK"],
+  "grape": ["merlot", "chardonnay", "tempranillo", "sauvignon_blanc", "cabernet_sauvignon"],
+  "producer": ["Frescobaldi", "Joseph Drouhin", "Guigal", "Louis Jadot", "Fanagoria", "Casillero del Diablo"],
+  "volume": [0.75, 1.0, 1.5],
+  "year": [1990, 2025],
+  "features": ["gift_wrapping", "collection"],
+  "in_stock": [true, false],
+  "description": null
 }

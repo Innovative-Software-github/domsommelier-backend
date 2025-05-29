@@ -2,10 +2,9 @@ package com.innovativesoftware.domsommelier_backend.product_management.product.e
 
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -13,6 +12,8 @@ import java.util.UUID;
 @Entity
 @Builder
 @Table(name = "wine")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Wine {
     @Id
     @Column(name = "id", nullable = false)
@@ -33,4 +34,20 @@ public class Wine {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type")
     private WineType type;
+
+    @ElementCollection
+    @CollectionTable(name = "wine_grape", joinColumns = @JoinColumn(name = "wine_id"))
+    @Column(name = "grape")
+    private List<String> grapes; // например: ["merlot", "chardonnay"]
+
+    @Column(name = "producer")
+    private String producer;
+
+    @Column(name = "volume")
+    private Double volume;
+
+    @ElementCollection
+    @CollectionTable(name = "wine_feature", joinColumns = @JoinColumn(name = "wine_id"))
+    @Column(name = "feature")
+    private List<String> features; // напр: ["gift_wrapping", "collection"]
 }

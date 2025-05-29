@@ -4,11 +4,10 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.en
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.wine.Wine;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ public class CreateQuery {
 
     private final EntityManager entityManager;
 
-    public CriteriaQuery<UUID> createQuery(ProductCategoryEnum category, Map<String, Object> params) {
+    public CriteriaQuery<UUID> createQuery(ProductCategoryEnum category, Map<String, Object> params, Pageable pageable) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<UUID> query = cb.createQuery(UUID.class);
         Root<Product> product = query.from(Product.class);
@@ -39,11 +38,11 @@ public class CreateQuery {
             }
         }
 
-        /*if (params.containsKey("countries")) {
+        if (params.containsKey("countries")) {
             List<String> countries = (List<String>) params.get("countries");
             if (!countries.isEmpty())
                 predicates.add(product.get("productCountry").get("name").as(String.class).in(countries));
-        }*/
+        }
 
         switch (category) {
             case WINE:
@@ -66,27 +65,78 @@ public class CreateQuery {
         }
 
         query.select(product.get("id")).where(cb.and(predicates.toArray(new Predicate[0])));
+
+        if (pageable != null && pageable.getSort().isSorted()) {
+            List<Order> orders = new ArrayList<>();
+            for (Sort.Order order : pageable.getSort()) {
+                orders.add(order.isAscending() ? cb.asc(product.get(order.getProperty()))
+                        : cb.desc(product.get(order.getProperty())));
+            }
+            query.orderBy(orders);
+        }
+
         return query;
     }
 
-    private List<Predicate> addWinePredicates(CriteriaQuery<UUID> query, Root<Product> product, CriteriaBuilder cb,
-                                              List<Predicate> predicates, Map<String, Object> params) {
+    private List<Predicate> addWinePredicates(
+            CriteriaQuery<UUID> query,
+            Root<Product> product,
+            CriteriaBuilder cb,
+            List<Predicate> predicates,
+            Map<String, Object> params
+    ) {
         Root<Wine> wine = query.from(Wine.class);
         predicates.add(cb.equal(product.get("id"), wine.get("id")));
 
+        // Фильтр по типу (содержание сахара)
         if (params.containsKey("type")) {
             List<String> type = (List<String>) params.get("type");
             if (!type.isEmpty())
                 predicates.add(wine.get("type").get("name").as(String.class).in(type));
         }
+
+        // Фильтр по цвету
         if (params.containsKey("color")) {
             List<String> colors = (List<String>) params.get("color");
             if (!colors.isEmpty())
                 predicates.add(wine.get("color").get("name").as(String.class).in(colors));
         }
 
+        // Фильтр по сорту винограда (grapes)
+        if (params.containsKey("grape")) {
+            List<String> grapes = (List<String>) params.get("grape");
+            if (!grapes.isEmpty()) {
+                Join<Wine, String> grapeJoin = wine.join("grapes");
+                predicates.add(grapeJoin.in(grapes));
+            }
+        }
+
+        // Фильтр по производителю
+        if (params.containsKey("producer")) {
+            List<String> producers = (List<String>) params.get("producer");
+            if (!producers.isEmpty())
+                predicates.add(wine.get("producer").in(producers));
+        }
+
+        // Фильтр по объему (volume)
+        if (params.containsKey("volume")) {
+            List<Double> volumes = (List<Double>) params.get("volume");
+            if (!volumes.isEmpty())
+                predicates.add(wine.get("volume").in(volumes));
+        }
+
+        // Фильтр по особенностям (features)
+        if (params.containsKey("features")) {
+            List<String> features = (List<String>) params.get("features");
+            if (!features.isEmpty()) {
+                Join<Wine, String> featureJoin = wine.join("features");
+                predicates.add(featureJoin.in(features));
+            }
+        }
+
         return predicates;
     }
+
 
     private List<Predicate> addSpiritsPredicates(CriteriaQuery<UUID> query, Root<Product> product, CriteriaBuilder cb,
                                                  List<Predicate> predicates, Map<String, Object> params) {
