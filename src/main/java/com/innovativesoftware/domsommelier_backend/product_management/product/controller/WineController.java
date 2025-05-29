@@ -4,6 +4,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.mo
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.WineWithPhotosDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductService;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.WineService;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
+@Hidden
 @RestController
 @RequestMapping("/products/wines")
 public class WineController {

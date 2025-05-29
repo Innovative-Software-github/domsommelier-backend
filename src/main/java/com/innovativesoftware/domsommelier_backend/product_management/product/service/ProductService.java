@@ -10,9 +10,10 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.mo
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductCategoryRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductCountryRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductRepository;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,9 +31,7 @@ public class ProductService {
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
     @Autowired
-    private final EntityManager entityManager;
-    @Autowired
-    private final CreateQuery createQuery;
+    private final ProductFilterStrategyFactory strategyFactory;
 
     public List<ProductCountryProjection> getCountriesWithWines() {
         return productCountryRepository.getCountriesWithProductCategory(ProductCategoryEnum.WINE);
@@ -42,9 +41,9 @@ public class ProductService {
         return productCategoryRepository.findAllCategories();
     }
 
-    public String searchProductsByName(String name) {
-        List<UUID> products = productRepository.findByNameContainingIgnoreCase(name);
-        return gson.toJson(products);
+    public String searchProductsByName(String name, Pageable pageable) {
+        Page<UUID> products = productRepository.findByNameContainingIgnoreCase(name, pageable);
+        return gson.toJson(products.getContent()); // или вернуть сам Page если нужно totalElements/totalPages
     }
 
     public ProductDTO getProductDetails(UUID productId) {
@@ -52,39 +51,57 @@ public class ProductService {
         return ProductMapper.toProductDto(product);
     }
 
-    public List<ProductCardDto> getAllProducts() {
-        return productRepository.findAll().stream().map(ProductMapper::toCardDto).toList();
+    public List<ProductCardDto> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .stream()
+                .map(ProductMapper::toCardDto)
+                .toList();
     }
 
-    public List<ProductCardDto> getAllProductsByCategory(String productCategory) {
-        return productRepository.findByProductCategory(ProductCategoryEnum.valueOf(productCategory)).stream().map(
-                id -> {
+    public List<ProductCardDto> getAllProductsByCategory(String productCategory, Pageable pageable) {
+        return productRepository.findByProductCategory(ProductCategoryEnum.valueOf(productCategory), pageable)
+                .stream()
+                .map(id -> {
                     var product = productRepository.findById(id).orElseThrow(() ->
                             new RuntimeException("Product not found"));
                     return ProductMapper.toCardDto(product);
-                }
-        ).toList();
+                })
+                .toList();
     }
 
-    public List<ProductCardDto> getAllProductsByCountry(String country) {
-        return productRepository.findByProductCountry(country.toLowerCase()).stream().map(
-                id -> {
+    public List<ProductCardDto> getAllProductsByCountry(String country, Pageable pageable) {
+        return productRepository.findByProductCountry(country.toLowerCase(), pageable)
+                .stream()
+                .map(id -> {
                     var product = productRepository.findById(id).orElseThrow(() ->
                             new RuntimeException("Product not found"));
                     return ProductMapper.toCardDto(product);
-                }
-        ).toList();
+                })
+                .toList();
     }
 
-    public List<ProductCardDto> getAllByFilters(ProductCategoryEnum category, Map<String, Object> params) {
-        return entityManager.createQuery(createQuery.createQuery(category, params)).getResultList().stream().map(
-                id -> {
+    public List<ProductCardDto> getAllByFilters(ProductCategoryEnum category, Map<String, Object> params, Pageable pageable) {
+        // Не забудь прокинуть category в params, если используешь универсальную стратегию!
+        params.put("category", category.name());
+        return strategyFactory.getStrategy(category).filter(params, pageable);
+    }
+
+    /*public List<ProductCardDto> getAllByFilters(ProductCategoryEnum category, Map<String, Object> params, Pageable pageable) {
+        CriteriaQuery<UUID> criteriaQuery = createQuery.createQuery(category, params, pageable);
+        TypedQuery<UUID> typedQuery = entityManager.createQuery(criteriaQuery)
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize());
+
+        List<UUID> ids = typedQuery.getResultList();
+
+        return ids.stream()
+                .map(id -> {
                     var product = productRepository.findById(id).orElseThrow(() ->
                             new RuntimeException("Product not found"));
                     return ProductMapper.toCardDto(product);
-                }
-        ).toList();
-    }
+                })
+                .toList();
+    }*/
 
     private Object getProductType(UUID id) {
         var product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
