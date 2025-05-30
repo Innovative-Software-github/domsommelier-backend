@@ -11,7 +11,6 @@ import com.innovativesoftware.domsommelier_backend.filter_management.model.types
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 public class FilterMapper {
 
@@ -55,31 +54,6 @@ public class FilterMapper {
                 .build();
     }
 
-    private static RangeFilter fromFilter(Filter filter, Double min, Double max, String unit, RangeFilter.Step[] steps) {
-        return RangeFilter.builder()
-                .id(UUID.randomUUID())
-                .filter(filter)
-                .min(min)
-                .max(max)
-                .unit(unit)
-                .steps(List.of(steps))
-                .build();
-    }
-
-    private static CheckboxFilter fromFilter(Filter filter) {
-        return CheckboxFilter.builder()
-                .id(UUID.randomUUID())
-                .filter(filter)
-                .build();
-    }
-
-    private static MultiSelectFilter fromFilter(Filter filter, MultiSelectFilter.Option[] options) {
-        return MultiSelectFilter.builder()
-                .id(UUID.randomUUID())
-                .options(List.of(options))
-                .filter(filter)
-                .build();
-    }
     public static FilterDto toDto(CheckboxFilter filter) {
         return CheckboxFilterDto.builder().id(filter.getId())
                 .category(filter.getFilter().getProductCategoryEnum()).name(filter.getFilter().getName())
