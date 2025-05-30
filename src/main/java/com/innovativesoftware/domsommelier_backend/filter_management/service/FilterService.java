@@ -6,8 +6,9 @@ import com.innovativesoftware.domsommelier_backend.filter_management.entity.Filt
 import com.innovativesoftware.domsommelier_backend.filter_management.entity.MultiSelectFilter;
 import com.innovativesoftware.domsommelier_backend.filter_management.entity.RangeFilter;
 import com.innovativesoftware.domsommelier_backend.filter_management.enums.FilterType;
+import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterCategory;
+import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterDto;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.types.CheckboxFilterDto;
-import com.innovativesoftware.domsommelier_backend.filter_management.model.types.FilterDto;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.types.MultiSelectFilterDto;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.types.RangeFilterDto;
 import com.innovativesoftware.domsommelier_backend.filter_management.repository.CheckboxFilterRepository;
@@ -34,21 +35,35 @@ public class FilterService {
     private final RangeFilterRepository rangeFilterRepository;
 
     @Transactional(readOnly = true)
-    public List<FilterDto> getAllFilters() {
-        List<UUID> filterIds = filterRepository.findAll().stream().map(Filter::getId).toList();
+    public List<FilterCategory> getAllFilters() {
+        List<Filter> allFilters = filterRepository.findAll();
+
+        Map<FilterType, List<UUID>> filterIdsByType = allFilters.stream()
+                .collect(Collectors.groupingBy(Filter::getType, Collectors.mapping(Filter::getId, Collectors.toList())));
+
         List<FilterDto> filters = new ArrayList<>();
 
-        filterIds.forEach(filterId -> {
-            switch (filterRepository.findById(filterId).get().getType()) {
-                case CHECKBOX -> filters.add(FilterMapper.toDto(checkboxFilterRepository.getReferenceById(filterId)));
-                case MULTISELECT -> filters.add(FilterMapper.toDto(multiSelectFilterRepository.getReferenceById(filterId)));
-                case RANGE -> filters.add(FilterMapper.toDto(rangeFilterRepository.getReferenceById(filterId)));
-                default -> throw new RuntimeException("Неизвестный тип фильтра");
-            }
-        });
+        filterIdsByType.getOrDefault(FilterType.CHECKBOX, List.of()).forEach(id ->
+                filters.add(FilterMapper.toDto(checkboxFilterRepository.getReferenceById(id)))
+        );
+        filterIdsByType.getOrDefault(FilterType.MULTISELECT, List.of()).forEach(id ->
+                filters.add(FilterMapper.toDto(multiSelectFilterRepository.getReferenceById(id)))
+        );
+        filterIdsByType.getOrDefault(FilterType.RANGE, List.of()).forEach(id ->
+                filters.add(FilterMapper.toDto(rangeFilterRepository.getReferenceById(id)))
+        );
 
-        return filters;
+        Map<ProductCategoryEnum, List<FilterDto>> grouped = filters.stream()
+                .collect(Collectors.groupingBy(FilterDto::getCategory));
+
+        return grouped.entrySet().stream()
+                .map(e -> FilterCategory.builder()
+                        .category(e.getKey())
+                        .filters(e.getValue())
+                        .build())
+                .collect(Collectors.toList());
     }
+
 
     @Transactional(readOnly = true)
     public FilterDto getById(UUID id) {
@@ -78,7 +93,6 @@ public class FilterService {
     @Transactional
     public UUID create(HashMap<String, Object> obj) {
         FilterDto dto;
-
 
         switch (FilterType.valueOf(obj.get("type").toString())) {
             case RANGE -> dto = new RangeFilterDto(obj);

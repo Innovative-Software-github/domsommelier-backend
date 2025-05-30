@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.filter_management.model.types;
 
+import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

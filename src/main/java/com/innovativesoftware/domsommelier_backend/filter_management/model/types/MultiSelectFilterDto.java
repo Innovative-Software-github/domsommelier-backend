@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.filter_management.model.types;
 
+import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterDto;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 

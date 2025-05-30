@@ -1,6 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.filter_management.controller;
 
-import com.innovativesoftware.domsommelier_backend.filter_management.model.types.FilterDto;
+import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterCategory;
+import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterDto;
 import com.innovativesoftware.domsommelier_backend.filter_management.service.FilterService;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,7 +24,7 @@ public class FilterController {
 
     @GetMapping
     @Operation(summary = "Получить все фильтры")
-    public ResponseEntity<List<FilterDto>> getAll() {
+    public ResponseEntity<List<FilterCategory>> getAll() {
         return ResponseEntity.ok(filterService.getAllFilters());
     }
 
@@ -63,5 +64,19 @@ public class FilterController {
     @Operation(summary = "Получить все фильтры по категории")
     public ResponseEntity<List<FilterDto>> getByCategory(@PathVariable ProductCategoryEnum categoryName) {
         return ResponseEntity.ok(filterService.getByCategory(categoryName));
+    }
+
+    @GetMapping("/category")
+    @Operation(summary = "Получение всех фильтров по категории продукта")
+    public ResponseEntity<List<UUID>> getFiltersByProductCategory(
+            @RequestParam("productCategory") ProductCategoryEnum productCategoryEnum
+    ) {
+        return ResponseEntity.ok(filterService.getFiltersByProductCategory(productCategoryEnum));
+    }
+
+    @GetMapping("/filterTypes")
+    @Operation(summary = "Получение всех типов фильтров")
+    public ResponseEntity<List<String>> getFilterTypes() {
+        return ResponseEntity.ok(filterService.getFilterTypes());
     }
 }

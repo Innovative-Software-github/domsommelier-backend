@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ProductCategoryRepository extends JpaRepository<ProductCategory, String> {
     @Query("""
-        select productCategoryEnum.name as name, productCategoryEnum.label as label 
+        select productCategoryEnum.name as name, productCategoryEnum.label as label
         from ProductCategory productCategoryEnum
     """)
     List<ProductCategoryProjection> findAllCategories();

@@ -1,7 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.service;
 
 import com.google.gson.Gson;
-import com.innovativesoftware.domsommelier_backend.product_management.product.entity.wine.Wine;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCardDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCategoryProjection;
@@ -58,8 +57,8 @@ public class ProductService {
                 .toList();
     }
 
-    public List<ProductCardDto> getAllProductsByCategory(String productCategory, Pageable pageable) {
-        return productRepository.findByProductCategory(ProductCategoryEnum.valueOf(productCategory), pageable)
+    public List<ProductCardDto> getAllProductsByCategory(ProductCategoryEnum productCategory, Pageable pageable) {
+        return productRepository.findByProductCategory(productCategory, pageable)
                 .stream()
                 .map(id -> {
                     var product = productRepository.findById(id).orElseThrow(() ->
@@ -81,53 +80,7 @@ public class ProductService {
     }
 
     public List<ProductCardDto> getAllByFilters(ProductCategoryEnum category, Map<String, Object> params, Pageable pageable) {
-        // Не забудь прокинуть category в params, если используешь универсальную стратегию!
         params.put("category", category.name());
         return strategyFactory.getStrategy(category).filter(params, pageable);
-    }
-
-    /*public List<ProductCardDto> getAllByFilters(ProductCategoryEnum category, Map<String, Object> params, Pageable pageable) {
-        CriteriaQuery<UUID> criteriaQuery = createQuery.createQuery(category, params, pageable);
-        TypedQuery<UUID> typedQuery = entityManager.createQuery(criteriaQuery)
-                .setFirstResult((int) pageable.getOffset())
-                .setMaxResults(pageable.getPageSize());
-
-        List<UUID> ids = typedQuery.getResultList();
-
-        return ids.stream()
-                .map(id -> {
-                    var product = productRepository.findById(id).orElseThrow(() ->
-                            new RuntimeException("Product not found"));
-                    return ProductMapper.toCardDto(product);
-                })
-                .toList();
-    }*/
-
-    private Object getProductType(UUID id) {
-        var product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
-        switch (product.getProductCategory().getName()) {
-            case WINE -> {
-                return Wine.class;
-            }
-            /*
-            case SPIRIT -> {
-                return Spirit.class;
-            }
-            case CHAMPAGNE_AND_SPARKLING -> {
-                return ChampagneAndSparkling.class;
-            }
-            case LOW_ALCOHOL -> {
-                return LowAlcohol.class;
-            }
-            case SNACK -> {
-                return Snack.class;
-            }
-            case ACCESSORIES -> {
-                return Accessories.class;
-            }*/
-            default -> {
-                return null;
-            }
-        }
     }
 }
