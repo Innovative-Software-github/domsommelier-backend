@@ -1,6 +1,5 @@
 package com.innovativesoftware.domsommelier_backend.filter_management.controller;
 
-import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterCategory;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterDto;
 import com.innovativesoftware.domsommelier_backend.filter_management.service.FilterService;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
@@ -24,7 +23,7 @@ public class FilterController {
 
     @GetMapping
     @Operation(summary = "Получить все фильтры")
-    public ResponseEntity<List<FilterCategory>> getAll() {
+    public ResponseEntity<Map<String, List<FilterDto>>> getAll() {
         return ResponseEntity.ok(filterService.getAllFilters());
     }
 
