@@ -6,7 +6,6 @@ import com.innovativesoftware.domsommelier_backend.filter_management.entity.Filt
 import com.innovativesoftware.domsommelier_backend.filter_management.entity.MultiSelectFilter;
 import com.innovativesoftware.domsommelier_backend.filter_management.entity.RangeFilter;
 import com.innovativesoftware.domsommelier_backend.filter_management.enums.FilterType;
-import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterCategory;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterDto;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.types.CheckboxFilterDto;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.types.MultiSelectFilterDto;
@@ -35,7 +34,7 @@ public class FilterService {
     private final RangeFilterRepository rangeFilterRepository;
 
     @Transactional(readOnly = true)
-    public List<FilterCategory> getAllFilters() {
+    public Map<String, List<FilterDto>> getAllFilters() {
         List<Filter> allFilters = filterRepository.findAll();
 
         Map<FilterType, List<UUID>> filterIdsByType = allFilters.stream()
@@ -53,37 +52,32 @@ public class FilterService {
                 filters.add(FilterMapper.toDto(rangeFilterRepository.getReferenceById(id)))
         );
 
-        Map<ProductCategoryEnum, List<FilterDto>> grouped = filters.stream()
-                .collect(Collectors.groupingBy(FilterDto::getCategory));
-
-        return grouped.entrySet().stream()
-                .map(e -> FilterCategory.builder()
-                        .category(e.getKey())
-                        .filters(e.getValue())
-                        .build())
-                .collect(Collectors.toList());
+        return filters.stream()
+                .collect(Collectors.groupingBy(
+                        filterDto -> filterDto.getCategory().name(),
+                        LinkedHashMap::new,
+                        Collectors.toList()
+                ));
     }
+
+
 
 
     @Transactional(readOnly = true)
     public FilterDto getById(UUID id) {
-        switch (filterRepository.findById(id).get().getType()) {
+        switch (filterRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
+        ).getType()) {
             case CHECKBOX -> {
-                CheckboxFilter checkboxFilter = checkboxFilterRepository.findById(id).orElseThrow(
-                        () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
-                );
+                CheckboxFilter checkboxFilter = checkboxFilterRepository.findById(id).get();
                 return FilterMapper.toDto(checkboxFilter);
             }
             case MULTISELECT -> {
-                MultiSelectFilter multiSelectFilter = multiSelectFilterRepository.findById(id).orElseThrow(
-                        () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
-                );
+                MultiSelectFilter multiSelectFilter = multiSelectFilterRepository.findById(id).get();
                 return FilterMapper.toDto(multiSelectFilter);
             }
             case RANGE -> {
-                RangeFilter rangeFilter = rangeFilterRepository.findById(id).orElseThrow(
-                        () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
-                );
+                RangeFilter rangeFilter = rangeFilterRepository.findById(id).get();
                 return FilterMapper.toDto(rangeFilter);
             }
             default -> throw new RuntimeException("Неизвестный тип фильтра");
