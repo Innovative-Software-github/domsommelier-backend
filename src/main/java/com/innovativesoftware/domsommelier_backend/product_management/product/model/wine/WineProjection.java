@@ -1,4 +1,4 @@
-package com.innovativesoftware.domsommelier_backend.product_management.product.model;
+package com.innovativesoftware.domsommelier_backend.product_management.product.model.wine;
 
 import java.util.UUID;
 

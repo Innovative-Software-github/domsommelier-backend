@@ -6,10 +6,14 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.en
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCardDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.warehouse.model.StorageHistoryDto;
-import lombok.experimental.UtilityClass;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
-@UtilityClass
+@Component
+@RequiredArgsConstructor
 public class ProductMapper {
+
+    private final ProductDetailsMapperRegistry registry;
 
     public static ProductCardDto toCardDto(Product product) {
         return ProductCardDto.builder()
@@ -26,8 +30,8 @@ public class ProductMapper {
                 .productCountry(product.getProductCountry().getName()).build();
     }
 
-    public static ProductDTO toProductDto(Product product) {
-        return ProductDTO.builder()
+    public ProductDTO toProductDto(Product product) {
+        ProductDTO.ProductDTOBuilder builder = ProductDTO.builder()
                 .id(product.getId())
                 .article(product.getArticle())
                 .name(product.getName())
@@ -37,7 +41,7 @@ public class ProductMapper {
                 .discount(product.getDiscount())
                 .createdAt(product.getCreatedAt())
                 .productCountry(product.getProductCountry().getName())
-                .productCategoryName(String.valueOf(product.getProductCategory().getName()))
+                .productCategoryName(product.getProductCategory().getName())
                 .productPhoto(product.getProductPhoto().stream().map(photo -> FileDTO.builder()
                         .id(photo.getId())
                         .bucket(photo.getBucket())
@@ -53,7 +57,11 @@ public class ProductMapper {
                         .id(storageHistory.getId())
                         .amount(storageHistory.getAmount())
                         .createdAt(storageHistory.getCreatedAt())
-                        .build()).toList())
-                .build();
+                        .build()).toList());
+
+        registry.findMapper(product.getProductCategory().getName())
+                .ifPresent(mapper -> builder.details(mapper.mapDetails(product)));
+
+        return builder.build();
     }
 }

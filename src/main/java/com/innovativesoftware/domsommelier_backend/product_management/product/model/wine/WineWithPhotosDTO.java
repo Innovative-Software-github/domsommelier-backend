@@ -1,4 +1,4 @@
-package com.innovativesoftware.domsommelier_backend.product_management.product.model;
+package com.innovativesoftware.domsommelier_backend.product_management.product.model.wine;
 import com.innovativesoftware.domsommelier_backend.file_management.model.EntityWithFiles;
 import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO;
 import lombok.*;

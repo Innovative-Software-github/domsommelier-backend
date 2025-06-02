@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.product_management.warehouse.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class StorageHistory {
     @Column(name = "id", nullable = false)
     private UUID id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;

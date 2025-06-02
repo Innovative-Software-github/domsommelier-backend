@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class ProductCategory {
     @Column(name = "label", nullable = false)
     private String label;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "productCategory")
     private List<Product> products;
 }

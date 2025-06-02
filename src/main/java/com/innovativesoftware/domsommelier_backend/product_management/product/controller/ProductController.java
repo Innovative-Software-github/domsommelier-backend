@@ -23,7 +23,7 @@ import java.util.UUID;
 @Tag(name = "product-controller", description = "Работа с продуктами")
 @RestController
 @RequestMapping("/api/v1/products")
-public class ProductListController {
+public class ProductController {
 
     @Autowired
     private ProductNewService productNewService;
@@ -104,5 +104,11 @@ public class ProductListController {
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(productService.getAllByFilters(category, params, pageable));
+    }
+
+    @GetMapping("/countries")
+    @Operation(summary = "Получение стран продуктов")
+    public ResponseEntity<List<String>> getAllCountries() {
+        return ResponseEntity.ok(productService.getAllCountries());
     }
 }

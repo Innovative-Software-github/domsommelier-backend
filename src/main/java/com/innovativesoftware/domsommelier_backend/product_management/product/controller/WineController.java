@@ -1,9 +1,9 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.controller;
 
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCountryProjection;
-import com.innovativesoftware.domsommelier_backend.product_management.product.model.WineWithPhotosDTO;
+import com.innovativesoftware.domsommelier_backend.product_management.product.model.wine.WineWithPhotosDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductService;
-import com.innovativesoftware.domsommelier_backend.product_management.product.service.WineService;
+import com.innovativesoftware.domsommelier_backend.product_management.product.service.wine.WineService;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
