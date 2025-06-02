@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.order_management.order.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -26,6 +27,7 @@ public class OrderItem {
     private Order order;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 

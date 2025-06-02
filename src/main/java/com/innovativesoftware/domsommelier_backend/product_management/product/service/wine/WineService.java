@@ -1,9 +1,9 @@
-package com.innovativesoftware.domsommelier_backend.product_management.product.service;
+package com.innovativesoftware.domsommelier_backend.product_management.product.service.wine;
 
 import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
-import com.innovativesoftware.domsommelier_backend.product_management.product.model.WineProjection;
-import com.innovativesoftware.domsommelier_backend.product_management.product.model.WineWithPhotosDTO;
+import com.innovativesoftware.domsommelier_backend.product_management.product.model.wine.WineProjection;
+import com.innovativesoftware.domsommelier_backend.product_management.product.model.wine.WineWithPhotosDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductPhotoRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.WineRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.util.ProductToPhotoUtil;

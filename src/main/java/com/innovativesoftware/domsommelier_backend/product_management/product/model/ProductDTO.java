@@ -2,6 +2,7 @@ package com.innovativesoftware.domsommelier_backend.product_management.product.m
 
 import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO;
 import com.innovativesoftware.domsommelier_backend.order_management.order.model.OrderItemDto;
+import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.warehouse.model.StorageHistoryDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,8 +25,9 @@ public class ProductDTO {
     private Integer discount;
     private OffsetDateTime createdAt;
     private String productCountry;
-    private String productCategoryName;
+    private ProductCategoryEnum productCategoryName;
     private List<FileDTO> productPhoto;
     private List<OrderItemDto> orderItems;
     private List<StorageHistoryDto> storageHistories;
+    private Object details;
 }

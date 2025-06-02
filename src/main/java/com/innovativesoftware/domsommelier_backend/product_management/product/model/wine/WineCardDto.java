@@ -1,5 +1,6 @@
-package com.innovativesoftware.domsommelier_backend.product_management.product.model;
+package com.innovativesoftware.domsommelier_backend.product_management.product.model.wine;
 
+import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCardDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;

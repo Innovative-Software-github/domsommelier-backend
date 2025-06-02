@@ -1,0 +1,36 @@
+package com.innovativesoftware.domsommelier_backend.product_management.product.service.wine;
+
+import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
+import com.innovativesoftware.domsommelier_backend.product_management.product.entity.wine.Wine;
+import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
+import com.innovativesoftware.domsommelier_backend.product_management.product.model.wine.WineDetailsDto;
+import com.innovativesoftware.domsommelier_backend.product_management.product.repository.WineRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductDetailsMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+@Component
+@RequiredArgsConstructor
+public class WineDetailsMapper implements ProductDetailsMapper<WineDetailsDto> {
+    private final WineRepository wineRepository;
+
+    @Override
+    public boolean supports(ProductCategoryEnum category) {
+        return category == ProductCategoryEnum.WINE;
+    }
+
+    @Override
+    public WineDetailsDto mapDetails(Product product) {
+        Wine wine = wineRepository.findById(product.getId()).orElse(null);
+        if (wine == null) return null;
+        return WineDetailsDto.builder()
+                .productionYear(wine.getProductionYear())
+                .color(String.valueOf(wine.getColor().getName()))
+                .type(String.valueOf(wine.getType().getName()))
+                .grapes(wine.getGrapes())
+                .producer(wine.getProducer())
+                .volume(wine.getVolume())
+                .features(wine.getFeatures())
+                .build();
+    }
+}
