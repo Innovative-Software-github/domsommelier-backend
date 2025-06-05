@@ -16,7 +16,7 @@ public class WineDetailsMapper implements ProductDetailsMapper<WineDetailsDto> {
 
     @Override
     public boolean supports(ProductCategoryEnum category) {
-        return category == ProductCategoryEnum.WINE;
+        return category == ProductCategoryEnum.wine;
     }
 
     @Override

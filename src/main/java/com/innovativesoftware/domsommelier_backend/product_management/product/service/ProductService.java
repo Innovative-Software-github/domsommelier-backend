@@ -39,7 +39,7 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public List<ProductCountryProjection> getCountriesWithWines() {
-        return productCountryRepository.getCountriesWithProductCategory(ProductCategoryEnum.WINE);
+        return productCountryRepository.getCountriesWithProductCategory(ProductCategoryEnum.wine);
     }
 
     @Transactional(readOnly = true)

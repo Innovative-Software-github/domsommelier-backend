@@ -45,21 +45,21 @@ public class CreateQuery {
         }
 
         switch (category) {
-            case WINE:
+            case wine:
                 predicates = addWinePredicates(query, product, cb, predicates, params);
                 break;
-            case SPIRIT:
+            case spirit:
                 predicates = addSpiritsPredicates(query, product, cb, predicates, params);
                 break;
-            case CHAMPAGNE_AND_SPARKLING:
+            case champagne_and_sparkling:
                 predicates = addShampagnePredicates(query, product, cb, predicates, params);
                 break;
-            case LOW_ALCOHOL:
+            case low_alcohol:
                 predicates = addLowAlcoholPredicates(query, product, cb, predicates, params);
-            case SNACK:
+            case snack:
                 predicates = addSnackPredicates(query, product, cb, predicates, params);
                 break;
-            case ACCESSORIES:
+            case accessories:
                 predicates = addAccessoriesPredicates(query, product, cb, predicates, params);
                 break;
         }

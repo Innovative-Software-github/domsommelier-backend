@@ -30,7 +30,7 @@ public class WineService {
 
         List<WineProjection> wines = wineRepository.findAllWines();
 
-        LinkedHashMap<String, List<FileDTO>> productToPhoto = productToPhotoUtil.getProductToPhotoMap(ProductCategoryEnum.WINE);
+        LinkedHashMap<String, List<FileDTO>> productToPhoto = productToPhotoUtil.getProductToPhotoMap(ProductCategoryEnum.wine);
 
         return wines.stream()
                 .map(wine -> new WineWithPhotosDTO()
@@ -45,7 +45,7 @@ public class WineService {
 
     public List<WineWithPhotosDTO> findWinesByCountry(String country) {
         List<WineProjection> winesForCountry = wineRepository.findWinesByCountry(country);
-        LinkedHashMap<String, List<FileDTO>> productToPhoto = productToPhotoUtil.getProductToPhotoMap(ProductCategoryEnum.WINE);
+        LinkedHashMap<String, List<FileDTO>> productToPhoto = productToPhotoUtil.getProductToPhotoMap(ProductCategoryEnum.wine);
         return winesForCountry.stream()
                 .map(wine -> new WineWithPhotosDTO()
                         .setFiles(productToPhoto.get(wine.getId().toString()))
