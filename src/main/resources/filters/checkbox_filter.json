@@ -1,5 +1,5 @@
 {
-  "type": "CHECKBOX",
+  "type": "checkbox",
   "name": "string",
-  "category": "WINE"
+  "category": "wine"
 }

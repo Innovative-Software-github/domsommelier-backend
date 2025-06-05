@@ -1,7 +1,7 @@
 {
-  "type": "MULTISELECT",
+  "type": "multi_select",
   "name": "string",
-  "category": "WINE",
+  "category": "wine",
   "options": [
     {
       "value": "string1",

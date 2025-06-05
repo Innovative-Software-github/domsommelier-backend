@@ -1,7 +1,7 @@
 {
-  "type": "RANGE",
+  "type": "range",
   "name": "string",
-  "category": "WINE",
+  "category": "wine",
   "min": 1000.0,
   "max": 2000.0,
   "unit": "RUB",

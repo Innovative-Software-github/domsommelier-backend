@@ -42,13 +42,13 @@ public class FilterService {
 
         List<FilterDto> filters = new ArrayList<>();
 
-        filterIdsByType.getOrDefault(FilterType.CHECKBOX, List.of()).forEach(id ->
+        filterIdsByType.getOrDefault(FilterType.checkbox, List.of()).forEach(id ->
                 filters.add(FilterMapper.toDto(checkboxFilterRepository.getReferenceById(id)))
         );
-        filterIdsByType.getOrDefault(FilterType.MULTISELECT, List.of()).forEach(id ->
+        filterIdsByType.getOrDefault(FilterType.multi_select, List.of()).forEach(id ->
                 filters.add(FilterMapper.toDto(multiSelectFilterRepository.getReferenceById(id)))
         );
-        filterIdsByType.getOrDefault(FilterType.RANGE, List.of()).forEach(id ->
+        filterIdsByType.getOrDefault(FilterType.range, List.of()).forEach(id ->
                 filters.add(FilterMapper.toDto(rangeFilterRepository.getReferenceById(id)))
         );
 
@@ -68,15 +68,15 @@ public class FilterService {
         switch (filterRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
         ).getType()) {
-            case CHECKBOX -> {
+            case checkbox -> {
                 CheckboxFilter checkboxFilter = checkboxFilterRepository.findById(id).get();
                 return FilterMapper.toDto(checkboxFilter);
             }
-            case MULTISELECT -> {
+            case multi_select -> {
                 MultiSelectFilter multiSelectFilter = multiSelectFilterRepository.findById(id).get();
                 return FilterMapper.toDto(multiSelectFilter);
             }
-            case RANGE -> {
+            case range -> {
                 RangeFilter rangeFilter = rangeFilterRepository.findById(id).get();
                 return FilterMapper.toDto(rangeFilter);
             }
@@ -89,9 +89,9 @@ public class FilterService {
         FilterDto dto;
 
         switch (FilterType.valueOf(obj.get("type").toString())) {
-            case RANGE -> dto = new RangeFilterDto(obj);
-            case CHECKBOX -> dto = new CheckboxFilterDto(obj);
-            case MULTISELECT -> dto = new MultiSelectFilterDto(obj);
+            case range -> dto = new RangeFilterDto(obj);
+            case checkbox -> dto = new CheckboxFilterDto(obj);
+            case multi_select -> dto = new MultiSelectFilterDto(obj);
             default -> throw new RuntimeException("Неизвестный тип фильтра");
         }
 
@@ -112,9 +112,9 @@ public class FilterService {
         UUID id = filterRepository.save(filter).getId();
 
         switch (dto.getType()) {
-            case RANGE -> rangeFilterRepository.save(FilterMapper.fromDto((RangeFilterDto) dto, filter));
-            case CHECKBOX -> checkboxFilterRepository.save(FilterMapper.fromDto((CheckboxFilterDto) dto, filter));
-            case MULTISELECT -> multiSelectFilterRepository.save(FilterMapper.fromDto((MultiSelectFilterDto) dto, filter));
+            case range -> rangeFilterRepository.save(FilterMapper.fromDto((RangeFilterDto) dto, filter));
+            case checkbox -> checkboxFilterRepository.save(FilterMapper.fromDto((CheckboxFilterDto) dto, filter));
+            case multi_select -> multiSelectFilterRepository.save(FilterMapper.fromDto((MultiSelectFilterDto) dto, filter));
             default -> throw new RuntimeException("Неизвестный тип фильтра");
         }
 
@@ -129,9 +129,9 @@ public class FilterService {
         FilterType type = filter.getType();
 
         switch (type) {
-            case RANGE -> rangeFilterRepository.deleteById(id);
-            case CHECKBOX -> checkboxFilterRepository.deleteById(id);
-            case MULTISELECT -> multiSelectFilterRepository.deleteById(id);
+            case range -> rangeFilterRepository.deleteById(id);
+            case checkbox -> checkboxFilterRepository.deleteById(id);
+            case multi_select -> multiSelectFilterRepository.deleteById(id);
         }
 
         filterRepository.deleteById(id);
@@ -148,7 +148,7 @@ public class FilterService {
         filter.setProductCategoryEnum(ProductCategoryEnum.valueOf(dto.get("category").toString()));
 
         switch (filter.getType()) {
-            case RANGE -> {
+            case range -> {
                 RangeFilter rangeFilter = rangeFilterRepository.findById(id).orElseThrow(
                         () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
                 );
@@ -175,13 +175,13 @@ public class FilterService {
                 rangeFilterRepository.save(rangeFilter);
                 return FilterMapper.toDto(rangeFilter);
             }
-            case CHECKBOX -> {
+            case checkbox -> {
                 CheckboxFilter checkboxFilter = checkboxFilterRepository.getReferenceById(filter.getId());
                 checkboxFilter.setFilter(filter);
                 checkboxFilterRepository.save(checkboxFilter);
                 return FilterMapper.toDto(checkboxFilter);
             }
-            case MULTISELECT -> {
+            case multi_select -> {
                 MultiSelectFilter multiSelectFilter = multiSelectFilterRepository.findById(filter.getId())
                         .orElseThrow(() -> new NoSuchElementException("Фильтр с таким идентификатором не найден"));
                 multiSelectFilter.setFilter(filter);
@@ -225,19 +225,19 @@ public class FilterService {
         Filter filter = filterRepository.findByName(name);
         UUID id = filter.getId();
         switch (filter.getType()) {
-            case CHECKBOX -> {
+            case checkbox -> {
                 CheckboxFilter checkboxFilter = checkboxFilterRepository.findById(id).orElseThrow(
                         () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
                 );
                 return FilterMapper.toDto(checkboxFilter);
             }
-            case MULTISELECT -> {
+            case multi_select -> {
                 MultiSelectFilter multiSelectFilter = multiSelectFilterRepository.findById(id).orElseThrow(
                         () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
                 );
                 return FilterMapper.toDto(multiSelectFilter);
             }
-            case RANGE -> {
+            case range -> {
                 RangeFilter rangeFilter = rangeFilterRepository.findById(id).orElseThrow(
                         () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
                 );
@@ -251,13 +251,13 @@ public class FilterService {
         var filters = filterRepository.findByProductCategories(categoryName);
         return filters.stream().map(filter -> {
             switch (filter.getType()) {
-                case RANGE -> {
+                case range -> {
                     return FilterMapper.toDto(rangeFilterRepository.findById(filter.getId()).orElseThrow());
                 }
-                case CHECKBOX -> {
+                case checkbox -> {
                     return FilterMapper.toDto(checkboxFilterRepository.findById(filter.getId()).orElseThrow());
                 }
-                case MULTISELECT -> {
+                case multi_select -> {
                     return FilterMapper.toDto(multiSelectFilterRepository.findById(filter.getId()).orElseThrow());
                 }
                 default -> {
