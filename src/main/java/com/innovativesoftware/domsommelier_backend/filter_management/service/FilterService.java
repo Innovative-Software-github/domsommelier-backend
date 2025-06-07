@@ -34,7 +34,7 @@ public class FilterService {
     private final RangeFilterRepository rangeFilterRepository;
 
     @Transactional(readOnly = true)
-    public Map<String, List<FilterDto>> getAllFilters() {
+    public Map<String, Map<String, FilterDto>> getAllFilters() {
         List<Filter> allFilters = filterRepository.findAll();
 
         Map<FilterType, List<UUID>> filterIdsByType = allFilters.stream()
@@ -56,11 +56,14 @@ public class FilterService {
                 .collect(Collectors.groupingBy(
                         filterDto -> filterDto.getCategory().name(),
                         LinkedHashMap::new,
-                        Collectors.toList()
+                        Collectors.toMap(
+                                FilterDto::getName, // имя фильтра как ключ
+                                f -> f,             // объект фильтра как значение
+                                (f1, f2) -> f1,     // если совпадения по названию - взять первый
+                                LinkedHashMap::new
+                        )
                 ));
     }
-
-
 
 
     @Transactional(readOnly = true)
@@ -211,8 +214,35 @@ public class FilterService {
     }
 
     @Transactional(readOnly = true)
-    public List<UUID> getFiltersByProductCategory(ProductCategoryEnum productCategoryEnum) {
-        return filterRepository.findByProductCategories(productCategoryEnum).stream().map(Filter::getId).toList();
+    public Map<String, Map<String, FilterDto>> getFiltersByProductCategory(ProductCategoryEnum productCategoryEnum) {
+        List<Filter> allFilters = filterRepository.findByProductCategories(productCategoryEnum);
+
+        Map<FilterType, List<UUID>> filterIdsByType = allFilters.stream()
+                .collect(Collectors.groupingBy(Filter::getType, Collectors.mapping(Filter::getId, Collectors.toList())));
+
+        List<FilterDto> filters = new ArrayList<>();
+
+        filterIdsByType.getOrDefault(FilterType.checkbox, List.of()).forEach(id ->
+                filters.add(FilterMapper.toDto(checkboxFilterRepository.getReferenceById(id)))
+        );
+        filterIdsByType.getOrDefault(FilterType.multi_select, List.of()).forEach(id ->
+                filters.add(FilterMapper.toDto(multiSelectFilterRepository.getReferenceById(id)))
+        );
+        filterIdsByType.getOrDefault(FilterType.range, List.of()).forEach(id ->
+                filters.add(FilterMapper.toDto(rangeFilterRepository.getReferenceById(id)))
+        );
+
+        return filters.stream()
+                .collect(Collectors.groupingBy(
+                        filterDto -> filterDto.getCategory().name(),
+                        LinkedHashMap::new,
+                        Collectors.toMap(
+                                FilterDto::getName, // имя фильтра как ключ
+                                f -> f,             // объект фильтра как значение
+                                (f1, f2) -> f1,     // если совпадения по названию - взять первый
+                                LinkedHashMap::new
+                        )
+                ));
     }
 
     @Transactional(readOnly = true)
@@ -221,8 +251,10 @@ public class FilterService {
     }
 
     @Transactional(readOnly = true)
-    public FilterDto getByName(String name) {
-        Filter filter = filterRepository.findByName(name);
+    public FilterDto getByName(String name, ProductCategoryEnum category) {
+        Filter filter = filterRepository.findByNameAndProductCategories(name, category);
+        if (filter == null)
+            throw new NoSuchElementException("Фильтр с таким именем не найден");
         UUID id = filter.getId();
         switch (filter.getType()) {
             case checkbox -> {

@@ -1,4 +1,4 @@
-package com.innovativesoftware.domsommelier_backend.product_management.product.service;
+package com.innovativesoftware.domsommelier_backend.filter_management.service;
 
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.wine.Wine;

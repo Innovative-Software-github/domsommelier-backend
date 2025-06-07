@@ -1,11 +1,13 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.controller;
 
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductPhotoOperationService;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
+@Hidden
 @RequestMapping("/products/files")
 public class ProductPhotoController {
 

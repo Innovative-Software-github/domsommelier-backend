@@ -9,9 +9,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Data
 public class WineCardDto extends ProductCardDto {
-    enum Color {RED, WHITE, PINK;}
-    enum Type { SWEET, SEMISWEET, DRY }
+    public enum Color {RED, WHITE, PINK;}
+    public enum Type { SWEET, SEMISWEET, DRY, SEMIDRY }
 
+    private Double volume;
     private Color color;
     private Type type;
 }
