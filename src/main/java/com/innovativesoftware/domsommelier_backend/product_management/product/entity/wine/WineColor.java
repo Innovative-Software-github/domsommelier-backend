@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Table(name = "wine_color")
 public class WineColor {
-    enum Color {RED, WHITE, PINK;}
+    public enum Color {RED, WHITE, PINK;}
 
     @Id
     @Enumerated(EnumType.STRING)

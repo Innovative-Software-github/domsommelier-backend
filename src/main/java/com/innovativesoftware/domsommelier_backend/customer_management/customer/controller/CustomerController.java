@@ -2,12 +2,14 @@ package com.innovativesoftware.domsommelier_backend.customer_management.customer
 
 import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.model.CustomerRecommendationsDTO;
 import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.service.CustomerRecommendationsService;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Hidden
 @RequestMapping("/customer")
 public class CustomerController {
     @Autowired

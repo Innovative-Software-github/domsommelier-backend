@@ -15,6 +15,9 @@ public interface FilterRepository extends JpaRepository<Filter, UUID> {
     @Query("SELECT f FROM Filter f WHERE f.name = :name")
     Filter findByName(String name);
 
+    @Query("SELECT f FROM Filter f WHERE LOWER(f.name) = LOWER(:name) AND f.productCategoryEnum = :productCategoryEnum")
+    Filter findByNameAndProductCategories(String name, ProductCategoryEnum productCategoryEnum);
+
     @Query("SELECT f FROM Filter f WHERE f.productCategoryEnum = :productCategoryEnum")
     List<Filter> findByProductCategories(ProductCategoryEnum productCategoryEnum);
 

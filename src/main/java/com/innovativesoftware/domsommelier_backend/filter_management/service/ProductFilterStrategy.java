@@ -1,4 +1,4 @@
-package com.innovativesoftware.domsommelier_backend.product_management.product.service;
+package com.innovativesoftware.domsommelier_backend.filter_management.service;
 
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCardDto;
 import org.springframework.data.domain.Pageable;

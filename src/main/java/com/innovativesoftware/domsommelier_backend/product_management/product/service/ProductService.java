@@ -2,6 +2,7 @@ package com.innovativesoftware.domsommelier_backend.product_management.product.s
 
 import com.google.gson.Gson;
 import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.ProductCountry;
+import com.innovativesoftware.domsommelier_backend.filter_management.service.ProductFilterStrategyFactory;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCardDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCategoryProjection;
@@ -36,6 +37,8 @@ public class ProductService {
     private final ProductFilterStrategyFactory strategyFactory;
     @Autowired
     private final ProductMapper productMapper;
+    @Autowired
+    private final ProductCardDtoMapperRegistry mapperRegistry;
 
     @Transactional(readOnly = true)
     public List<ProductCountryProjection> getCountriesWithWines() {
@@ -61,9 +64,17 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public List<ProductCardDto> getAllProducts(Pageable pageable) {
+//        return productRepository.findAll(pageable)
+//                .stream()
+//                .map(ProductMapper::toCardDto)
+//                .toList();
+
         return productRepository.findAll(pageable)
                 .stream()
-                .map(ProductMapper::toCardDto)
+                .map(product -> {
+                    String category = product.getProductCategory().getName().name();
+                    return mapperRegistry.getMapper(category).toCardDto(product);
+                })
                 .toList();
     }
 
