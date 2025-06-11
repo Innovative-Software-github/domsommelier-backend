@@ -17,6 +17,7 @@ public class SpiritStrength {
     public enum Strength {
         P20(20),
         P30(30),
+        P40(40),
         P50(50),
         P70(70);
 
