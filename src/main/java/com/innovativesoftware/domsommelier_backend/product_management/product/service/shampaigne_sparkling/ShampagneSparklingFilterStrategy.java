@@ -1,9 +1,9 @@
-package com.innovativesoftware.domsommelier_backend.product_management.product.service.spirit;
+package com.innovativesoftware.domsommelier_backend.product_management.product.service.shampaigne_sparkling;
 
 import com.innovativesoftware.domsommelier_backend.filter_management.service.ProductFilterStrategy;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCardDto;
-import com.innovativesoftware.domsommelier_backend.product_management.product.repository.SpiritRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.product.repository.SparklingWineRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -14,19 +14,19 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class SpiritFilterStrategy implements ProductFilterStrategy {
-    private final SpiritRepository spiritRepository;
-    private final SpiritSpecification spiritSpecification;
+public class ShampagneSparklingFilterStrategy implements ProductFilterStrategy {
+    private final SparklingWineRepository sparklingWineRepository;
+    private final ShampaigneSparklingSpecification shampaigneSparklingSpecification;
 
     @Override
     public List<ProductCardDto> filter(Map<String, Object> params, Pageable pageable) {
-        return spiritRepository.findAll(spiritSpecification.byFilter(params), pageable)
-                .map(spirit -> ProductMapper.toCardDto(spirit.getProduct()))
+        return sparklingWineRepository.findAll(shampaigneSparklingSpecification.byFilter(params), pageable)
+                .map(sparklingWine -> ProductMapper.toCardDto(sparklingWine.getProduct()))
                 .toList();
     }
 
     @Override
     public ProductCategoryEnum getCategoryEnum() {
-        return ProductCategoryEnum.spirit;
+        return ProductCategoryEnum.champagne_and_sparkling;
     }
 }

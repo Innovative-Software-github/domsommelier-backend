@@ -1,9 +1,9 @@
-package com.innovativesoftware.domsommelier_backend.product_management.product.service.spirit;
+package com.innovativesoftware.domsommelier_backend.product_management.product.service.low_alcohol;
 
 import com.innovativesoftware.domsommelier_backend.filter_management.service.ProductFilterStrategy;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCardDto;
-import com.innovativesoftware.domsommelier_backend.product_management.product.repository.SpiritRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.product.repository.LowAlcoholRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -14,19 +14,19 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class SpiritFilterStrategy implements ProductFilterStrategy {
-    private final SpiritRepository spiritRepository;
-    private final SpiritSpecification spiritSpecification;
+public class LowAlcoholFilterStrategy implements ProductFilterStrategy {
+    private final LowAlcoholRepository lowAlcoholRepository;
+    private final LowAlcoholSpecification lowAlcoholSpecification;
 
     @Override
     public List<ProductCardDto> filter(Map<String, Object> params, Pageable pageable) {
-        return spiritRepository.findAll(spiritSpecification.byFilter(params), pageable)
-                .map(spirit -> ProductMapper.toCardDto(spirit.getProduct()))
+        return lowAlcoholRepository.findAll(lowAlcoholSpecification.byFilter(params), pageable)
+                .map(lowAlcohol -> ProductMapper.toCardDto(lowAlcohol.getProduct()))
                 .toList();
     }
 
     @Override
     public ProductCategoryEnum getCategoryEnum() {
-        return ProductCategoryEnum.spirit;
+        return ProductCategoryEnum.low_alcohol;
     }
 }

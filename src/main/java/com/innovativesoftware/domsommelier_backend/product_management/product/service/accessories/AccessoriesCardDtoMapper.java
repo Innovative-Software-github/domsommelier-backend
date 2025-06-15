@@ -1,27 +1,29 @@
-package com.innovativesoftware.domsommelier_backend.product_management.product.service.spirit;
+package com.innovativesoftware.domsommelier_backend.product_management.product.service.accessories;
 
 import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
-import com.innovativesoftware.domsommelier_backend.product_management.product.entity.spirit.Spirit;
+import com.innovativesoftware.domsommelier_backend.product_management.product.entity.accessories.Accessories;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCardDto;
-import com.innovativesoftware.domsommelier_backend.product_management.product.model.spirit.SpiritCardDto;
-import com.innovativesoftware.domsommelier_backend.product_management.product.repository.SpiritRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.product.model.accessories.AccessoriesCardDto;
+import com.innovativesoftware.domsommelier_backend.product_management.product.repository.AccessoriesRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductCardDtoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class SpiritCardDtoMapper implements ProductCardDtoMapper {
+public class AccessoriesCardDtoMapper implements ProductCardDtoMapper {
 
-    private final SpiritRepository spiritRepository;
+    private final AccessoriesRepository accessoriesRepository;
 
     @Override
     public ProductCardDto toCardDto(Product product) {
-        Spirit spirit = spiritRepository.findById(product.getId())
-                .orElseThrow(() -> new IllegalStateException("Spirit not found for product " + product.getId()));
-        return SpiritCardDto.builder()
+        Accessories accessories = accessoriesRepository.findById(product.getId()).orElseThrow(
+                () -> new IllegalStateException("Accessories with id " + product.getId() + " not found")
+        );
+        if (accessories == null) return null;
+        return AccessoriesCardDto.builder()
                 .id(product.getId())
                 .name(product.getName())
                 .article(product.getArticle())
@@ -35,14 +37,11 @@ public class SpiritCardDtoMapper implements ProductCardDtoMapper {
                         .name(photo.getName())
                         .description(photo.getDescription())
                         .build()).toList())
-                .volume(SpiritCardDto.Volume.valueOf(spirit.getVolume().getName().name()))
-                .category(SpiritCardDto.Category.valueOf(spirit.getCategory().getName().name()))
-                .strength(SpiritCardDto.Strength.valueOf(spirit.getStrength().getName().name()))
                 .build();
     }
 
     @Override
     public String getSupportedCategory() {
-        return ProductCategoryEnum.spirit.name();
+        return ProductCategoryEnum.accessories.name();
     }
 }

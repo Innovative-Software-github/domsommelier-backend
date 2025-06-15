@@ -1,27 +1,29 @@
-package com.innovativesoftware.domsommelier_backend.product_management.product.service.spirit;
+package com.innovativesoftware.domsommelier_backend.product_management.product.service.low_alcohol;
 
 import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
-import com.innovativesoftware.domsommelier_backend.product_management.product.entity.spirit.Spirit;
+import com.innovativesoftware.domsommelier_backend.product_management.product.entity.low_alcohol.LowAlcohol;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCardDto;
-import com.innovativesoftware.domsommelier_backend.product_management.product.model.spirit.SpiritCardDto;
-import com.innovativesoftware.domsommelier_backend.product_management.product.repository.SpiritRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.product.model.low_alcohol.LowAlcoholCardDto;
+import com.innovativesoftware.domsommelier_backend.product_management.product.repository.LowAlcoholRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductCardDtoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class SpiritCardDtoMapper implements ProductCardDtoMapper {
+public class LowAlcoholCardDtoMapper implements ProductCardDtoMapper {
 
-    private final SpiritRepository spiritRepository;
+    private final LowAlcoholRepository lowAlcoholRepository;
 
     @Override
     public ProductCardDto toCardDto(Product product) {
-        Spirit spirit = spiritRepository.findById(product.getId())
-                .orElseThrow(() -> new IllegalStateException("Spirit not found for product " + product.getId()));
-        return SpiritCardDto.builder()
+        LowAlcohol lowAlcohol = lowAlcoholRepository.findById(product.getId()).orElseThrow(
+                () -> new IllegalStateException("Could not find Low Alcohol with id " + product.getId())
+        );
+        if (lowAlcohol == null) return null;
+        return LowAlcoholCardDto.builder()
                 .id(product.getId())
                 .name(product.getName())
                 .article(product.getArticle())
@@ -35,14 +37,14 @@ public class SpiritCardDtoMapper implements ProductCardDtoMapper {
                         .name(photo.getName())
                         .description(photo.getDescription())
                         .build()).toList())
-                .volume(SpiritCardDto.Volume.valueOf(spirit.getVolume().getName().name()))
-                .category(SpiritCardDto.Category.valueOf(spirit.getCategory().getName().name()))
-                .strength(SpiritCardDto.Strength.valueOf(spirit.getStrength().getName().name()))
+                .category(LowAlcoholCardDto.Category.valueOf(lowAlcohol.getCategory().getName().name()))
+                .volume(LowAlcoholCardDto.Volume.valueOf(lowAlcohol.getVolume().getName().name()))
+                .strength(LowAlcoholCardDto.Strength.valueOf(lowAlcohol.getStrength().getName().name()))
                 .build();
     }
 
     @Override
     public String getSupportedCategory() {
-        return ProductCategoryEnum.spirit.name();
+        return ProductCategoryEnum.low_alcohol.name();
     }
 }

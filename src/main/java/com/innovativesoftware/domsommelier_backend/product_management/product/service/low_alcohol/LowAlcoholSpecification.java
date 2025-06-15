@@ -1,6 +1,6 @@
-package com.innovativesoftware.domsommelier_backend.product_management.product.service.spirit;
+package com.innovativesoftware.domsommelier_backend.product_management.product.service.low_alcohol;
 
-import com.innovativesoftware.domsommelier_backend.product_management.product.entity.spirit.Spirit;
+import com.innovativesoftware.domsommelier_backend.product_management.product.entity.low_alcohol.LowAlcohol;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.BaseSpecification;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class SpiritSpecification extends BaseSpecification<Spirit> {
+public class LowAlcoholSpecification extends BaseSpecification<LowAlcohol> {
     @Override
-    protected void addSpecificPredicates(Map<String, Object> params, Root<Spirit> root, CriteriaBuilder cb, List<Predicate> predicates) {
+    protected void addSpecificPredicates(Map<String, Object> params, Root<LowAlcohol> root, CriteriaBuilder cb, List<Predicate> predicates) {
         params.forEach((key, value) -> {
             if (isEmpty(value)) return;
             switch (key) {
