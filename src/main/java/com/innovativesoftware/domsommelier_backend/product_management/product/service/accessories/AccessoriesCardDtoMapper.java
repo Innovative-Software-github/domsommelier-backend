@@ -1,25 +1,29 @@
-package com.innovativesoftware.domsommelier_backend.product_management.product.service;
+package com.innovativesoftware.domsommelier_backend.product_management.product.service.accessories;
 
 import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
-import com.innovativesoftware.domsommelier_backend.product_management.product.entity.wine.Wine;
+import com.innovativesoftware.domsommelier_backend.product_management.product.entity.accessories.Accessories;
+import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCardDto;
-import com.innovativesoftware.domsommelier_backend.product_management.product.model.wine.WineCardDto;
-import com.innovativesoftware.domsommelier_backend.product_management.product.repository.WineRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.product.model.accessories.AccessoriesCardDto;
+import com.innovativesoftware.domsommelier_backend.product_management.product.repository.AccessoriesRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductCardDtoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class WineCardDtoMapper implements ProductCardDtoMapper {
+public class AccessoriesCardDtoMapper implements ProductCardDtoMapper {
 
-    private final WineRepository wineRepository;
+    private final AccessoriesRepository accessoriesRepository;
 
     @Override
     public ProductCardDto toCardDto(Product product) {
-        Wine wine = wineRepository.findById(product.getId())
-                .orElseThrow(() -> new IllegalStateException("Wine not found for product " + product.getId()));
-        return WineCardDto.builder()
+        Accessories accessories = accessoriesRepository.findById(product.getId()).orElseThrow(
+                () -> new IllegalStateException("Accessories with id " + product.getId() + " not found")
+        );
+        if (accessories == null) return null;
+        return AccessoriesCardDto.builder()
                 .id(product.getId())
                 .name(product.getName())
                 .article(product.getArticle())
@@ -33,14 +37,11 @@ public class WineCardDtoMapper implements ProductCardDtoMapper {
                         .name(photo.getName())
                         .description(photo.getDescription())
                         .build()).toList())
-                .volume(wine.getVolume())
-                .color(WineCardDto.Color.valueOf(wine.getColor().getName().name()))
-                .type(WineCardDto.Type.valueOf(wine.getType().getName().name()))
                 .build();
     }
 
     @Override
     public String getSupportedCategory() {
-        return "wine";
+        return ProductCategoryEnum.accessories.name();
     }
 }

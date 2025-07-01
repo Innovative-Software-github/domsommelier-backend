@@ -15,7 +15,7 @@ public class ProductCardDtoMapperRegistry {
     public ProductCardDtoMapperRegistry(List<ProductCardDtoMapper> mappers) {
         this.mappers = mappers.stream()
                 .collect(Collectors.toMap(
-                        ProductCardDtoMapper::getSupportedCategory, // например, возвращает "Вино"
+                        ProductCardDtoMapper::getSupportedCategory,
                         Function.identity()
                 ));
     }

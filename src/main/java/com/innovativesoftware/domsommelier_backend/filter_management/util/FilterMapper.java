@@ -57,12 +57,13 @@ public class FilterMapper {
     public static FilterDto toDto(CheckboxFilter filter) {
         return CheckboxFilterDto.builder().id(filter.getId())
                 .category(filter.getFilter().getProductCategoryEnum()).name(filter.getFilter().getName())
-                .type(filter.getFilter().getType()).build();
+                .field(filter.getFilter().getField()).type(filter.getFilter().getType()).build();
     }
 
     public static FilterDto toDto(MultiSelectFilter filter) {
         return MultiSelectFilterDto.builder().id(filter.getId())
                 .category(filter.getFilter().getProductCategoryEnum()).name(filter.getFilter().getName())
+                .field(filter.getFilter().getField())
                 .type(filter.getFilter().getType()).options(
                         toOptionDto(filter.getOptions()).toArray(MultiSelectFilterDto.Option[]::new)).build();
     }
@@ -74,6 +75,7 @@ public class FilterMapper {
 
     public static FilterDto toDto(RangeFilter filter) {
         return RangeFilterDto.builder().id(filter.getId())
+                .field(filter.getFilter().getField())
                 .category(filter.getFilter().getProductCategoryEnum()).name(filter.getFilter().getName())
                 .type(filter.getFilter().getType()).min(filter.getMin()).max(filter.getMax())
                 .unit(filter.getUnit()).steps(
