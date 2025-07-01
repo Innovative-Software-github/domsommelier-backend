@@ -57,7 +57,7 @@ public class FilterService {
                         filterDto -> filterDto.getCategory().name(),
                         LinkedHashMap::new,
                         Collectors.toMap(
-                                FilterDto::getName, // имя фильтра как ключ
+                                FilterDto::getField, // имя фильтра как ключ
                                 f -> f,             // объект фильтра как значение
                                 (f1, f2) -> f1,     // если совпадения по названию - взять первый
                                 LinkedHashMap::new
@@ -98,6 +98,7 @@ public class FilterService {
             default -> throw new RuntimeException("Неизвестный тип фильтра");
         }
 
+        dto.setField(obj.get("field").toString());
         dto.setName(obj.get("name").toString());
         dto.setCategory(ProductCategoryEnum.valueOf(obj.get("category").toString()));
         dto.setType(FilterType.valueOf(obj.get("type").toString()));
@@ -146,6 +147,7 @@ public class FilterService {
         Filter filter = filterRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException("Фильтр с таким идентификатором не найден")
         );
+        filter.setField(dto.get("field").toString());
         filter.setName(dto.get("name").toString());
         filter.setType(FilterType.valueOf(dto.get("type").toString()));
         filter.setProductCategoryEnum(ProductCategoryEnum.valueOf(dto.get("category").toString()));

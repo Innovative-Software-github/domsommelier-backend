@@ -22,8 +22,8 @@ public class Filter {
     @Column(nullable = false)
     private String name;
 
-//    @Column(nullable = false)
-//    private String field;
+    @Column(nullable = false)
+    private String field;   // название поля на английском
 
     @Enumerated(EnumType.STRING)
     @Column(name = "product_category", nullable = false)
