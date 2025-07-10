@@ -7,4 +7,5 @@ import java.util.List;
 public interface FileService {
     List<MultipartFile> uploadFiles(MultipartFile[] files, String bucket);
     byte[] getFileBytes(String bucket, String fileName);
+    void deleteFile(String bucket, String fileName);
 }

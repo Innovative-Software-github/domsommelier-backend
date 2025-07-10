@@ -46,6 +46,20 @@ public class MinioService implements FileService {
         }
     }
 
+    @Override
+    public void deleteFile(String bucket, String fileName) {
+        try {
+            minioClient.removeObject(
+                    RemoveObjectArgs.builder()
+                            .bucket(bucket)
+                            .object(fileName)
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private MultipartFile uploadOneFile(MultipartFile file, String bucketName) {
         try (InputStream stream = file.getInputStream()) {
             buildBucket(bucketName);

@@ -329,7 +329,7 @@ insert into multi_select_filter_option (multi_select_filter_id, value, label) va
 insert into multi_select_filter_option (multi_select_filter_id, value, label) values ('5b555b5a-2e91-4834-8c8a-4d9e5d237c80', 'prosecco', 'Проссеко');
 
 -- География (multi_select)
-insert into filter (id, name, field, product_category, type) values ('ef50bee7-0608-4150-b3fc-2716932b4f1b', 'География', 'country_name', 'champagne_and_sparkling', 'multi_select');
+insert into filter (id, name, field, product_category, type) values ('8fc2deeb-25c1-4cc7-8397-63f0d8c1b1ef', 'География', 'country_name', 'champagne_and_sparkling', 'multi_select');
 insert into multi_select_filter (id) values ('8fc2deeb-25c1-4cc7-8397-63f0d8c1b1ef');
 insert into multi_select_filter_option (multi_select_filter_id, value, label) values ('8fc2deeb-25c1-4cc7-8397-63f0d8c1b1ef', 'FRANCE', 'Франция');
 insert into multi_select_filter_option (multi_select_filter_id, value, label) values ('8fc2deeb-25c1-4cc7-8397-63f0d8c1b1ef', 'ITALY', 'Италия');
@@ -410,6 +410,13 @@ insert into order_item (id, quantity, order_id, product_id) values ('5a63bea2-7d
 
 insert into order_item (id, quantity, order_id, product_id) values ('ec1c25cb-a5eb-495a-970d-43740da55b28', 15, '88f6f83f-bae6-436b-a891-a44deccc39e2', 'ccfe12c7-2a16-4482-9c5b-ca57260fc475');
 
-insert into event (id, description, started_at, finished_at) values ('00aa6ec9-e08f-4b1d-a1da-6b6cceec809f', 'Дегустация пивка и винца', date '2024-09-27' + time '14:00', date '2024-09-27' + time '18:00')
-insert into event (id, description, started_at, finished_at) values ('688784be-c2ab-411a-ac21-27bf7f7a99e9', 'Масленница', date '2024-11-27' + time '14:00', date '2024-12-04' + time '18:00')
-insert into event (id, description, started_at, finished_at) values ('89b96e1a-52f0-4816-89dc-1077c51d8942', 'Подготовка к Новому году!', date '2024-12-05' + time '14:00', date '2024-12-06' + time '18:00')
+insert into event (id, type, price, date, time, title, small_cover, large_cover, city, address, winery_index, description, registration_link) values ('6b2e2b64-2e1c-430d-af5c-6d121e2e1c54', 'Винное казино', 5000, date '2023-12-15', time '19:00', 'Винное казино: Итальянские сокровища', 'e998b4e1-a9e0-4f13-80f2-1a21e5a116a1', '2e6a9f2c-32f2-4822-bd72-043aebf49f22', 'Москва', 'ул. Тверская, 10', 'WIN12345', 'Уникальная возможность попробовать редкие итальянские вина в формате азартной игры.', 'https://example.com/register/italian-wine-casino');
+insert into event (id, type, price, date, time, title, small_cover, large_cover, city, address, winery_index, description, registration_link) values ('103f14ec-55c6-4f72-ab85-179fc6d80317', 'Дегустация', 3500, date '2023-12-20', time '18:30', 'Дегустация французских вин: Бордо vs Бургундия', 'c5c2eeb2-e754-4d42-a2d8-81c8b8c3ca57', 'c918cf2a-2ff7-4b2b-8313-2a4d3838fc95', 'Санкт-Петербург', 'наб. реки Фонтанки, 45', 'WIN67890', 'Сравните два великих винодельческих региона Франции в рамках одной дегустации.', 'https://example.com/register/french-wine-tasting');
+insert into event (id, type, price, date, time, title, small_cover, large_cover, city, address, winery_index, description, registration_link) values ('c0a6eb3a-8b0d-4a19-bcd7-7ee2f7a51291', 'Дегустация', 4000, date '2023-12-25', time '20:00', 'Дегустация испанских вин', 'bdcf7ada-6623-4eec-bf04-37e1a7b1858c', '2b4ae1b2-7b6c-4d6f-9a5a-238e90fdfc32', 'Казань', 'ул. Баумана, 5', 'WIN55555', 'Лучшие испанские вина, закуски и удивительная атмосфера в самом центре города.', 'https://example.com/register/spanish-wine-tasting');
+
+insert into event_photo (id, event_id, name, bucket, description) values ('e998b4e1-a9e0-4f13-80f2-1a21e5a116a1', '6b2e2b64-2e1c-430d-af5c-6d121e2e1c54', 'italian-wine-casino-small.jpg', 'event', 'Small cover: Винное казино: Итальянские сокровища');
+insert into event_photo (id, event_id, name, bucket, description) values ('2e6a9f2c-32f2-4822-bd72-043aebf49f22', '6b2e2b64-2e1c-430d-af5c-6d121e2e1c54', 'italian-wine-casino-large.jpg', 'event', 'Large cover: Винное казино: Итальянские сокровища');
+insert into event_photo (id, event_id, name, bucket, description) values ('c5c2eeb2-e754-4d42-a2d8-81c8b8c3ca57', '103f14ec-55c6-4f72-ab85-179fc6d80317', 'french-wine-tasting-small.jpg', 'event', 'Small cover: Дегустация французских вин: Бордо vs Бургундия');
+insert into event_photo (id, event_id, name, bucket, description) values ('c918cf2a-2ff7-4b2b-8313-2a4d3838fc95', '103f14ec-55c6-4f72-ab85-179fc6d80317', 'french-wine-tasting-large.jpg', 'event', 'Large cover: Дегустация французских вин: Бордо vs Бургундия');
+insert into event_photo (id, event_id, name, bucket, description) values ('bdcf7ada-6623-4eec-bf04-37e1a7b1858c', 'c0a6eb3a-8b0d-4a19-bcd7-7ee2f7a51291', 'spanish-wine-tasting-small.jpg', 'event', 'Small cover: Дегустация испанских вин');
+insert into event_photo (id, event_id, name, bucket, description) values ('2b4ae1b2-7b6c-4d6f-9a5a-238e90fdfc32', 'c0a6eb3a-8b0d-4a19-bcd7-7ee2f7a51291', 'spanish-wine-tasting-large.jpg', 'event', 'Large cover: Дегустация испанских вин');
