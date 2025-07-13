@@ -7,6 +7,8 @@ import com.innovativesoftware.domsommelier_backend.event_management.event.reposi
 import com.innovativesoftware.domsommelier_backend.event_management.event.repository.EventRepository;
 import com.innovativesoftware.domsommelier_backend.file_management.service.FileOperationService;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -98,6 +100,26 @@ public class EventPhotoOperationService extends FileOperationService {
      */
     public byte[] getPhotoBytes(String bucket, String fileName) {
         return getBytesFromFile(bucket, fileName);
+    }
+
+    /**
+     * Скачать фото по id (ищет файл в БД, получает имя файла и bucket и далее отдаёт байты)
+     */
+    public PhotoDownloadData getPhotoDataById(UUID photoId) {
+        EventPhoto photo = eventPhotoRepository.findById(photoId)
+                .orElseThrow(() -> new NoSuchElementException("Photo not found"));
+        byte[] bytes = getBytesFromFile(photo.getBucket(), photo.getName());
+        return new PhotoDownloadData(photo.getName(), bytes);
+    }
+
+    /**
+     * Вспомогательный класс для возвращения имени файла вместе с байтами
+     */
+    @Getter
+    @AllArgsConstructor
+    public static class PhotoDownloadData {
+        private String fileName;
+        private byte[] bytes;
     }
 
     /**

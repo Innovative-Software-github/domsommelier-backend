@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/news")
+@RequestMapping("/api/v1/news")
 public class NewsController {
 
     @Autowired

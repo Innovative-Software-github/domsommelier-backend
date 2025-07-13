@@ -18,6 +18,7 @@ import java.util.UUID;
 @RestController
 @Tag(name = "filter-controller", description = "Контроллер для работы с фильтрами")
 @RequestMapping("/api/v1/filters")
+@CrossOrigin
 @RequiredArgsConstructor
 public class FilterController {
     private final FilterService filterService;

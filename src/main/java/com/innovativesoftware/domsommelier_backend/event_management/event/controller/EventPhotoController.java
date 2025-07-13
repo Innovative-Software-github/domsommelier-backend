@@ -45,17 +45,20 @@ public class EventPhotoController {
     }
 
     @Operation(summary="Скачать фото по имени файла")
-    @GetMapping("")
+    @GetMapping("/name")
     public ResponseEntity<byte[]> downloadPhoto(@RequestParam("file") String fileName) {
         byte[] bytes = service.getPhotoBytes("event", fileName);
 
-        // Определяем mimetype по расширению (можно сделать умнее)
-        String contentType = "application/octet-stream";
-        if (fileName.toLowerCase().endsWith(".jpg") || fileName.toLowerCase().endsWith(".jpeg")) {
-            contentType = "image/jpeg";
-        } else if (fileName.toLowerCase().endsWith(".png")) {
-            contentType = "image/png";
+        String contentType;
+        try {
+            contentType = java.nio.file.Files.probeContentType(java.nio.file.Paths.get(fileName));
+            if (contentType == null) {
+                contentType = detectMimeTypeByExtension(fileName);
+            }
+        } catch (Exception e) {
+            contentType = detectMimeTypeByExtension(fileName);
         }
+
 
         ContentDisposition contentDisposition = ContentDisposition.attachment()
                 .filename(fileName, java.nio.charset.StandardCharsets.UTF_8)
@@ -65,6 +68,45 @@ public class EventPhotoController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header("Content-Disposition", contentDisposition.toString())
                 .body(bytes);
+    }
+
+    @Operation(summary="Скачать фото по id")
+    @GetMapping("/id")
+    public ResponseEntity<byte[]> downloadPhotoById(@RequestParam("id") UUID photoId) {
+        EventPhotoOperationService.PhotoDownloadData data = service.getPhotoDataById(photoId);
+
+        String contentType;
+        String fileName = data.getFileName();
+        try {
+            contentType = java.nio.file.Files.probeContentType(java.nio.file.Paths.get(fileName));
+            if (contentType == null) {
+                contentType = detectMimeTypeByExtension(fileName);
+            }
+        } catch (Exception e) {
+            contentType = detectMimeTypeByExtension(fileName);
+        }
+
+        ContentDisposition contentDisposition = ContentDisposition.attachment()
+                .filename(fileName, java.nio.charset.StandardCharsets.UTF_8)
+                .build();
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header("Content-Disposition", contentDisposition.toString())
+                .body(data.getBytes());
+    }
+
+    // Вспомогательный метод, можно вынести в утилиту
+    private String detectMimeTypeByExtension(String fileName) {
+        String name = fileName.toLowerCase();
+        if (name.endsWith(".jpg") || name.endsWith(".jpeg")) return "image/jpeg";
+        if (name.endsWith(".png")) return "image/png";
+        if (name.endsWith(".gif")) return "image/gif";
+        if (name.endsWith(".webp")) return "image/webp";
+        if (name.endsWith(".svg")) return "image/svg+xml";
+        if (name.endsWith(".bmp")) return "image/bmp";
+        if (name.endsWith(".pdf")) return "application/pdf";
+        return "application/octet-stream";
     }
 
 

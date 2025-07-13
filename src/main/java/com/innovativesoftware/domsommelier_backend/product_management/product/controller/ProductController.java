@@ -22,6 +22,7 @@ import java.util.UUID;
 
 @Tag(name = "product-controller", description = "Работа с продуктами")
 @RestController
+@CrossOrigin
 @RequestMapping("/api/v1/products")
 public class ProductController {
 
