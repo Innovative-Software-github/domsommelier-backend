@@ -20,7 +20,8 @@ public class Wine {
     private UUID id;
 
     @MapsId
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    //@OneToOne
     @JoinColumn(name = "id")
     private Product product;
 

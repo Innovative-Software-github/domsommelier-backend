@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Data
 public class SpiritCardDto extends ProductCardDto {
-    public enum Category { Whiskey, Cognac, Vodka, Tequila, Rum, }
+    //public enum Category { Whiskey, Cognac, Vodka, Tequila, Rum, }
     @Getter
     @AllArgsConstructor
     public enum Strength {
@@ -44,7 +44,7 @@ public class SpiritCardDto extends ProductCardDto {
         }
     }
 
-    private Category category;
+    private String category;
     private Strength strength;
     private Volume volume;
 }

@@ -35,8 +35,10 @@ public class WineCardDtoMapper implements ProductCardDtoMapper {
                         .description(photo.getDescription())
                         .build()).toList())
                 .volume(wine.getVolume())
-                .color(WineCardDto.Color.valueOf(wine.getColor().getName().name()))
-                .type(WineCardDto.Type.valueOf(wine.getType().getName().name()))
+                //.color(WineCardDto.Color.valueOf(wine.getColor().getName().name()))
+                //.type(WineCardDto.Type.valueOf(wine.getType().getName().name()))
+                .color(wine.getColor().getName())
+                .type(wine.getType().getName())
                 .build();
     }
 

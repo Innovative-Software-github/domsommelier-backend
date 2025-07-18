@@ -11,12 +11,16 @@ import java.util.List;
 @Entity
 @Table(name = "wine_type")
 public class WineType {
-    public enum Type { SWEET, SEMISWEET, DRY, SEMIDRY }
+    //public enum Type { SWEET, SEMISWEET, DRY, SEMIDRY }
+
+//    @Id
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "name", nullable = false)
+//    private Type name;
 
     @Id
-    @Enumerated(EnumType.STRING)
     @Column(name = "name", nullable = false)
-    private Type name;
+    private String name;
 
     @OneToMany(mappedBy = "type")
     private List<Wine> wines;
