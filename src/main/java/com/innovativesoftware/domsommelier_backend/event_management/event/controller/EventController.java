@@ -15,7 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @RestController
@@ -67,14 +67,15 @@ public class EventController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Получить страницу событий (короткое представление, с пагинацией)")
-    @GetMapping
-    public Page<EventListDTO> getEvents(
-            @Parameter(description = "Номер страницы (с 0)") @RequestParam(defaultValue = "0") int page,
-            @Parameter(description = "Размер страницы") @RequestParam(defaultValue = "10") int size
-    ) {
-        return eventService.getEventsPage(page, size);
-    }
+//    @Hidden
+//    @Operation(summary = "Получить страницу событий (короткое представление, с пагинацией)")
+//    @GetMapping
+//    public Page<EventListDTO> getEvents(
+//            @Parameter(description = "Номер страницы (с 0)") @RequestParam(defaultValue = "0") int page,
+//            @Parameter(description = "Размер страницы") @RequestParam(defaultValue = "10") int size
+//    ) {
+//        return eventService.getEventsPage(page, size);
+//    }
 
     @Operation(summary = "Получить подробную информацию о событии по ID")
     @GetMapping("/{id}")
@@ -86,16 +87,16 @@ public class EventController {
     @GetMapping("/filter")
     public Page<EventListDTO> getFilteredEvents(
             @Parameter(
-                    description = "Дата начала (формат: YYYY-MM-DD, например: 2025-07-11)",
-                    schema = @Schema(type = "string", example = "2025-07-11")
+                    description = "Дата начала (формат: ISO 8601, например: 2025-07-11T20:00:00.000Z)",
+                    schema = @Schema(type = "string", format = "date-time", example = "2025-07-11T20:00:00.000Z")
             )
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateStart,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][XXX]") OffsetDateTime dateStart,
 
             @Parameter(
-                    description = "Дата конца (формат: YYYY-MM-DD, например: 2025-07-15)",
-                    schema = @Schema(type = "string", example = "2025-07-15")
+                    description = "Дата конца (формат: ISO 8601, например: 2025-07-15T20:00:00.000Z)",
+                    schema = @Schema(type = "string", format = "date-time", example = "2025-07-15T20:00:00.000Z")
             )
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][XXX]") OffsetDateTime dateEnd,
 
             @Parameter(
                     description = "Минимальная цена (например: 1000)",
@@ -110,8 +111,8 @@ public class EventController {
             @RequestParam(required = false) Integer priceMax,
 
             @Parameter(
-                    description = "Тип мероприятия (Винное казино или Дегустация)",
-                    schema = @Schema(type = "string", allowableValues = {"Винное казино", "Дегустация"}, example = "Дегустация")
+                    description = "Тип мероприятия (wineCasino или degustation)",
+                    schema = @Schema(type = "string", allowableValues = {"wineCasino", "degustation"})
             )
             @RequestParam(required = false) EventType type,
 
@@ -127,7 +128,7 @@ public class EventController {
             )
             @RequestParam(defaultValue = "10") int size
     ) {
-        return eventService.getFilteredEvents(dateStart, endDate, priceMin, priceMax, type, page, size);
+        return eventService.getFilteredEvents(dateStart, dateEnd, priceMin, priceMax, type, page, size);
     }
 
 }

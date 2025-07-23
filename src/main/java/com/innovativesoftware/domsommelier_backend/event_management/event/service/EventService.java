@@ -15,7 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -79,7 +79,7 @@ public class EventService {
     }
 
     public Page<EventListDTO> getFilteredEvents(
-            LocalDate dateStart, LocalDate endDate,
+            OffsetDateTime dateStart, OffsetDateTime endDate,
             Integer priceMin, Integer priceMax,
             EventType type, int page, int size
     ) {
@@ -87,11 +87,11 @@ public class EventService {
 
         // Фильтр по дате
         if (dateStart != null && endDate != null) {
-            spec = spec.and((root, query, cb) -> cb.between(root.get("date"), dateStart, endDate));
+            spec = spec.and((root, query, cb) -> cb.between(root.get("datetime"), dateStart, endDate));
         } else if (dateStart != null) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("date"), dateStart));
+            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("datetime"), dateStart));
         } else if (endDate != null) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("date"), endDate));
+            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("datetime"), endDate));
         }
 
         // Фильтр по цене
@@ -108,7 +108,7 @@ public class EventService {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("type"), type.getDisplayName()));
         }
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("datetime").descending());
         Page<Event> eventPage = eventRepository.findAll(spec, pageable);
 
         return eventPage.map(event -> EventMapper.toListDto(event, event.getSmallCover()));

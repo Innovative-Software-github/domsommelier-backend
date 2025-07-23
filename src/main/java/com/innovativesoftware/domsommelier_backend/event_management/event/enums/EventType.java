@@ -8,8 +8,8 @@ import java.util.Optional;
 @AllArgsConstructor
 @Getter
 public enum EventType {
-    WINE_CASINO("Винное казино"),
-    DEGUSTATION("Дегустация");
+    WINE_CASINO("wineCasino"),
+    DEGUSTATION("degustation");
 
     private final String displayName;
 

@@ -6,10 +6,8 @@ import com.innovativesoftware.domsommelier_backend.event_management.event.model.
 import com.innovativesoftware.domsommelier_backend.event_management.event.model.EventListDTO;
 import org.springframework.beans.BeanUtils;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 
 public class EventMapper {
     public static EventDTO toDto(Event event) {
@@ -27,8 +25,7 @@ public class EventMapper {
     public static void updateEventFromDto(EventDTO dto, Event event) {
         event.setType(dto.getType());
         event.setPrice(dto.getPrice());
-        event.setDate(dto.getDate());
-        event.setTime(dto.getTime());
+        event.setDatetime(dto.getDatetime());
         event.setTitle(dto.getTitle());
         event.setSmallCover(dto.getSmallCover());
         event.setLargeCover(dto.getLargeCover());
@@ -45,7 +42,7 @@ public class EventMapper {
                 .id(event.getId().toString())
                 .type(event.getType())
                 .price(event.getPrice())
-                .dateTime(makeDateTimeIso(event.getDate(), event.getTime()))
+                .dateTime(formatToIsoWithMillisZ(event.getDatetime()))
                 .title(event.getTitle())
                 .smallCover(smallCoverUrl)
                 .largeCover(largeCoverUrl)
@@ -63,15 +60,17 @@ public class EventMapper {
                 .id(event.getId().toString())
                 .type(event.getType())
                 .price(event.getPrice())
-                .dateTime(makeDateTimeIso(event.getDate(), event.getTime()))
+                .dateTime(formatToIsoWithMillisZ(event.getDatetime()))
                 .title(event.getTitle())
                 .smallCover(smallCoverUrl)
                 .build();
     }
 
-    private static String makeDateTimeIso(LocalDate date, LocalTime time) {
-        // Если в entity LocalDate+LocalTime: собираем в OffsetDateTime (или ZonedDateTime, если нужен часовой пояс)
-        OffsetDateTime dateTime = date.atTime(time).atOffset(ZoneId.systemDefault().getRules().getOffset(java.time.Instant.now()));
-        return dateTime.toString(); // ISO 8601
+    private static String formatToIsoWithMillisZ(OffsetDateTime dateTime) {
+        return dateTime.format(DateTimeFormatter.ISO_INSTANT);  // 2025-07-11T20:00:00.000Z
+    }
+
+    private static LocalDateTime combineDateAndTime(LocalDate date, LocalTime time) {
+        return date.atTime(time);
     }
 }

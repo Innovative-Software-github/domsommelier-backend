@@ -7,8 +7,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Getter
@@ -26,11 +25,8 @@ public class Event {
     @Column(name = "price")
     private Integer price;
 
-    @Column(name = "date")
-    private LocalDate date;
-
-    @Column(name = "time")
-    private LocalTime time;
+    @Column(name = "datetime")
+    private OffsetDateTime datetime;
 
     @Column(name = "title")
     private String title;
