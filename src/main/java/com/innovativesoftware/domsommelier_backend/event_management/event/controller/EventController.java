@@ -47,7 +47,7 @@ public class EventController {
     @Operation(summary = "Создать новое мероприятие")
     @PostMapping
     public ResponseEntity<EventDTO> createEvent(
-            @Parameter(description = "Данные мероприятия") @RequestBody EventDTO eventDTO) {
+            @Parameter(description = "Данные мероприятия") @RequestBody @Valid EventDTO eventDTO) {
         return ResponseEntity.ok(eventService.createEvent(eventDTO));
     }
 
@@ -55,7 +55,7 @@ public class EventController {
     @PutMapping("/{id}")
     public ResponseEntity<EventDTO> updateEvent(
             @Parameter(description = "ID мероприятия", required = true) @PathVariable UUID id,
-            @Parameter(description = "Новые данные мероприятия") @RequestBody EventDTO eventDTO
+            @Parameter(description = "Новые данные мероприятия") @RequestBody @Valid EventDTO eventDTO
     ) {
         return ResponseEntity.ok(eventService.updateEvent(id, eventDTO));
     }
