@@ -38,7 +38,7 @@ public class ProductController {
         return productNewService.getNewProducts();
     }
 
-    //@Hidden
+    @Hidden
     @Operation(summary = "Получение категорий продуктов")
     @GetMapping("/categories")
     public List<ProductCategoryProjection> getProductCategories() {
@@ -65,7 +65,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductDetails(UUID.fromString(id)));
     }
 
-    //@Hidden
+    @Hidden
     @Operation(summary = "Получение всех продуктов")
     @GetMapping("/all")
     public ResponseEntity<List<ProductCardDto>> getAllProducts(
@@ -76,7 +76,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts(pageable));
     }
 
-    //@Hidden
+    @Hidden
     @Operation(summary = "Получение продуктов по категории")
     @GetMapping("/all/category")
     public ResponseEntity<List<ProductCardDto>> getAllProductCategories(
@@ -88,7 +88,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProductsByCategory(productCategory, pageable));
     }
 
-    //@Hidden
+    @Hidden
     @Operation(summary = "Получение продуктов по стране")
     @GetMapping("/all/country")
     public ResponseEntity<List<ProductCardDto>> getAllProductCountries(
@@ -112,7 +112,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllByFilters(category, params, pageable));
     }
 
-    //@Hidden
+    @Hidden
     @GetMapping("/countries")
     @Operation(summary = "Получение стран продуктов")
     public ResponseEntity<List<String>> getAllCountries() {
