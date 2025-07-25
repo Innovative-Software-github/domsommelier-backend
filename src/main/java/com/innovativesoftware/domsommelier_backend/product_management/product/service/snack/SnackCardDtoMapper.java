@@ -36,7 +36,7 @@ public class SnackCardDtoMapper implements ProductCardDtoMapper {
                         .name(photo.getName())
                         .description(photo.getDescription())
                         .build()).toList())
-                .category(SnackCardDto.Category.valueOf(snack.getCategory().getName().name()))
+                .category(snack.getCategory().getName())
                 .build();
     }
 

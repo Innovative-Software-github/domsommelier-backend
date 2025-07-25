@@ -9,7 +9,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Data
 public class SnackCardDto extends ProductCardDto {
-    public enum Category { Cheese, Jamon, Bresaola, Assorted }
-
-    private Category category;
+    private String category;
 }

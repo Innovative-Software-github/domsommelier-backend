@@ -2,9 +2,9 @@ package com.innovativesoftware.domsommelier_backend.filter_management.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Table(name = "range_filter")
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+@Builder
 public class RangeFilter {
     @Id
     private UUID id;

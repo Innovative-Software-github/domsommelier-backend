@@ -3,8 +3,10 @@ package com.innovativesoftware.domsommelier_backend.filter_management.entity;
 import com.innovativesoftware.domsommelier_backend.filter_management.enums.FilterType;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
@@ -13,7 +15,7 @@ import java.util.UUID;
 @Table(name = "filter")
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+@Builder
 public class Filter {
     @Id
     @GeneratedValue

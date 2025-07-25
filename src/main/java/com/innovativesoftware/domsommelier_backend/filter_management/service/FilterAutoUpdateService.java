@@ -1,10 +1,11 @@
 package com.innovativesoftware.domsommelier_backend.filter_management.service;
 
+import com.innovativesoftware.domsommelier_backend.filter_management.entity.Filter;
 import com.innovativesoftware.domsommelier_backend.filter_management.entity.MultiSelectFilter;
+import com.innovativesoftware.domsommelier_backend.filter_management.enums.FilterType;
 import com.innovativesoftware.domsommelier_backend.filter_management.repository.FilterRepository;
 import com.innovativesoftware.domsommelier_backend.filter_management.repository.MultiSelectFilterRepository;
-import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductRepository;
-import com.innovativesoftware.domsommelier_backend.product_management.product.repository.WineRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,60 +22,57 @@ public class FilterAutoUpdateService {
 
     private final MultiSelectFilterRepository multiSelectFilterRepo;
     private final FilterRepository filterRepo;
-    private final WineRepository wineRepo;
-    private final ProductRepository productRepo;
+    private final List<ProductFilterFieldProvider> providers;
 
-    // Карта field -> supplier уникальных label-значений (человеческих, не value!)
-    private final Map<String, Supplier<Set<String>>> fieldLabelExtractors = Map.of(
-            "color", this::findDistinctWineColors,
-            "type", this::findDistinctWineTypes,
-            "grape", this::findDistinctWineGrapes,
-            "feature", this::findDistinctWineFeatures,
-            "country_name", this::findDistinctProductCountries,
-            "producer", this::findDistinctWineProducers,
-            "volume", this::findDistinctWineVolumes
-    );
-
-    private Set<String> findDistinctWineColors() { return wineRepo.findDistinctColors(); }
-    private Set<String> findDistinctWineTypes() { return wineRepo.findDistinctTypes(); }
-    private Set<String> findDistinctWineGrapes() { return wineRepo.findDistinctGrapes(); }
-    private Set<String> findDistinctWineFeatures() { return wineRepo.findDistinctFeatures(); }
-    private Set<String> findDistinctProductCountries() { return productRepo.findDistinctCountries(); }
-    private Set<String> findDistinctWineProducers() { return wineRepo.findDistinctProducers(); }
-    private Set<String> findDistinctWineVolumes() { return wineRepo.findDistinctVolumes(); }
-
-    @Scheduled(cron = "10 * * * * *") // каждый час @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "5 * * * * *")
     @Transactional
     public void updateAllMultiSelectFilters() {
         log.info("Старт автообновления фильтров multi_select...");
-        List<MultiSelectFilter> allFilters = multiSelectFilterRepo.findAll();
-        for (MultiSelectFilter filter : allFilters) {
-            String field = filter.getFilter().getField().toLowerCase();
-            Supplier<Set<String>> labelProvider = fieldLabelExtractors.get(field);
-            if (labelProvider == null) {
-                log.warn("Нет провайдера label для фильтра field={}", field);
-                continue;
-            }
-            Set<String> labels = labelProvider.get();
-            if (labels == null) labels = Set.of();
 
-            // Сгенерить новые опции (value + label)
-            List<MultiSelectFilter.Option> newOptions = labels.stream()
-                    .filter(Objects::nonNull)
-                    .map(String::trim)
-                    .filter(s -> !s.isEmpty())
-                    .map(FilterOptionFactory::createOption)
-                    .distinct()
-                    .sorted(Comparator.comparing(MultiSelectFilter.Option::getLabel, String.CASE_INSENSITIVE_ORDER))
-                    .collect(Collectors.toList());
+        for (ProductFilterFieldProvider provider : providers) {
+            ProductCategoryEnum categoryEnum = provider.getSupportedCategory();
+            Map<String, String> fieldRuNames = provider.getFieldRuNames();
 
-            List<MultiSelectFilter.Option> oldOptions = filter.getOptions() != null ? filter.getOptions() : List.of();
+            List<String> supportedFields = new ArrayList<>(fieldRuNames.keySet());
 
-            // Сравнить со старыми и обновить если надо
-            if (!optionsEqual(oldOptions, newOptions)) {
-                filter.setOptions(newOptions);
-                multiSelectFilterRepo.save(filter);
-                log.info("Обновлён фильтр [{}]: теперь options: {}", filter.getFilter().getName(), newOptions);
+            Map<String, Filter> filterEntities = filterRepo.findByProductCategories(categoryEnum).stream()
+                    .filter(f -> f.getType() == FilterType.multi_select)
+                    .collect(Collectors.toMap(f -> f.getField().toLowerCase(), f -> f));
+
+            for (String field : supportedFields) {
+                Filter filterEntity = filterEntities.get(field);
+                if (filterEntity == null) {
+                    continue;
+                }
+
+                Set<String> labels = provider.getLabels(field);
+                if (labels == null) labels = Set.of();
+
+                List<MultiSelectFilter.Option> newOptions = labels.stream()
+                        .filter(Objects::nonNull)
+                        .map(String::trim)
+                        .filter(s -> !s.isEmpty())
+                        .map(FilterOptionFactory::createOption)
+                        .distinct()
+                        .sorted(Comparator.comparing(MultiSelectFilter.Option::getLabel, String.CASE_INSENSITIVE_ORDER))
+                        .collect(Collectors.toList());
+
+                MultiSelectFilter msf = multiSelectFilterRepo.findById(filterEntity.getId()).orElse(null);
+                if (msf == null) {
+                    msf = new MultiSelectFilter();
+                    msf.setId(filterEntity.getId());
+                    msf.setFilter(filterEntity);
+                    msf.setOptions(new ArrayList<>(newOptions));
+                    multiSelectFilterRepo.save(msf);
+                    log.info("Создан новый MultiSelectFilter [{}] с options: {}", filterEntity.getName(), newOptions);
+                } else {
+                    List<MultiSelectFilter.Option> oldOptions = msf.getOptions() != null ? msf.getOptions() : List.of();
+                    if (!optionsEqual(oldOptions, newOptions)) {
+                        msf.setOptions(new ArrayList<>(newOptions));
+                        multiSelectFilterRepo.save(msf);
+                        log.info("Обновлён фильтр [{}]: options: {}", filterEntity.getName(), newOptions);
+                    }
+                }
             }
         }
     }

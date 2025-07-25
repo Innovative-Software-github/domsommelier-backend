@@ -2,9 +2,9 @@ package com.innovativesoftware.domsommelier_backend.filter_management.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,7 +13,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+@Builder
 @Table(name = "multi_select_filter")
 public class MultiSelectFilter {
 

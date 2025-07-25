@@ -2,24 +2,25 @@ package com.innovativesoftware.domsommelier_backend.event_management.event.contr
 
 import com.innovativesoftware.domsommelier_backend.event_management.event.enums.EventType;
 import com.innovativesoftware.domsommelier_backend.event_management.event.model.EventDTO;
+import com.innovativesoftware.domsommelier_backend.event_management.event.model.EventFilterRequest;
 import com.innovativesoftware.domsommelier_backend.event_management.event.model.EventFullDTO;
 import com.innovativesoftware.domsommelier_backend.event_management.event.model.EventListDTO;
 import com.innovativesoftware.domsommelier_backend.event_management.event.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @RestController
 @CrossOrigin
+@Validated
 @RequestMapping("/api/v1/events")
 @RequiredArgsConstructor
 @Tag(name = "Events", description = "Управление мероприятиями магазина (CRUD)")
@@ -83,52 +84,18 @@ public class EventController {
         return eventService.getEventById(id);
     }
 
-    @Operation(summary = "Получить страницу событий с фильтрами и пагинацией")
     @GetMapping("/filter")
-    public Page<EventListDTO> getFilteredEvents(
-            @Parameter(
-                    description = "Дата начала (формат: ISO 8601, например: 2025-07-11T20:00:00.000Z)",
-                    schema = @Schema(type = "string", format = "date-time", example = "2025-07-11T20:00:00.000Z")
-            )
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][XXX]") OffsetDateTime dateStart,
-
-            @Parameter(
-                    description = "Дата конца (формат: ISO 8601, например: 2025-07-15T20:00:00.000Z)",
-                    schema = @Schema(type = "string", format = "date-time", example = "2025-07-15T20:00:00.000Z")
-            )
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][XXX]") OffsetDateTime dateEnd,
-
-            @Parameter(
-                    description = "Минимальная цена (например: 1000)",
-                    schema = @Schema(type = "integer", example = "1000")
-            )
-            @RequestParam(required = false) Integer priceMin,
-
-            @Parameter(
-                    description = "Максимальная цена (например: 5000)",
-                    schema = @Schema(type = "integer", example = "5000")
-            )
-            @RequestParam(required = false) Integer priceMax,
-
-            @Parameter(
-                    description = "Тип мероприятия (wineCasino или degustation)",
-                    schema = @Schema(type = "string", allowableValues = {"wineCasino", "degustation"})
-            )
-            @RequestParam(required = false) EventType type,
-
-            @Parameter(
-                    description = "Номер страницы (с 0)",
-                    schema = @Schema(type = "integer", example = "0")
-            )
-            @RequestParam(defaultValue = "0") int page,
-
-            @Parameter(
-                    description = "Размер страницы",
-                    schema = @Schema(type = "integer", example = "10")
-            )
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        return eventService.getFilteredEvents(dateStart, dateEnd, priceMin, priceMax, type, page, size);
+    @Operation(summary = "Получить страницу событий с фильтрами и пагинацией")
+    public Page<EventListDTO> getFilteredEvents(@Valid @ModelAttribute EventFilterRequest filter) {
+        EventType eventType = filter.getType() == null ? null : EventType.fromString(filter.getType()).orElse(null);
+        return eventService.getFilteredEvents(
+                filter.getDateStart(),
+                filter.getDateEnd(),
+                filter.getPriceMin(),
+                filter.getPriceMax(),
+                eventType,
+                filter.getPage(),
+                filter.getSize()
+        );
     }
-
 }

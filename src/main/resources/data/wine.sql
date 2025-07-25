@@ -1,0 +1,46 @@
+insert into wine_color (name) values ('Красное'), ('Белое'), ('Розовое');
+insert into wine_type (name) values ('Сладкое'), ('Полусладкое'), ('Сухое'), ('Полусухое');
+
+insert into wine (id, production_year, color, type, producer, volume) values ('293b85d0-f739-4856-a09b-8495f2157e4d', 2020, 'Красное', 'Сухое', 'Louis Jadot', 0.75);
+insert into wine (id, production_year, color, type, producer, volume) values ('ccfe12c7-2a16-4482-9c5b-ca57260fc475', 2017, 'Красное', 'Сухое', 'Robert Mondavi', 1.5);
+insert into wine (id, production_year, color, type, producer, volume) values ('f3e364ff-b656-44a3-a16e-2263e560345c', 2018, 'Красное', 'Полусладкое', 'Fanagoria', 0.75);
+insert into wine (id, production_year, color, type, producer, volume) values ('3f614d9a-bb8c-4bdb-bd46-0be893b2e1f1', 2015, 'Красное', 'Сухое', 'Château Lafite Rothschild', 0.75);
+insert into wine (id, production_year, color, type, producer, volume) values ('9ab175b1-2680-4b48-b29f-3a8bf2b7afd5', 2018, 'Белое', 'Полусухое', 'Joseph Drouhin', 0.75);
+insert into wine (id, production_year, color, type, producer, volume) values ('2e187c2a-4adb-4e2d-9d17-8b6d4c9e2f22', 2019, 'Красное', 'Сухое', 'Frescobaldi', 0.75);
+insert into wine (id, production_year, color, type, producer, volume) values ('1a503e87-9a80-4dd9-8107-c6d42f3d7580', 2020, 'Розовое', 'Полусладкое', 'Guigal', 0.75);
+insert into wine (id, production_year, color, type, producer, volume) values ('0e225edf-b7b8-4c86-9c7f-c7b863ea13de', 2018, 'Красное', 'Полусухое', 'Casillero del Diablo', 0.75);
+insert into wine (id, production_year, color, type, producer, volume) values ('76a5e2c3-3e4b-4b25-9af3-35d1c5cbe7c7', 2016, 'Красное', 'Полусладкое', 'Marques de Riscal', 1.0);
+insert into wine (id, production_year, color, type, producer, volume) values ('b8c9670b-23ae-42fb-9d8b-6e56f0dda6ea', 2019, 'Белое', 'Сухое', 'Cloudy Bay', 0.75);
+insert into wine (id, production_year, color, type, producer, volume) values ('a2e1be88-f220-4ded-bf0d-7fefb86a0a60', 2021, 'Розовое', 'Сухое', 'Abrau-Durso', 0.75);
+insert into wine (id, production_year, color, type, producer, volume) values ('eb9ca3bc-0e32-4d1d-9f8e-c2bea3a94b11', 2017, 'Белое', 'Сладкое', 'Chateau Tamagne', 0.75);
+insert into wine (id, production_year, color, type, producer, volume) values ('2b6dc268-0280-44fe-9128-750af4dfbdc0', 2020, 'Красное', 'Полусладкое', 'Santa Cristina', 0.75);
+
+insert into wine_grape (wine_id, grape) values ('293b85d0-f739-4856-a09b-8495f2157e4d', 'merlot');
+insert into wine_grape (wine_id, grape) values ('293b85d0-f739-4856-a09b-8495f2157e4d', 'cabernet_sauvignon');
+insert into wine_grape (wine_id, grape) values ('ccfe12c7-2a16-4482-9c5b-ca57260fc475', 'cabernet_sauvignon');
+insert into wine_grape (wine_id, grape) values ('f3e364ff-b656-44a3-a16e-2263e560345c', 'tsimlyansky_black');
+insert into wine_grape (wine_id, grape) values ('3f614d9a-bb8c-4bdb-bd46-0be893b2e1f1', 'cabernet_sauvignon');
+insert into wine_grape (wine_id, grape) values ('9ab175b1-2680-4b48-b29f-3a8bf2b7afd5', 'chardonnay');
+insert into wine_grape (wine_id, grape) values ('2e187c2a-4adb-4e2d-9d17-8b6d4c9e2f22', 'sangiovese');
+insert into wine_grape (wine_id, grape) values ('1a503e87-9a80-4dd9-8107-c6d42f3d7580', 'grenache');
+insert into wine_grape (wine_id, grape) values ('0e225edf-b7b8-4c86-9c7f-c7b863ea13de', 'carignan');
+insert into wine_grape (wine_id, grape) values ('76a5e2c3-3e4b-4b25-9af3-35d1c5cbe7c7', 'tempranillo');
+insert into wine_grape (wine_id, grape) values ('b8c9670b-23ae-42fb-9d8b-6e56f0dda6ea', 'sauvignon_blanc');
+insert into wine_grape (wine_id, grape) values ('a2e1be88-f220-4ded-bf0d-7fefb86a0a60', 'pinot_noir');
+insert into wine_grape (wine_id, grape) values ('eb9ca3bc-0e32-4d1d-9f8e-c2bea3a94b11', 'solaris');
+insert into wine_grape (wine_id, grape) values ('2b6dc268-0280-44fe-9128-750af4dfbdc0', 'sangiovese');
+
+insert into wine_feature (wine_id, feature) values ('293b85d0-f739-4856-a09b-8495f2157e4d', 'gift_wrapping');
+insert into wine_feature (wine_id, feature) values ('293b85d0-f739-4856-a09b-8495f2157e4d', 'collection');
+insert into wine_feature (wine_id, feature) values ('ccfe12c7-2a16-4482-9c5b-ca57260fc475', 'collection');
+insert into wine_feature (wine_id, feature) values ('f3e364ff-b656-44a3-a16e-2263e560345c', 'gift_wrapping');
+insert into wine_feature (wine_id, feature) values ('3f614d9a-bb8c-4bdb-bd46-0be893b2e1f1', 'collection');
+insert into wine_feature (wine_id, feature) values ('9ab175b1-2680-4b48-b29f-3a8bf2b7afd5', 'gift_wrapping');
+insert into wine_feature (wine_id, feature) values ('2e187c2a-4adb-4e2d-9d17-8b6d4c9e2f22', 'collection');
+insert into wine_feature (wine_id, feature) values ('1a503e87-9a80-4dd9-8107-c6d42f3d7580', 'gift_wrapping');
+insert into wine_feature (wine_id, feature) values ('0e225edf-b7b8-4c86-9c7f-c7b863ea13de', 'gift_wrapping');
+insert into wine_feature (wine_id, feature) values ('76a5e2c3-3e4b-4b25-9af3-35d1c5cbe7c7', 'collection');
+insert into wine_feature (wine_id, feature) values ('b8c9670b-23ae-42fb-9d8b-6e56f0dda6ea', 'gift_wrapping');
+insert into wine_feature (wine_id, feature) values ('a2e1be88-f220-4ded-bf0d-7fefb86a0a60', 'collection');
+insert into wine_feature (wine_id, feature) values ('eb9ca3bc-0e32-4d1d-9f8e-c2bea3a94b11', 'gift_wrapping');
+insert into wine_feature (wine_id, feature) values ('2b6dc268-0280-44fe-9128-750af4dfbdc0', 'gift_wrapping');
