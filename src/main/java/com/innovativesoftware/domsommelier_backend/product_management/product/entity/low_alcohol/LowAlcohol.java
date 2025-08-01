@@ -27,22 +27,21 @@ public class LowAlcohol {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subcategory", nullable = false)
-    private LowAlcoholCategory category; // Вермут, Аперитивы, Настойки
+    private LowAlcoholCategory category;
 
     @Column(name = "producer")
-    private String producer; // Campari, Martini, Aperol
+    private String producer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "volume", nullable = false)
-    private LowAlcoholVolume volume; // 0.5 л, 0.7 л, 1 л, Другой
-
+    private LowAlcoholVolume volume;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "strength", nullable = false)
-    private LowAlcoholStrength strength; // до 10, 15%, 20%, 37% и т.д.
+    private LowAlcoholStrength strength;
 
     @ElementCollection
     @CollectionTable(name = "low_alcohol_feature", joinColumns = @JoinColumn(name = "low_alcohol_id"))
     @Column(name = "feature")
-    private List<String> features; // ["gift_set", "limited_edition"]
+    private List<String> features;
 }

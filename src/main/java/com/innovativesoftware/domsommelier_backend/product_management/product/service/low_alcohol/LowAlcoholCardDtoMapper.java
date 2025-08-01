@@ -37,9 +37,9 @@ public class LowAlcoholCardDtoMapper implements ProductCardDtoMapper {
                         .name(photo.getName())
                         .description(photo.getDescription())
                         .build()).toList())
-                .category(LowAlcoholCardDto.Category.valueOf(lowAlcohol.getCategory().getName().name()))
-                .volume(LowAlcoholCardDto.Volume.valueOf(lowAlcohol.getVolume().getName().name()))
-                .strength(LowAlcoholCardDto.Strength.valueOf(lowAlcohol.getStrength().getName().name()))
+                .category(LowAlcoholCardDto.Category.valueOf(lowAlcohol.getCategory().getName()))
+                .volume(LowAlcoholCardDto.Volume.valueOf(lowAlcohol.getVolume().getName()))
+                .strength(LowAlcoholCardDto.Strength.valueOf(lowAlcohol.getStrength().getName()))
                 .build();
     }
 

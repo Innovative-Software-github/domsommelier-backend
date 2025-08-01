@@ -28,9 +28,9 @@ public class LowAlcoholDetailsMapper implements ProductDetailsMapper<LowAlcoholD
         if (lowAlcohol == null) return null;
         return LowAlcoholDetailsDto.builder()
                 .producer(lowAlcohol.getProducer())
-                .strength(lowAlcohol.getStrength().getName().name())
-                .volume(lowAlcohol.getVolume().getName().name())
-                .category(lowAlcohol.getCategory().getName().name())
+                .strength(lowAlcohol.getStrength().getName())
+                .volume(lowAlcohol.getVolume().getName())
+                .category(lowAlcohol.getCategory().getName())
                 .features(lowAlcohol.getFeatures())
                 .build();
     }

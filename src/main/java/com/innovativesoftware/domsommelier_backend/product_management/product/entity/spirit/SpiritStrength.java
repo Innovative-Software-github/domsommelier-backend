@@ -1,8 +1,9 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.entity.spirit;
 
+import com.innovativesoftware.domsommelier_backend.exceptions.InvalidValueException;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -11,28 +12,43 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "spirit_strength")
+@NoArgsConstructor
 public class SpiritStrength {
-    @Getter
-    @AllArgsConstructor
-    public enum Strength {
-        P20(20),
-        P30(30),
-        P40(40),
-        P50(50),
-        P70(70);
 
-        private final int percent;
-
+    public record Strength(Integer percent) {
         @Override
         public String toString() {
             return percent + "%";
         }
     }
 
+    public SpiritStrength(String name) {
+        super();
+        int percent = 0;
+        try {
+            percent = Integer.parseInt(
+                    name.replace("%", "").replace(" ", "").trim());
+        } catch (NumberFormatException e) {
+            throw new InvalidValueException(
+                    "Неверное значение для крепкости, должно быть числом: " + name,
+                    "INVALID_TYPE",
+                    e.getMessage()
+            );
+        }
+        if (percent < 0) {
+            throw new InvalidValueException(
+                    "Неверное значение для крепкости, должно быть больше нуля: " + name,
+                    "INVALID_TYPE",
+                    "Неверное значение для крепкости"
+            );
+        }
+        Strength strength = new Strength(percent);
+        this.name = strength.toString();
+    }
+
     @Id
-    @Enumerated(EnumType.STRING)
     @Column(name = "name", nullable = false)
-    private Strength name;
+    private String name;
 
     @OneToMany(mappedBy = "strength")
     private List<Spirit> spirits;

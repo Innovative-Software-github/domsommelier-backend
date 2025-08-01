@@ -15,7 +15,7 @@ public interface NewsPhotoRepository extends JpaRepository<NewsPhoto, UUID> {
     @Query("""
         select
             new com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO(
-                            newsPhoto.id, newsPhoto.bucket, newsPhoto.name, newsPhoto.description)
+                            newsPhoto.id, newsPhoto.bucket, newsPhoto.name, newsPhoto.description, newsPhoto.url)
         from NewsPhoto newsPhoto
         where newsPhoto.aNews.id = :id
     """)

@@ -34,14 +34,14 @@ public class Spirit {
     private SpiritStrength strength; // 20%, 30%, 50% и т.д.
 
     @Column(name = "producer")
-    private String producer; // Jameson, Hennessy и т.д.
+    private String producer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "volume", nullable = false)
-    private SpiritVolume volume; // 0.5 л, 0.7 л и т.д.
+    private SpiritVolume volume;
 
     @ElementCollection
     @CollectionTable(name = "spirit_feature", joinColumns = @JoinColumn(name = "spirit_id"))
     @Column(name = "feature")
-    private List<String> features; // ["gift_set", "collectible"]
+    private List<String> features;
 }

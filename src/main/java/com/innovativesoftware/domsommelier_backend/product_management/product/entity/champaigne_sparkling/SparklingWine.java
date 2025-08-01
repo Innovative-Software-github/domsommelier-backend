@@ -27,25 +27,25 @@ public class SparklingWine {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subcategory", nullable = false)
-    private SparklingWineCategory category; // Шампанское, Игристое, Просекко
+    private SparklingWineCategory category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sugar_content", nullable = false)
-    private SugarContent content; // Brut Nature, Extra Brut и т.д.
+    private SugarContent content;
 
     @Column(name = "producer")
-    private String producer; // Moët & Chandon, Perrier-Jouët и т.д.
+    private String producer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "color", nullable = false)
-    private SparklingWineColor color; // Белое, Розовое
+    private SparklingWineColor color;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "volume", nullable = false)
-    private WineVolume volume; // 0.5 л, 0.7 л и т.д.
+    private WineVolume volume;
 
     @ElementCollection
     @CollectionTable(name = "sparkling_wine_feature", joinColumns = @JoinColumn(name = "sparkling_wine_id"))
     @Column(name = "feature")
-    private List<String> features; // ["gift_set", "vintage", "limited"]
+    private List<String> features;
 }

@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.news_management.controller;
 
+import com.innovativesoftware.domsommelier_backend.infrastructure.BucketRegistry;
 import com.innovativesoftware.domsommelier_backend.news_management.service.NewsPhotoOperationService;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Hidden
 @RequestMapping("/news/files")
 public class NewsPhotoController {
-    private final String BUCKET = "news";
+    private final String BUCKET = BucketRegistry.Bucket.NEWS.getName();
 
     @Autowired
     private NewsPhotoOperationService fileOperationService;

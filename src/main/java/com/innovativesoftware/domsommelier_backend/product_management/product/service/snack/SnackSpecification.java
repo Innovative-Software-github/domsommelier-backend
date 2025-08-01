@@ -17,7 +17,7 @@ public class SnackSpecification extends BaseSpecification<Snack> {
         params.forEach((key, value) -> {
             if (isEmpty(value)) return;
             switch (key) {
-                case "category" -> predicates.add(root.get("category").get("name").in((List<?>) value));
+                case "snack_category" -> predicates.add(root.get("category").get("name").in((List<?>) value));
                 case "pairings" -> predicates.add(root.join("pairings").in((List<?>) value));
             }
         });

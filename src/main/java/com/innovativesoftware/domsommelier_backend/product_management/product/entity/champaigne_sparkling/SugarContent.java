@@ -11,12 +11,10 @@ import java.util.List;
 @Entity
 @Table(name = "sugar_content")
 public class SugarContent {
-    public enum Content {Brut_Nature, Extra_Brut}
 
     @Id
-    @Enumerated(EnumType.STRING)
     @Column(name = "name", nullable = false)
-    private Content name;
+    private String name;
 
     @OneToMany(mappedBy = "content")
     private List<SparklingWine> sparklingWines;

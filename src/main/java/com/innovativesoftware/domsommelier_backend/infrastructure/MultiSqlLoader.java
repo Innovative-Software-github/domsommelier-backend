@@ -29,6 +29,8 @@ public class MultiSqlLoader {
                 "data/init.sql",
                 "data/wine.sql",
                 "data/snack.sql",
+                "data/spirit.sql",
+                "data/shampaigne.sql",
                 "data/filters.sql"
         );
         try (Connection connection = dataSource.getConnection()) {

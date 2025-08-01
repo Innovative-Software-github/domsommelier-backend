@@ -2,7 +2,6 @@ package com.innovativesoftware.domsommelier_backend.product_management.product.s
 
 import com.innovativesoftware.domsommelier_backend.filter_management.service.ProductFilterFieldProvider;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
-import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.WineRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,6 @@ import java.util.Set;
 public class WineFilterFieldProvider implements ProductFilterFieldProvider {
 
     private final WineRepository wineRepo;
-    private final ProductRepository productRepo;
 
     private static final Map<String, String> FIELD_RU_NAMES = Map.of(
             "color", "Цвет",
@@ -44,7 +42,7 @@ public class WineFilterFieldProvider implements ProductFilterFieldProvider {
             case "type" -> wineRepo.findDistinctTypes();
             case "grape" -> wineRepo.findDistinctGrapes();
             case "feature" -> wineRepo.findDistinctFeatures();
-            case "country_name" -> productRepo.findDistinctCountries();
+            case "country_name" -> wineRepo.findDistinctCountryNames();
             case "producer" -> wineRepo.findDistinctProducers();
             case "volume" -> wineRepo.findDistinctVolumes();
             default -> Set.of();

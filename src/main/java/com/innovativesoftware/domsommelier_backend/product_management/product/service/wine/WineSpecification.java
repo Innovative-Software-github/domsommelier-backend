@@ -22,6 +22,7 @@ public class WineSpecification extends BaseSpecification<Wine> {
                 case "volume" -> predicates.add(root.get("volume").in((List<?>) value));
                 case "features" -> predicates.add(root.join("features").in((List<?>) value));
                 case "grape" -> predicates.add(root.join("grapes").in((List<?>) value));
+                case "productCountry" -> predicates.add(root.join("product").get("productCountry").in((List<?>) value));
                 case "year" -> {
                     if (value instanceof List<?> yearRange && yearRange.size() == 2) {
                         predicates.add(cb.ge(root.get("productionYear"), toNumber(yearRange.get(0))));

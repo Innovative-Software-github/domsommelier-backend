@@ -17,7 +17,7 @@ public class SpiritSpecification extends BaseSpecification<Spirit> {
         params.forEach((key, value) -> {
             if (isEmpty(value)) return;
             switch (key) {
-                case "category" -> predicates.add(root.get("subcategory").get("name").in((List<?>) value));
+                case "subcategory" -> predicates.add(root.get("category").get("name").in((List<?>) value));
                 case "strength" -> predicates.add(root.get("strength").get("name").in((List<?>) value));
                 case "volume" -> predicates.add(root.get("volume").get("name").in((List<?>) value));
                 case "features" -> predicates.add(root.join("features").in((List<?>) value));

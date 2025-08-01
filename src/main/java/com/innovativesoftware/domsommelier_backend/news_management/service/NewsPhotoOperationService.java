@@ -25,7 +25,7 @@ public class NewsPhotoOperationService extends FileOperationService {
 
     @Transactional
     public void uploadFilesWithRef(MultipartFile[] files, String bucket, String eventId) {
-        List<MultipartFile> uploadedFiles = fileService.uploadFiles(files, bucket);
+        List<MultipartFile> uploadedFiles = fileService.uploadFiles(files, eventId, bucket);
         News news = newsRepository.getReferenceById(UUID.fromString(eventId));
 
         List<NewsPhoto> readyFiles = (List<NewsPhoto>) uploadedFiles.stream()
@@ -35,6 +35,7 @@ public class NewsPhotoOperationService extends FileOperationService {
                                 .name(uploadedFile.getOriginalFilename())
                                 .bucket(bucket)
                                 .aNews(news)
+                                .url(fileUrl(bucket, eventId, uploadedFile.getOriginalFilename()))
                                 .build();
                     }
                     catch(Exception e) {

@@ -36,10 +36,10 @@ public class ShampaigneSparklingCardDtoMapper implements ProductCardDtoMapper {
                         .name(photo.getName())
                         .description(photo.getDescription())
                         .build()).toList())
-                .color(ShampaigneAndSparklingCardDto.Color.valueOf(sparklingWine.getColor().getName().name()))
-                .category(ShampaigneAndSparklingCardDto.Category.valueOf(sparklingWine.getCategory().getName().name()))
-                .content(ShampaigneAndSparklingCardDto.Content.valueOf(sparklingWine.getContent().getName().name()))
-                .volume(ShampaigneAndSparklingCardDto.Volume.valueOf(sparklingWine.getVolume().getName().name()))
+                .color(ShampaigneAndSparklingCardDto.Color.valueOf(sparklingWine.getColor().getName()))
+                .category(ShampaigneAndSparklingCardDto.Category.valueOf(sparklingWine.getCategory().getName()))
+                .content(ShampaigneAndSparklingCardDto.Content.valueOf(sparklingWine.getContent().getName()))
+                .volume(ShampaigneAndSparklingCardDto.Volume.valueOf(sparklingWine.getVolume().getName()))
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.controller;
 
+import com.innovativesoftware.domsommelier_backend.infrastructure.BucketRegistry;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductPhotoOperationService;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/products/files")
 public class ProductPhotoController {
 
-    private final String BUCKET = "product";
+    private final String BUCKET = BucketRegistry.Bucket.PRODUCT.getName();
 
     @Autowired
     private ProductPhotoOperationService fileOperationService;

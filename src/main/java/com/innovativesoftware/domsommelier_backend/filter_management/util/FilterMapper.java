@@ -70,7 +70,7 @@ public class FilterMapper {
 
     private static List<MultiSelectFilterDto.Option> toOptionDto(List<MultiSelectFilter.Option> options) {
         return options.stream().map(o -> MultiSelectFilterDto.Option.
-                builder().value(o.getValue()).label(o.getLabel()).build()).toList();
+                builder().value(o.getVal()).label(o.getLabel()).build()).toList();
     }
 
     public static FilterDto toDto(RangeFilter filter) {

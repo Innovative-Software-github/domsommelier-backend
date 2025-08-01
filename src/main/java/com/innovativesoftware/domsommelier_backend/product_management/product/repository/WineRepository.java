@@ -41,4 +41,7 @@ public interface WineRepository extends JpaRepository<Wine, UUID>, JpaSpecificat
 
     @Query("SELECT DISTINCT cast(w.volume as string) FROM Wine w")
     Set<String> findDistinctVolumes();
+
+    @Query("SELECT DISTINCT w.product.productCountry.name FROM Wine w")
+    Set<String> findDistinctCountryNames();
 }

@@ -30,7 +30,7 @@ public class MultiSelectFilter {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Option {
-        private String value;
+        private String val;
         private String label;
     }
 

@@ -1,6 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.news_management.service;
 
 import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO;
+import com.innovativesoftware.domsommelier_backend.infrastructure.BucketRegistry;
 import com.innovativesoftware.domsommelier_backend.news_management.entity.News;
 import com.innovativesoftware.domsommelier_backend.news_management.entity.NewsPhoto;
 import com.innovativesoftware.domsommelier_backend.news_management.model.NewsWithFileListDTO;
@@ -21,7 +22,7 @@ import java.util.UUID;
 @Service
 public class NewService {
 
-    private static final String BUCKET_NAME = "news";
+    private static final String BUCKET_NAME = BucketRegistry.Bucket.NEWS.getName();
 
     @Autowired
     private final NewsRepository newsRepository;
@@ -58,6 +59,7 @@ public class NewService {
                                         .bucket(newFile.getBucket())
                                         .name(newFile.getName())
                                         .description(newFile.getDescription())
+                                        .url(newFile.getUrl())
                                         .build()
                         ).toList()
                 )

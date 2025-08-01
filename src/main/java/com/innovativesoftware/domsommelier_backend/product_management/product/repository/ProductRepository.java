@@ -46,4 +46,12 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     @Query("SELECT DISTINCT p.productCountry.name FROM Product p")
     Set<String> findDistinctCountries();
+
+    @Query("""
+        SELECT DISTINCT p.productCountry.name
+        FROM Product p
+        WHERE p.productCategory.name = :category
+    """)
+    Set<String> findDistinctCountriesByCategory(@Param("category") String category);
+
 }

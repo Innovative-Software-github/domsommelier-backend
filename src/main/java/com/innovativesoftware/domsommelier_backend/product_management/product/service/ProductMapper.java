@@ -25,6 +25,7 @@ public class ProductMapper {
                                 .bucket(photo.getBucket())
                                 .name(photo.getName())
                                 .description(photo.getDescription())
+                                .url(photo.getUrl())
                                 .build()).toList()
                 )
                 .productCountry(product.getProductCountry().getName()).build();
@@ -47,6 +48,7 @@ public class ProductMapper {
                         .bucket(photo.getBucket())
                         .name(photo.getName())
                         .description(photo.getDescription())
+                        .url(photo.getUrl())
                         .build()).toList())
                 .orderItems(product.getOrderItems().stream().map(orderItem -> OrderItemDto.builder()
                         .id(orderItem.getId())

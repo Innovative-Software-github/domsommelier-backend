@@ -7,4 +7,5 @@ public interface FileProjection {
     String getBucket();
     String getName();
     String getDescription();
+    String getUrl();
 }

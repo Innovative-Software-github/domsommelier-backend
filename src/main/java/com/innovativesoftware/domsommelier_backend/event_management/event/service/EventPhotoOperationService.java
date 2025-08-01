@@ -5,6 +5,7 @@ import com.innovativesoftware.domsommelier_backend.event_management.event.entity
 import com.innovativesoftware.domsommelier_backend.event_management.event.model.EventPhotoDTO;
 import com.innovativesoftware.domsommelier_backend.event_management.event.repository.EventPhotoRepository;
 import com.innovativesoftware.domsommelier_backend.event_management.event.repository.EventRepository;
+import com.innovativesoftware.domsommelier_backend.exceptions.InvalidValueException;
 import com.innovativesoftware.domsommelier_backend.file_management.service.FileOperationService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -31,10 +32,20 @@ public class EventPhotoOperationService extends FileOperationService {
      */
     @Transactional
     public List<EventPhotoDTO> uploadFilesWithRef(MultipartFile[] files, String bucket, String eventId, String description) {
-        List<MultipartFile> uploadedFiles = fileService.uploadFiles(files, bucket);
-
         Event event = eventRepository.findById(UUID.fromString(eventId))
                 .orElseThrow(() -> new NoSuchElementException("Event not found"));
+
+        // Проверка, что файлы с такими именами уже есть (если есть, значит нафиг)
+        for (MultipartFile mf : files) {
+            String fileName = mf.getOriginalFilename();
+            if (eventPhotoRepository.existsByUrlAndEventId(fileUrl(bucket, eventId, fileName), event.getId())) {
+                throw new InvalidValueException(
+                        "Файл с названием " + fileName + " уже существует", "INVALID_FILENAME", "Файл существует"
+                );
+            }
+        }
+
+        List<MultipartFile> uploadedFiles = fileService.uploadFiles(files, eventId, bucket);
 
         List<EventPhotoDTO> dtos = new ArrayList<>();
         for (MultipartFile mf : uploadedFiles) {
@@ -43,6 +54,7 @@ public class EventPhotoOperationService extends FileOperationService {
                     .bucket(bucket)
                     .description(description)
                     .event(event)
+                    .url(fileUrl(bucket, eventId, mf.getOriginalFilename()))
                     .build();
             eventPhotoRepository.save(photo);
 
@@ -52,7 +64,7 @@ public class EventPhotoOperationService extends FileOperationService {
                     .name(photo.getName())
                     .description(photo.getDescription())
                     .bucket(photo.getBucket())
-                    .url("/events/files?file=" + photo.getName()) // вариант url, логика под контроллер
+                    .url(fileUrl(bucket, eventId, mf.getOriginalFilename()))
                     .build());
         }
         return dtos;
@@ -70,11 +82,11 @@ public class EventPhotoOperationService extends FileOperationService {
         return photos.stream()
                 .map(photo -> EventPhotoDTO.builder()
                         .id(photo.getId())
-                        .eventId(photo.getEvent().getId())
+                        .eventId(eventId)
                         .name(photo.getName())
                         .bucket(photo.getBucket())
                         .description(photo.getDescription())
-                        .url("/events/files?file=" + photo.getName())
+                        .url(fileUrl(photo.getBucket(), String.valueOf(eventId), photo.getName()))
                         .build())
                 .collect(Collectors.toList());
     }
@@ -91,7 +103,7 @@ public class EventPhotoOperationService extends FileOperationService {
                 .name(photo.getName())
                 .bucket(photo.getBucket())
                 .description(photo.getDescription())
-                .url("/events/files?file=" + photo.getName())
+                .url(fileUrl(photo.getBucket(), String.valueOf(photo.getEvent().getId()), photo.getName()))
                 .build();
     }
 
@@ -109,7 +121,8 @@ public class EventPhotoOperationService extends FileOperationService {
         EventPhoto photo = eventPhotoRepository.findById(photoId)
                 .orElseThrow(() -> new NoSuchElementException("Photo not found"));
         byte[] bytes = getBytesFromFile(photo.getBucket(), photo.getName());
-        return new PhotoDownloadData(photo.getName(), bytes);
+        return new PhotoDownloadData(photo.getName(), bytes, fileUrl(photo.getBucket(),
+                String.valueOf(photo.getEvent().getId()), photo.getName()));
     }
 
     /**
@@ -120,6 +133,7 @@ public class EventPhotoOperationService extends FileOperationService {
     public static class PhotoDownloadData {
         private String fileName;
         private byte[] bytes;
+        private String url;
     }
 
     /**

@@ -30,12 +30,14 @@ public class FilterAutoUpdateService {
         log.info("Старт автообновления фильтров multi_select...");
 
         for (ProductFilterFieldProvider provider : providers) {
+            log.info("Обновление фильтров для продукта [{}]", provider.getSupportedCategory().name());
             ProductCategoryEnum categoryEnum = provider.getSupportedCategory();
             Map<String, String> fieldRuNames = provider.getFieldRuNames();
 
             List<String> supportedFields = new ArrayList<>(fieldRuNames.keySet());
 
-            Map<String, Filter> filterEntities = filterRepo.findByProductCategories(categoryEnum).stream()
+            Map<String, Filter> filterEntities = filterRepo.findByProductCategories(categoryEnum)
+                    .stream()
                     .filter(f -> f.getType() == FilterType.multi_select)
                     .collect(Collectors.toMap(f -> f.getField().toLowerCase(), f -> f));
 
@@ -70,7 +72,8 @@ public class FilterAutoUpdateService {
                     if (!optionsEqual(oldOptions, newOptions)) {
                         msf.setOptions(new ArrayList<>(newOptions));
                         multiSelectFilterRepo.save(msf);
-                        log.info("Обновлён фильтр [{}]: options: {}", filterEntity.getName(), newOptions);
+                        log.info("Обновлён фильтр [{}] для продукта [{}]: options: {}", filterEntity.getName(),
+                                filterEntity.getProductCategoryEnum().name(), newOptions);
                     }
                 }
             }
@@ -84,7 +87,7 @@ public class FilterAutoUpdateService {
         for (int i = 0; i < a.size(); i++) {
             MultiSelectFilter.Option o1 = a.get(i);
             MultiSelectFilter.Option o2 = b.get(i);
-            if (!Objects.equals(o1.getValue(), o2.getValue())) return false;
+            if (!Objects.equals(o1.getVal(), o2.getVal())) return false;
             if (!Objects.equals(o1.getLabel(), o2.getLabel())) return false;
         }
         return true;

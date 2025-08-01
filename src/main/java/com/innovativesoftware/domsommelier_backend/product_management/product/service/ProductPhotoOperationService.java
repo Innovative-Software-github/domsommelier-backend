@@ -25,7 +25,7 @@ public class ProductPhotoOperationService extends FileOperationService {
 
     @Transactional
     public void uploadFilesWithRef(MultipartFile[] files, String bucket, String productId) {
-        List<MultipartFile> uploadedFiles = fileService.uploadFiles(files, bucket);
+        List<MultipartFile> uploadedFiles = fileService.uploadFiles(files, productId, bucket);
         Product product = productRepository.getReferenceById(UUID.fromString(productId));
 
         List<ProductPhoto> readyFiles = (List<ProductPhoto>) uploadedFiles.stream()
@@ -35,6 +35,7 @@ public class ProductPhotoOperationService extends FileOperationService {
                                 .name(uploadedFile.getOriginalFilename())
                                 .bucket(bucket)
                                 .product(product)
+                                .url(fileUrl(bucket, productId, uploadedFile.getOriginalFilename()))
                                 .build();
                     }
                     catch(Exception e) {

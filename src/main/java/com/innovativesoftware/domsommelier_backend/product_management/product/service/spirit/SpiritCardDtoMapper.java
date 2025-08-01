@@ -35,9 +35,9 @@ public class SpiritCardDtoMapper implements ProductCardDtoMapper {
                         .name(photo.getName())
                         .description(photo.getDescription())
                         .build()).toList())
-                .volume(SpiritCardDto.Volume.valueOf(spirit.getVolume().getName().name()))
+                .volume(SpiritCardDto.Volume.valueOf(spirit.getVolume().getName()))
                 .category(spirit.getCategory().getName())
-                .strength(SpiritCardDto.Strength.valueOf(spirit.getStrength().getName().name()))
+                .strength(SpiritCardDto.Strength.valueOf(spirit.getStrength().getName()))
                 .build();
     }
 

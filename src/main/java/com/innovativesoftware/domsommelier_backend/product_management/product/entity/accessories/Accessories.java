@@ -4,6 +4,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.en
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -26,4 +27,9 @@ public class Accessories {
 
     @Column(name = "producer")
     private String producer;
+
+    @ElementCollection
+    @CollectionTable(name = "accessories_feature", joinColumns = @JoinColumn(name = "accessories_product_id"))
+    @Column(name = "feature")
+    private List<String> features;
 }

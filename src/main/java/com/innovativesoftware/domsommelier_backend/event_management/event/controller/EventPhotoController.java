@@ -2,6 +2,7 @@ package com.innovativesoftware.domsommelier_backend.event_management.event.contr
 
 import com.innovativesoftware.domsommelier_backend.event_management.event.model.EventPhotoDTO;
 import com.innovativesoftware.domsommelier_backend.event_management.event.service.EventPhotoOperationService;
+import com.innovativesoftware.domsommelier_backend.infrastructure.BucketRegistry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class EventPhotoController {
 
     private final EventPhotoOperationService service;
+    private final static String BUCKET = BucketRegistry.Bucket.EVENT.getName();
 
     @Operation(summary="Загрузка фото к мероприятию")
     @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -29,7 +31,7 @@ public class EventPhotoController {
             @RequestPart("description") String description,
             @RequestParam String eventId
     ) {
-        return service.uploadFilesWithRef(files, "event", eventId, description);
+        return service.uploadFilesWithRef(files, BUCKET, eventId, description);
     }
 
     @Operation(summary="Получить список фото для мероприятия")

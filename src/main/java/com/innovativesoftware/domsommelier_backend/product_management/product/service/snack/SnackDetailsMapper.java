@@ -27,7 +27,7 @@ public class SnackDetailsMapper implements ProductDetailsMapper<SnackDetailsDto>
         return SnackDetailsDto.builder()
                 .producer(snack.getProducer())
                 .pairings(snack.getPairings())
-                .category(String.valueOf(snack.getCategory()))
+                .category(String.valueOf(snack.getCategory().getName()))
                 .build();
     }
 }

@@ -1,10 +1,10 @@
 package com.innovativesoftware.domsommelier_backend.file_management.service;
 
 import com.innovativesoftware.domsommelier_backend.file_management.model.FileService;
+import com.innovativesoftware.domsommelier_backend.infrastructure.MinioUrlBuilder;
 import io.minio.*;
 import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,13 +21,13 @@ import java.util.List;
 @Service
 public class MinioService implements FileService {
 
-    @Autowired
-    private MinioClient minioClient;
+    private final MinioClient minioClient;
+    private final MinioUrlBuilder minioUrlBuilder;
 
-    public List<MultipartFile> uploadFiles(MultipartFile[] files, String bucketName) {
+    public List<MultipartFile> uploadFiles(MultipartFile[] files, String path, String bucketName) {
         List<MultipartFile> uploadedFiles = new ArrayList<>();
         for (var file : files) {
-            uploadedFiles.add(uploadOneFile(file, bucketName));
+            uploadedFiles.add(uploadOneFile(file, path, bucketName));
         }
         return uploadedFiles;
     }
@@ -60,12 +60,20 @@ public class MinioService implements FileService {
         }
     }
 
-    private MultipartFile uploadOneFile(MultipartFile file, String bucketName) {
+    private MultipartFile uploadOneFile(MultipartFile file, String path, String bucketName) {
         try (InputStream stream = file.getInputStream()) {
             buildBucket(bucketName);
+
+            String fileName = file.getOriginalFilename();
+            String objectName = (path == null || path.isBlank())
+                    ? fileName
+                    : path.replaceAll("^/+", "").replaceAll("/+$", "") + "/" + fileName;
+
             minioClient.putObject(
-                    PutObjectArgs.builder().bucket(bucketName).object(file.getOriginalFilename()).stream(
-                                    stream, file.getSize(), -1)
+                    PutObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(objectName)
+                            .stream(stream, file.getSize(), -1)
                             .contentType(file.getContentType())
                             .build());
             return file;
@@ -73,6 +81,7 @@ public class MinioService implements FileService {
             throw new RuntimeException(e);
         }
     }
+
 
     private void buildBucket(String bucketName) {
         try {
@@ -83,5 +92,10 @@ public class MinioService implements FileService {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    @Override
+    public String fileUrl(String bucket, String path, String fileName) {
+        return minioUrlBuilder.getPublicFileUrl(bucket, path, fileName);
     }
 }

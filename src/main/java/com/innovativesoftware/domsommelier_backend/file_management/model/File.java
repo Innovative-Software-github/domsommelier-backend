@@ -28,4 +28,7 @@ public class File {
 
     @Column(name = "description")
     public String description;
+
+    @Column(name = "url")
+    private String url;
 }

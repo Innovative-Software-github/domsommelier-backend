@@ -12,12 +12,9 @@ import java.util.List;
 @Table(name = "sparkling_wine_category")
 public class SparklingWineCategory {
 
-    public enum Category { Champagne, Sparkling_wine, Prosecco }
-
     @Id
-    @Enumerated(EnumType.STRING)
     @Column(name = "name", nullable = false)
-    private Category name;
+    private String name;
 
     @OneToMany(mappedBy = "category")
     private List<SparklingWine> sparklingWineList;

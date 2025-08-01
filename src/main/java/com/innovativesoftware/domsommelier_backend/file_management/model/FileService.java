@@ -5,7 +5,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface FileService {
-    List<MultipartFile> uploadFiles(MultipartFile[] files, String bucket);
+    List<MultipartFile> uploadFiles(MultipartFile[] files, String path, String bucket);
     byte[] getFileBytes(String bucket, String fileName);
     void deleteFile(String bucket, String fileName);
+    String fileUrl(String bucket, String path, String fileName);
 }

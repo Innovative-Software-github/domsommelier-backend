@@ -24,9 +24,9 @@ public class SpiritDetailsMapper implements ProductDetailsMapper<SpiritDetailsDt
         Spirit spirit = spiritRepository.findById(product.getId()).orElse(null);
         if (spirit == null) return null;
         return SpiritDetailsDto.builder()
-                .volume(spirit.getVolume().getName().name())
+                .volume(spirit.getVolume().getName())
                 .category(spirit.getCategory().getName())
-                .strength(spirit.getStrength().getName().name())
+                .strength(spirit.getStrength().getName())
                 .producer(spirit.getProducer())
                 .features(spirit.getFeatures())
                 .build();

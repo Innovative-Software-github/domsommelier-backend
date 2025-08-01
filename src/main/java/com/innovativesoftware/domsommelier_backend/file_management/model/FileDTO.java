@@ -18,5 +18,5 @@ public class FileDTO implements FileProjection {
     private String bucket;
     private String name;
     private String description;
-
+    private String url;
 }

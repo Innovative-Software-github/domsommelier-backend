@@ -60,7 +60,7 @@ public class ProductController {
 
     //@Hidden
     @Operation(summary = "Получение продукта по id")
-    @GetMapping("/{id}")
+    @GetMapping(produces = "application/json; charset=UTF-8")
     public ResponseEntity<ProductDTO> getProductById(@RequestParam("id") String id) {
         return ResponseEntity.ok(productService.getProductDetails(UUID.fromString(id)));
     }
@@ -100,7 +100,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProductsByCountry(country, pageable));
     }
 
-    @PostMapping("/filter")
+    @PostMapping(value = "/filter", produces = "application/json; charset=UTF-8")
     @Operation(summary = "Поиск продуктов по фильтру")
     public ResponseEntity<List<ProductCardDto>> getByFilterIdAndFilterOptionId(
             @RequestParam("category") ProductCategoryEnum category,
