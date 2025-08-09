@@ -17,11 +17,12 @@ import java.util.Map;
 public class LowAlcoholFilterStrategy implements ProductFilterStrategy {
     private final LowAlcoholRepository lowAlcoholRepository;
     private final LowAlcoholSpecification lowAlcoholSpecification;
+    private final ProductMapper productMapper;
 
     @Override
     public List<ProductCardDto> filter(Map<String, Object> params, Pageable pageable) {
         return lowAlcoholRepository.findAll(lowAlcoholSpecification.byFilter(params), pageable)
-                .map(lowAlcohol -> ProductMapper.toCardDto(lowAlcohol.getProduct()))
+                .map(lowAlcohol -> productMapper.toCardDto(lowAlcohol.getProduct()))
                 .toList();
     }
 

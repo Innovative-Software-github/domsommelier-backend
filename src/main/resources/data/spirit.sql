@@ -1,6 +1,6 @@
 insert into spirit_category (name) values ('Виски'), ('Коньяк'), ('Водка'), ('Текила'), ('Ром'), ('Джин'), ('Бренди'), ('Самогон'), ('Абсент'), ('Ликер');
-insert into spirit_strength (name) values (20), (30), (38), (40), (50), (60), (70), (80), (90), (100);
-insert into spirit_volume (name) values (0.5), (0.7), (1), (1.5), (2), (2.5), (3);
+--insert into spirit_strength (name) values (20), (30), (38), (40), (50), (60), (70), (80), (90), (100);
+--insert into spirit_volume (name) values (0.5), (0.7), (1), (1.5), (2), (2.5), (3);
 
 insert into spirit (id, subcategory, strength, producer, volume) values ('3a4b85d0-f739-4856-a09b-8495f2157e4d', 'Виски', 40, 'Johnnie Walker', 0.7);
 insert into spirit (id, subcategory, strength, producer, volume) values ('dcfe12c7-2a16-4482-9c5b-ca57260fc475', 'Виски', 40, 'Jack Daniel''s', 0.7);

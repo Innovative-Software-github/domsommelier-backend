@@ -12,13 +12,13 @@ public interface SpiritRepository extends JpaRepository<Spirit, UUID>, JpaSpecif
     @Query("SELECT DISTINCT s.category.name FROM Spirit s")
     Set<String> getDistinctSubcategory();
 
-    @Query("SELECT DISTINCT s.strength.name FROM Spirit s")
+    @Query("SELECT DISTINCT cast(s.strength as string) FROM Spirit s")
     Set<String> getDistinctStrength();
 
     @Query("SELECT DISTINCT s.producer FROM Spirit s")
     Set<String> getDistinctProducer();
 
-    @Query("SELECT DISTINCT s.volume.name FROM Spirit s")
+    @Query("SELECT DISTINCT cast(s.volume as string) FROM Spirit s")
     Set<String> getDistinctVolume();
 
     @Query("SELECT DISTINCT f FROM Spirit s JOIN s.features f")

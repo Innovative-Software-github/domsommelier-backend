@@ -8,6 +8,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.mo
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.spirit.SpiritCardDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.SpiritRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductCardDtoMapper;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.VolumeStrengthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -35,9 +36,9 @@ public class SpiritCardDtoMapper implements ProductCardDtoMapper {
                         .name(photo.getName())
                         .description(photo.getDescription())
                         .build()).toList())
-                .volume(SpiritCardDto.Volume.valueOf(spirit.getVolume().getName()))
+                .volume(VolumeStrengthUtils.formatVolume(spirit.getVolume()))
                 .category(spirit.getCategory().getName())
-                .strength(SpiritCardDto.Strength.valueOf(spirit.getStrength().getName()))
+                .strength(VolumeStrengthUtils.formatStrength(spirit.getStrength()))
                 .build();
     }
 

@@ -6,6 +6,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.en
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.shampaigne_sparkling.ShampaigneAndSparklingDetailsDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.SparklingWineRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductDetailsMapper;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.VolumeStrengthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +31,7 @@ public class ShampaigneSparklingDetailsMapper implements ProductDetailsMapper<Sh
                 .category(sparklingWine.getCategory().getName())
                 .content(sparklingWine.getContent().getName())
                 .color(sparklingWine.getColor().getName())
-                .volume(sparklingWine.getVolume().getName())
+                .volume(VolumeStrengthUtils.formatVolume(sparklingWine.getVolume()))
                 .build();
     }
 }

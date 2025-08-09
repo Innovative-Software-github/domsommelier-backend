@@ -4,6 +4,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.en
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,16 +30,14 @@ public class Spirit {
     @JoinColumn(name = "subcategory", nullable = false)
     private SpiritCategory category; // Виски, Коньяк, Водка и т.д.
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "strength", nullable = false)
-    private SpiritStrength strength; // 20%, 30%, 50% и т.д.
+    @Column(name = "strength", nullable = false, precision = 4, scale = 1)
+    private BigDecimal strength;
 
     @Column(name = "producer")
     private String producer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "volume", nullable = false)
-    private SpiritVolume volume;
+    @Column(name = "volume", nullable = false, precision = 4, scale = 2)
+    private BigDecimal volume;
 
     @ElementCollection
     @CollectionTable(name = "spirit_feature", joinColumns = @JoinColumn(name = "spirit_id"))

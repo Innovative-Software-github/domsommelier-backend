@@ -7,6 +7,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.mo
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.wine.WineCardDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.WineRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductCardDtoMapper;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.VolumeStrengthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -34,9 +35,7 @@ public class WineCardDtoMapper implements ProductCardDtoMapper {
                         .name(photo.getName())
                         .description(photo.getDescription())
                         .build()).toList())
-                .volume(wine.getVolume())
-                //.color(WineCardDto.Color.valueOf(wine.getColor().getName().name()))
-                //.type(WineCardDto.Type.valueOf(wine.getType().getName().name()))
+                .volume(VolumeStrengthUtils.formatVolume(wine.getVolume()))
                 .color(wine.getColor().getName())
                 .type(wine.getType().getName())
                 .build();

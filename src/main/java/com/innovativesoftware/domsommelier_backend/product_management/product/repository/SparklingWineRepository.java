@@ -26,7 +26,7 @@ public interface SparklingWineRepository extends JpaRepository<SparklingWine, UU
     @Query("SELECT DISTINCT w.color.name FROM SparklingWine w")
     Set<String> findDistinctColors();
 
-    @Query("SELECT DISTINCT s.volume.name FROM SparklingWine s")
+    @Query("SELECT DISTINCT cast(s.volume as string) FROM SparklingWine s")
     Set<String> findDistinctVolumes();
 
     @Query("SELECT DISTINCT f FROM SparklingWine s JOIN s.features f")

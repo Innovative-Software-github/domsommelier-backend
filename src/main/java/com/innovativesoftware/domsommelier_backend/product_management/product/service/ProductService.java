@@ -85,7 +85,7 @@ public class ProductService {
                 .map(id -> {
                     var product = productRepository.findById(id).orElseThrow(() ->
                             new RuntimeException("Product not found"));
-                    return ProductMapper.toCardDto(product);
+                    return productMapper.toCardDto(product);
                 })
                 .toList();
     }
@@ -97,7 +97,7 @@ public class ProductService {
                 .map(id -> {
                     var product = productRepository.findById(id).orElseThrow(() ->
                             new RuntimeException("Product not found"));
-                    return ProductMapper.toCardDto(product);
+                    return productMapper.toCardDto(product);
                 })
                 .toList();
     }

@@ -4,6 +4,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.en
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,9 +41,8 @@ public class SparklingWine {
     @JoinColumn(name = "color", nullable = false)
     private SparklingWineColor color;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "volume", nullable = false)
-    private WineVolume volume;
+    @Column(name = "volume", nullable = false, precision = 4, scale = 2)
+    private BigDecimal volume;
 
     @ElementCollection
     @CollectionTable(name = "sparkling_wine_feature", joinColumns = @JoinColumn(name = "sparkling_wine_id"))

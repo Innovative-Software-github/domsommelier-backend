@@ -17,11 +17,12 @@ import java.util.Map;
 public class ShampagneSparklingFilterStrategy implements ProductFilterStrategy {
     private final SparklingWineRepository sparklingWineRepository;
     private final ShampaigneSparklingSpecification shampaigneSparklingSpecification;
+    private final ProductMapper productMapper;
 
     @Override
     public List<ProductCardDto> filter(Map<String, Object> params, Pageable pageable) {
         return sparklingWineRepository.findAll(shampaigneSparklingSpecification.byFilter(params), pageable)
-                .map(sparklingWine -> ProductMapper.toCardDto(sparklingWine.getProduct()))
+                .map(sparklingWine -> productMapper.toCardDto(sparklingWine.getProduct()))
                 .toList();
     }
 

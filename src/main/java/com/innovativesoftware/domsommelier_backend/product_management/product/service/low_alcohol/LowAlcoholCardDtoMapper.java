@@ -8,6 +8,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.mo
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.low_alcohol.LowAlcoholCardDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.LowAlcoholRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductCardDtoMapper;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.VolumeStrengthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -37,9 +38,9 @@ public class LowAlcoholCardDtoMapper implements ProductCardDtoMapper {
                         .name(photo.getName())
                         .description(photo.getDescription())
                         .build()).toList())
-                .category(LowAlcoholCardDto.Category.valueOf(lowAlcohol.getCategory().getName()))
-                .volume(LowAlcoholCardDto.Volume.valueOf(lowAlcohol.getVolume().getName()))
-                .strength(LowAlcoholCardDto.Strength.valueOf(lowAlcohol.getStrength().getName()))
+                .category(lowAlcohol.getCategory().getName())
+                .volume(VolumeStrengthUtils.formatVolume(lowAlcohol.getVolume()))
+                .strength(VolumeStrengthUtils.formatStrength(lowAlcohol.getStrength()))
                 .build();
     }
 

@@ -18,11 +18,12 @@ public class AccessoriesFilterStrategy implements ProductFilterStrategy {
 
     private final AccessoriesRepository accessoriesRepository;
     private final AccessoriesSpecification accessoriesSpecification;
+    private final ProductMapper productMapper;
 
     @Override
     public List<ProductCardDto> filter(Map<String, Object> params, Pageable pageable) {
         return accessoriesRepository.findAll(accessoriesSpecification.byFilter(params), pageable)
-                .map(accessories -> ProductMapper.toCardDto(accessories.getProduct()))
+                .map(accessories -> productMapper.toCardDto(accessories.getProduct()))
                 .toList();
     }
 

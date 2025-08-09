@@ -17,11 +17,12 @@ import java.util.Map;
 public class WineFilterStrategy implements ProductFilterStrategy {
     private final WineRepository wineRepository;
     private final WineSpecification wineSpecification;
+    private final ProductMapper productMapper;
 
     @Override
     public List<ProductCardDto> filter(Map<String, Object> params, Pageable pageable) {
         return wineRepository.findAll(wineSpecification.byFilter(params), pageable)
-                .map(wine -> ProductMapper.toCardDto(wine.getProduct()))
+                .map(wine -> productMapper.toCardDto(wine.getProduct()))
                 .toList();
     }
 

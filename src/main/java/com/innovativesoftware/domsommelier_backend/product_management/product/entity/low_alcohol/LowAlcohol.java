@@ -4,6 +4,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.en
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,13 +33,11 @@ public class LowAlcohol {
     @Column(name = "producer")
     private String producer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "volume", nullable = false)
-    private LowAlcoholVolume volume;
+    @Column(name = "volume", nullable = false, precision = 4, scale = 2)
+    private BigDecimal volume;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "strength", nullable = false)
-    private LowAlcoholStrength strength;
+    @Column(name = "strength", nullable = false, precision = 4, scale = 1)
+    private BigDecimal strength;
 
     @ElementCollection
     @CollectionTable(name = "low_alcohol_feature", joinColumns = @JoinColumn(name = "low_alcohol_id"))

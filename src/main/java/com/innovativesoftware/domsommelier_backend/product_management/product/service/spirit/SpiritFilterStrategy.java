@@ -17,11 +17,12 @@ import java.util.Map;
 public class SpiritFilterStrategy implements ProductFilterStrategy {
     private final SpiritRepository spiritRepository;
     private final SpiritSpecification spiritSpecification;
+    private final ProductMapper productMapper;
 
     @Override
     public List<ProductCardDto> filter(Map<String, Object> params, Pageable pageable) {
         return spiritRepository.findAll(spiritSpecification.byFilter(params), pageable)
-                .map(spirit -> ProductMapper.toCardDto(spirit.getProduct()))
+                .map(spirit -> productMapper.toCardDto(spirit.getProduct()))
                 .toList();
     }
 

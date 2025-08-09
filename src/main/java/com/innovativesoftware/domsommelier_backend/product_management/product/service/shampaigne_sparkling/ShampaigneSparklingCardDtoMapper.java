@@ -8,6 +8,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.mo
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.shampaigne_sparkling.ShampaigneAndSparklingCardDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.SparklingWineRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductCardDtoMapper;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.VolumeStrengthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -36,10 +37,10 @@ public class ShampaigneSparklingCardDtoMapper implements ProductCardDtoMapper {
                         .name(photo.getName())
                         .description(photo.getDescription())
                         .build()).toList())
-                .color(ShampaigneAndSparklingCardDto.Color.valueOf(sparklingWine.getColor().getName()))
-                .category(ShampaigneAndSparklingCardDto.Category.valueOf(sparklingWine.getCategory().getName()))
-                .content(ShampaigneAndSparklingCardDto.Content.valueOf(sparklingWine.getContent().getName()))
-                .volume(ShampaigneAndSparklingCardDto.Volume.valueOf(sparklingWine.getVolume().getName()))
+                .color(sparklingWine.getColor().getName())
+                .category(sparklingWine.getCategory().getName())
+                .content(sparklingWine.getContent().getName())
+                .volume(VolumeStrengthUtils.formatVolume(sparklingWine.getVolume()))
                 .build();
     }
 

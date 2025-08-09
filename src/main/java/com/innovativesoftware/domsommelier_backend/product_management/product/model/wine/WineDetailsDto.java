@@ -15,6 +15,6 @@ public class WineDetailsDto {
     private String type;
     private List<String> grapes;
     private String producer;
-    private Double volume;
+    private String volume;
     private List<String> features;
 }

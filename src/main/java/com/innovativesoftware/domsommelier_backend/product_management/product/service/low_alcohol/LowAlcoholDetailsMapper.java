@@ -6,6 +6,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.en
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.low_alcohol.LowAlcoholDetailsDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.LowAlcoholRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductDetailsMapper;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.VolumeStrengthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +29,8 @@ public class LowAlcoholDetailsMapper implements ProductDetailsMapper<LowAlcoholD
         if (lowAlcohol == null) return null;
         return LowAlcoholDetailsDto.builder()
                 .producer(lowAlcohol.getProducer())
-                .strength(lowAlcohol.getStrength().getName())
-                .volume(lowAlcohol.getVolume().getName())
+                .strength(VolumeStrengthUtils.formatStrength(lowAlcohol.getStrength()))
+                .volume(VolumeStrengthUtils.formatVolume(lowAlcohol.getVolume()))
                 .category(lowAlcohol.getCategory().getName())
                 .features(lowAlcohol.getFeatures())
                 .build();

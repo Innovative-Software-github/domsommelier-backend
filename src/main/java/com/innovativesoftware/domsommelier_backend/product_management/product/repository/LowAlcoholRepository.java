@@ -20,6 +20,6 @@ public interface LowAlcoholRepository extends JpaRepository<LowAlcohol, UUID>, J
     @Query("SELECT DISTINCT l.producer FROM LowAlcohol l")
     Set<String> findDistinctProducers();
 
-    @Query("SELECT DISTINCT l.volume.name FROM LowAlcohol l")
+    @Query("SELECT DISTINCT cast(l.volume as string) FROM LowAlcohol l")
     Set<String> findDistinctVolumes();
 }

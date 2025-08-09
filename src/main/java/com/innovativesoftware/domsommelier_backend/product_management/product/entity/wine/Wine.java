@@ -4,6 +4,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.en
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,8 +45,8 @@ public class Wine {
     @Column(name = "producer")
     private String producer;
 
-    @Column(name = "volume")
-    private Double volume;
+    @Column(name = "volume", nullable = false, precision = 4, scale = 2)
+    private BigDecimal volume;
 
     @ElementCollection
     @CollectionTable(name = "wine_feature", joinColumns = @JoinColumn(name = "wine_id"))

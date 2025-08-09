@@ -6,6 +6,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.en
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.spirit.SpiritDetailsDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.SpiritRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductDetailsMapper;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.VolumeStrengthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,9 +25,9 @@ public class SpiritDetailsMapper implements ProductDetailsMapper<SpiritDetailsDt
         Spirit spirit = spiritRepository.findById(product.getId()).orElse(null);
         if (spirit == null) return null;
         return SpiritDetailsDto.builder()
-                .volume(spirit.getVolume().getName())
+                .volume(VolumeStrengthUtils.formatVolume(spirit.getVolume()))
                 .category(spirit.getCategory().getName())
-                .strength(spirit.getStrength().getName())
+                .strength(VolumeStrengthUtils.formatStrength(spirit.getStrength()))
                 .producer(spirit.getProducer())
                 .features(spirit.getFeatures())
                 .build();

@@ -18,11 +18,12 @@ public class SnackFilterStrategy implements ProductFilterStrategy {
 
     private final SnackRepository snackRepository;
     private final SnackSpecification snackSpecification;
+    private final ProductMapper productMapper;
 
     @Override
     public List<ProductCardDto> filter(Map<String, Object> params, Pageable pageable) {
         return snackRepository.findAll(snackSpecification.byFilter(params), pageable)
-                .map(snack -> ProductMapper.toCardDto(snack.getProduct()))
+                .map(snack -> productMapper.toCardDto(snack.getProduct()))
                 .toList();
     }
 

@@ -13,22 +13,13 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ProductMapper {
 
+    private final ProductCardDtoMapperRegistry cardDtoMapperRegistry;
     private final ProductDetailsMapperRegistry registry;
 
-    public static ProductCardDto toCardDto(Product product) {
-        return ProductCardDto.builder()
-                .id(product.getId()).name(product.getName()).article(product.getArticle())
-                .productCategoryName(String.valueOf(product.getProductCategory().getName()))
-                .discount(product.getDiscount()).price(product.getPrice()).productPhoto(
-                        product.getProductPhoto().stream().map(photo -> FileDTO.builder()
-                                .id(photo.getId())
-                                .bucket(photo.getBucket())
-                                .name(photo.getName())
-                                .description(photo.getDescription())
-                                .url(photo.getUrl())
-                                .build()).toList()
-                )
-                .productCountry(product.getProductCountry().getName()).build();
+    public ProductCardDto toCardDto(Product product) {
+        String categoryName = product.getProductCategory().getName().name();
+        ProductCardDtoMapper cardDtoMapper = cardDtoMapperRegistry.getMapper(categoryName);
+        return cardDtoMapper.toCardDto(product);
     }
 
     public ProductDTO toProductDto(Product product) {

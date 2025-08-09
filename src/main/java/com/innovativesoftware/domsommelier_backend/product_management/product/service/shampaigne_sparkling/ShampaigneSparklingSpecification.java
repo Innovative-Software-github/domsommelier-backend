@@ -17,7 +17,7 @@ public class ShampaigneSparklingSpecification extends BaseSpecification<Sparklin
         params.forEach((key, value) -> {
             if (isEmpty(value)) return;
             switch (key) {
-                case "category" -> predicates.add(root.get("subcategory").get("name").in((List<?>) value));
+                case "subcategory" -> predicates.add(root.get("subcategory").get("name").in((List<?>) value));
                 case "content" -> predicates.add(root.get("sugar_content").get("name").in((List<?>) value));
                 case "volume" -> predicates.add(root.get("volume").get("name").in((List<?>) value));
                 case "features" -> predicates.add(root.join("features").in((List<?>) value));
