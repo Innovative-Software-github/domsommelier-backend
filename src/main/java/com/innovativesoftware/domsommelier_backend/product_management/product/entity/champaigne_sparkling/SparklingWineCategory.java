@@ -16,6 +16,6 @@ public class SparklingWineCategory {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "subcategory")
     private List<SparklingWine> sparklingWineList;
 }

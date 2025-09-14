@@ -27,6 +27,7 @@ public class AccessoriesDetailsMapper implements ProductDetailsMapper<Accessorie
         );
         return AccessoriesDetailsDto.builder()
                 .producer(accessories.getProducer())
+                .features(accessories.getFeatures())
                 .build();
     }
 }

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -28,11 +29,11 @@ public class Product {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "initial_price", nullable = false)
-    private Integer initialPrice;
+    @Column(name = "initial_price", nullable = false, precision = 12, scale = 2)
+    private BigDecimal initialPrice;
 
-    @Column(name = "price", nullable = false)
-    private Integer price;
+    @Column(name = "price", nullable = false, precision = 12, scale = 2)
+    private BigDecimal price;
 
     @Column(name = "description")
     private String description;

@@ -18,8 +18,8 @@ public class LowAlcoholSpecification extends BaseSpecification<LowAlcohol> {
             if (isEmpty(value)) return;
             switch (key) {
                 case "subcategory" -> predicates.add(root.get("category").get("name").in((List<?>) value));
-                case "strength" -> predicates.add(root.get("strength").get("name").in((List<?>) value));
-                case "volume" -> predicates.add(root.get("volume").get("name").in((List<?>) value));
+                case "strength" -> predicates.add(root.get("strength").in((List<?>) value));
+                case "volume" -> predicates.add(root.get("volume").in((List<?>) value));
                 case "features" -> predicates.add(root.join("features").in((List<?>) value));
             }
         });

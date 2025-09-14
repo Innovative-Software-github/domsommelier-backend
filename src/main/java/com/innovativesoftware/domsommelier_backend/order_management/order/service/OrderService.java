@@ -1,0 +1,129 @@
+package com.innovativesoftware.domsommelier_backend.order_management.order.service;
+
+import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.Address;
+import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.Customer;
+import com.innovativesoftware.domsommelier_backend.customer_management.customer.repository.AddressRepository;
+import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.repository.CustomerRepository;
+import com.innovativesoftware.domsommelier_backend.order_management.basket.model.BasketDto;
+import com.innovativesoftware.domsommelier_backend.order_management.discount.entity.Promo;
+import com.innovativesoftware.domsommelier_backend.order_management.discount.entity.PromoUse;
+import com.innovativesoftware.domsommelier_backend.order_management.discount.repository.PromoRepository;
+import com.innovativesoftware.domsommelier_backend.order_management.order.entity.Order;
+import com.innovativesoftware.domsommelier_backend.order_management.order.entity.OrderItem;
+import com.innovativesoftware.domsommelier_backend.order_management.order.entity.OrderStatus;
+import com.innovativesoftware.domsommelier_backend.order_management.order.repository.OrderItemRepository;
+import com.innovativesoftware.domsommelier_backend.order_management.order.repository.OrderRepository;
+import com.innovativesoftware.domsommelier_backend.order_management.order.repository.OrderStatusRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
+import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class OrderService {
+
+    private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
+    private final OrderStatusRepository orderStatusRepository;
+    private final ProductRepository productRepository;
+    private final CustomerRepository customerRepository;
+    private final AddressRepository addressRepository;
+    private final PromoRepository promoRepository;
+
+    @Transactional
+    public Order createOrderFromBasket(BasketDto basket, UUID customerId, UUID addressId) {
+        // 1. Получаем покупателя и адрес
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new NoSuchElementException("Покупатель не найден"));
+
+        Address address = addressRepository.findById(addressId)
+                .orElseThrow(() -> new NoSuchElementException("Адрес не найден"));
+
+        // 2. Определяем статус заказа
+        OrderStatus status = orderStatusRepository.findById("NEW")
+                .orElseGet(() -> {
+                    OrderStatus s = new OrderStatus();
+                    s.setName("NEW");
+                    return orderStatusRepository.save(s);
+                });
+
+        // 3. Инициализируем заказ
+        Order order = new Order();
+        order.setId(UUID.randomUUID());
+        order.setCreatedAt(OffsetDateTime.now());
+        order.setCustomer(customer);
+        order.setAddress(address);
+        order.setOrderStatus(status);
+
+        // 4. Промокод (если есть)
+        if (basket.getPromoId() != null) {
+            Promo promo = promoRepository.findById(basket.getPromoId())
+                    .orElseThrow(() -> new NoSuchElementException("Промокод не найден"));
+
+            PromoUse promoUse = new PromoUse();
+            promoUse.setPromo(promo);
+            promoUse.setCustomer(customer);
+            promoUse.setOrder(order);
+            promoUse.setIsUsed(true);
+            order.setPromoUse(promoUse);
+        }
+
+        // 5. OrderItems
+        List<OrderItem> orderItems = basket.getItems().stream()
+                .map(basketItemDto -> {
+                    Product product = productRepository.findById(basketItemDto.getProductId())
+                            .orElseThrow(() -> new NoSuchElementException("Товар не найден: " + basketItemDto.getProductId()));
+                    OrderItem orderItem = new OrderItem();
+                    orderItem.setOrder(order);
+                    orderItem.setProduct(product);
+                    orderItem.setQuantity(basketItemDto.getQuantity());
+                    return orderItem;
+                })
+                .collect(Collectors.toList());
+
+        order.setOrderItems(orderItems);
+
+        // 6. Сохраняем заказ (всё сохраняется каскадно)
+        Order savedOrder = orderRepository.save(order);
+
+        // 7. Сохраняем позиции заказа отдельно, если не настроен cascade (optional)
+        orderItems.forEach(orderItemRepository::save);
+
+        return savedOrder;
+    }
+
+    public Optional<Order> findOrderById(UUID orderId) {
+        return orderRepository.findById(orderId);
+    }
+
+    public List<Order> findOrdersByCustomer(UUID customerId) {
+        return orderRepository.findAllByCustomerId(customerId);
+    }
+
+    @Transactional
+    public void cancelOrder(UUID orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new NoSuchElementException("Заказ не найден"));
+        // только если статус позволяет отмену
+        if (!"NEW".equals(order.getOrderStatus().getName())) {
+            throw new IllegalStateException("Заказ нельзя отменить");
+        }
+        OrderStatus cancelledStatus = orderStatusRepository.findById("CANCELLED")
+                .orElseGet(() -> {
+                    OrderStatus s = new OrderStatus();
+                    s.setName("CANCELLED");
+                    return orderStatusRepository.save(s);
+                });
+        order.setOrderStatus(cancelledStatus);
+        orderRepository.save(order);
+    }
+}

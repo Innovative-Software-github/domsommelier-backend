@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductDTO;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.VolumeStrengthUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.io.PrintStream;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -132,8 +134,8 @@ public class FilterWineTests {
         assertFalse(resultList.isEmpty());
         resultList.forEach(
                 product -> {
-                    assertInstanceOf(Integer.class, product.get("price"));
-                    assertTrue((Integer) product.get("price") >= 1000 && (Integer) product.get("price") <= 5000);
+                    assertInstanceOf(Double.class, product.get("price"));
+                    assertTrue((Double) product.get("price") >= 1000 && (Double) product.get("price") <= 5000);
                 });
     }
 
@@ -202,7 +204,7 @@ public class FilterWineTests {
     @DisplayName("Тестирование поля объёма")
     @Test
     void testFilterVolume() throws Exception {
-        for (double volume : List.of(0.75, 1.0)) {
+        for (BigDecimal volume : List.of(BigDecimal.valueOf(0.75), BigDecimal.valueOf(1.00))) {
             Map<String, Object> params = new HashMap<>();
             params.put("volume", List.of(volume));
             List<Map<String, Object>> resultList = filterProducts(params);
@@ -214,7 +216,8 @@ public class FilterWineTests {
                             ProductDTO productDTO = getProductById(UUID.fromString((String) product.get("id")));
                             assertNotNull(productDTO);
                             Map<String, Object> details = (Map<String, Object>) productDTO.getDetails();
-                            assertEquals(volume, details.get("volume"));
+                            //assertEquals(volume, VolumeStrengthUtils.parseVolume(String.valueOf(details.get("volume"))));
+                            assertEquals(0, volume.compareTo(VolumeStrengthUtils.parseVolume(String.valueOf(details.get("volume")))));
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }

@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 public class ShampaigneAndSparklingCardDto extends ProductCardDto {
 
-    private String category;
+    private String subcategory;
     private String content;
     private String color;
     private String volume;

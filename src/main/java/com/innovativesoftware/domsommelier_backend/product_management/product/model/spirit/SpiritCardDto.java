@@ -9,7 +9,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Data
 public class SpiritCardDto extends ProductCardDto {
-    private String category;
-    private String strength;
     private String volume;
 }

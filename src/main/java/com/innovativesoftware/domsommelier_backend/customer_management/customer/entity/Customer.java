@@ -1,7 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.customer_management.customer.entity;
 
-import com.innovativesoftware.domsommelier_backend.order_management.order.entity.Order;
 import com.innovativesoftware.domsommelier_backend.order_management.discount.entity.PromoUse;
+import com.innovativesoftware.domsommelier_backend.order_management.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

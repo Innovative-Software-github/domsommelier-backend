@@ -28,11 +28,11 @@ public class SparklingWine {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subcategory", nullable = false)
-    private SparklingWineCategory category;
+    private SparklingWineCategory subcategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sugar_content", nullable = false)
-    private SugarContent content;
+    private SugarContent sugarContent;
 
     @Column(name = "producer")
     private String producer;

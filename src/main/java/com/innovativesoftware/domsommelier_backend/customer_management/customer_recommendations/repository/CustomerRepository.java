@@ -1,7 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.repository;
 
-import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.model.CustomerRecommendationsProjection;
 import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.Customer;
+import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.model.CustomerRecommendationsProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

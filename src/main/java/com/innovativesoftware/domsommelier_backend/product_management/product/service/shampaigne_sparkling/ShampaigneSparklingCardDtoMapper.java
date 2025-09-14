@@ -38,8 +38,8 @@ public class ShampaigneSparklingCardDtoMapper implements ProductCardDtoMapper {
                         .description(photo.getDescription())
                         .build()).toList())
                 .color(sparklingWine.getColor().getName())
-                .category(sparklingWine.getCategory().getName())
-                .content(sparklingWine.getContent().getName())
+                .subcategory(sparklingWine.getSubcategory().getName())
+                .content(sparklingWine.getSugarContent().getName())
                 .volume(VolumeStrengthUtils.formatVolume(sparklingWine.getVolume()))
                 .build();
     }

@@ -28,9 +28,11 @@ public class ShampaigneSparklingDetailsMapper implements ProductDetailsMapper<Sh
         );
         if (sparklingWine == null) return null;
         return ShampaigneAndSparklingDetailsDto.builder()
-                .category(sparklingWine.getCategory().getName())
-                .content(sparklingWine.getContent().getName())
+                .subcategory(sparklingWine.getSubcategory().getName())
+                .content(sparklingWine.getSugarContent().getName())
+                .features(sparklingWine.getFeatures())
                 .color(sparklingWine.getColor().getName())
+                .producer(sparklingWine.getProducer())
                 .volume(VolumeStrengthUtils.formatVolume(sparklingWine.getVolume()))
                 .build();
     }

@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @Builder
 public class LowAlcoholDetailsDto {
-    private String category;
+    private String subcategory;
     private String producer;
     private String volume;
     private String strength;

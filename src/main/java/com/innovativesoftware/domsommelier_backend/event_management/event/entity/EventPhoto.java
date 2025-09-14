@@ -1,7 +1,10 @@
 package com.innovativesoftware.domsommelier_backend.event_management.event.entity;
 
 import com.innovativesoftware.domsommelier_backend.file_management.model.File;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

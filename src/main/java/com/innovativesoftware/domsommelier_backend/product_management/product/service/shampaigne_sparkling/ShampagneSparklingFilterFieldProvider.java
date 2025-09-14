@@ -18,7 +18,8 @@ public class ShampagneSparklingFilterFieldProvider implements ProductFilterField
     private static final Map<String, String> FIELD_RU_NAMES = Map.of(
             "category", "Категория",
             "country_name", "География",
-            "sugar_content", "Содержание сахара",
+            "subcategory", "Субкатегория",
+            "sugarContent", "Содержание сахара",
             "producer", "Производитель",
             "color", "Цвет",
             "volume", "Объем",
@@ -38,9 +39,9 @@ public class ShampagneSparklingFilterFieldProvider implements ProductFilterField
     @Override
     public Set<String> getLabels(String field) {
         return switch (field) {
-            case "category" -> sparklingWineRepo.findDistinctCategories();
+            case "subcategory" -> sparklingWineRepo.findDistinctSubcategories();
             case "country_name" -> sparklingWineRepo.findDistinctCountryNames();
-            case "sugar_content" -> sparklingWineRepo.findDistinctSugarContents();
+            case "sugarContent" -> sparklingWineRepo.findDistinctSugarContents();
             case "producer" -> sparklingWineRepo.findDistinctProducers();
             case "color" -> sparklingWineRepo.findDistinctColors();
             case "volume" -> sparklingWineRepo.findDistinctVolumes();

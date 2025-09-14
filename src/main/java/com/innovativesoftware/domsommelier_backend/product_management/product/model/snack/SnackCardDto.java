@@ -9,5 +9,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Data
 public class SnackCardDto extends ProductCardDto {
-    private String category;
+    private String subcategory;
 }

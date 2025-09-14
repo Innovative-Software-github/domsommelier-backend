@@ -31,7 +31,7 @@ public class LowAlcoholDetailsMapper implements ProductDetailsMapper<LowAlcoholD
                 .producer(lowAlcohol.getProducer())
                 .strength(VolumeStrengthUtils.formatStrength(lowAlcohol.getStrength()))
                 .volume(VolumeStrengthUtils.formatVolume(lowAlcohol.getVolume()))
-                .category(lowAlcohol.getCategory().getName())
+                .subcategory(lowAlcohol.getCategory().getName())
                 .features(lowAlcohol.getFeatures())
                 .build();
     }

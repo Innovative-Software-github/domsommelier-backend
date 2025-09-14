@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductDTO;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.VolumeStrengthUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,8 +93,9 @@ public class FilterSpiritTests {
         assertFalse(resultList.isEmpty());
         resultList.forEach(
                 product -> {
-                    assertInstanceOf(Integer.class, product.get("price"));
-                    assertTrue((Integer) product.get("price") >= 1000 && (Integer) product.get("price") <= 5000);
+                    assertInstanceOf(Double.class, product.get("price"));
+                    double price = (double) product.get("price");
+                    assertTrue(price >= 1000 &&  price <= 5000);
                 });
     }
 
@@ -119,7 +122,7 @@ public class FilterSpiritTests {
     @DisplayName("Тестирование поля объёма")
     @Test
     void testFilterVolume() throws Exception {
-        for (double volume : List.of(0.75, 1.0)) {
+        for (BigDecimal volume : List.of(BigDecimal.valueOf(0.70), BigDecimal.valueOf(0.50))) {
             Map<String, Object> params = new HashMap<>();
             params.put("volume", List.of(volume));
             List<Map<String, Object>> resultList = filterProducts(params);
@@ -131,7 +134,7 @@ public class FilterSpiritTests {
                             ProductDTO productDTO = getProductById(UUID.fromString((String) product.get("id")));
                             assertNotNull(productDTO);
                             Map<String, Object> details = (Map<String, Object>) productDTO.getDetails();
-                            assertEquals(volume, details.get("volume"));
+                            assertEquals(0, volume.compareTo(VolumeStrengthUtils.parseVolume(String.valueOf(details.get("volume")))));
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -167,7 +170,7 @@ public class FilterSpiritTests {
     @DisplayName("Тестирование крепости напитка")
     @Test
     void testFilterStrength() throws Exception {
-        for (String strength : List.of("20", "40")) {
+        for (BigDecimal strength : List.of(BigDecimal.valueOf(40.00))) {
             Map<String, Object> params = new HashMap<>();
             params.put("strength", List.of(strength));
             List<Map<String, Object>> resultList = filterProducts(params);
@@ -181,7 +184,7 @@ public class FilterSpiritTests {
                             Map<String, Object> details = (Map<String, Object>) productDTO.getDetails();
                             assertTrue(details.containsKey("strength"));
                             String strength1 = String.valueOf(details.get("strength"));
-                            assertEquals(strength, strength1);
+                            assertEquals(0, strength.compareTo(VolumeStrengthUtils.parseStrength(strength1)));
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }

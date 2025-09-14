@@ -4,8 +4,8 @@ import com.innovativesoftware.domsommelier_backend.filter_management.entity.Chec
 import com.innovativesoftware.domsommelier_backend.filter_management.entity.Filter;
 import com.innovativesoftware.domsommelier_backend.filter_management.entity.MultiSelectFilter;
 import com.innovativesoftware.domsommelier_backend.filter_management.entity.RangeFilter;
-import com.innovativesoftware.domsommelier_backend.filter_management.model.types.CheckboxFilterDto;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.FilterDto;
+import com.innovativesoftware.domsommelier_backend.filter_management.model.types.CheckboxFilterDto;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.types.MultiSelectFilterDto;
 import com.innovativesoftware.domsommelier_backend.filter_management.model.types.RangeFilterDto;
 

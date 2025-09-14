@@ -4,6 +4,7 @@ import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,7 +14,7 @@ public abstract class ProductCardDto {
     private UUID id;
     private String article;
     private String name;
-    private Integer price;
+    private BigDecimal price;
     private Integer discount;
     private String productCountry;
     private String productCategoryName;

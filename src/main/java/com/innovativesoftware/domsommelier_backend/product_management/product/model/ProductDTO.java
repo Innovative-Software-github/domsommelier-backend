@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -19,8 +20,8 @@ public class ProductDTO {
     private UUID id;
     private String article;
     private String name;
-    private Integer initialPrice;
-    private Integer price;
+    private BigDecimal initialPrice;
+    private BigDecimal price;
     private String description;
     private Integer discount;
     private OffsetDateTime createdAt;

@@ -1,8 +1,8 @@
 package com.innovativesoftware.domsommelier_backend.news_management.controller;
 
+import com.innovativesoftware.domsommelier_backend.news_management.model.NewsWithFileListDTO;
 import com.innovativesoftware.domsommelier_backend.news_management.model.NewsWithFilesRequest;
 import com.innovativesoftware.domsommelier_backend.news_management.model.NewsWithoutFilesRequest;
-import com.innovativesoftware.domsommelier_backend.news_management.model.NewsWithFileListDTO;
 import com.innovativesoftware.domsommelier_backend.news_management.service.NewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

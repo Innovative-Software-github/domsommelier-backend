@@ -16,6 +16,6 @@ public class SugarContent {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "content")
+    @OneToMany(mappedBy = "sugarContent")
     private List<SparklingWine> sparklingWines;
 }

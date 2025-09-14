@@ -9,7 +9,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Data
 public class LowAlcoholCardDto extends ProductCardDto {
-    private String category;
-    private String strength;
+    private String subcategory;
     private String volume;
 }

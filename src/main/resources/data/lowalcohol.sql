@@ -1,0 +1,33 @@
+insert into low_alcohol_category (name) values ('cider'), ('hard_lemonade'), ('radler'), ('fruit_wine'), ('seltzer');
+
+insert into low_alcohol (id, subcategory, producer, volume, strength) values ('e9b6e5e8-9f59-4d0f-97ba-00e3c4d3c701', 'cider', 'Green Apple Brewery', 0.50, 4.5);
+insert into low_alcohol (id, subcategory, producer, volume, strength) values ('1ba52433-5e23-4745-9cae-3a5bff4e3c0e', 'seltzer', 'Seltzeria', 0.33, 5.0);
+insert into low_alcohol (id, subcategory, producer, volume, strength) values ('cf43cb1d-09ce-4b0b-904d-4233272fd0a5', 'radler', 'RadlerHouse', 0.50, 2.5);
+insert into low_alcohol (id, subcategory, producer, volume, strength) values ('a22bb36e-2e48-46b3-925a-b47a7332ab53', 'hard_lemonade', 'LemonSun', 0.45, 4.8);
+insert into low_alcohol (id, subcategory, producer, volume, strength) values ('283c7c85-3c6f-421e-b783-1b0a9c5f8b36', 'fruit_wine', 'BerryWinery', 0.75, 7.0);
+insert into low_alcohol (id, subcategory, producer, volume, strength) values ('a6457e0b-f0bb-48b6-82b5-6059b1593c24', 'cider', 'Pear&Co', 0.50, 4.0);
+insert into low_alcohol (id, subcategory, producer, volume, strength) values ('c542b38e-e760-4781-9048-8bbf6a52a8ee', 'seltzer', 'LimeLife', 0.33, 4.7);
+insert into low_alcohol (id, subcategory, producer, volume, strength) values ('30ba93b9-47f8-4d84-9c30-0cd501bb1f43', 'radler', 'BerryMix', 0.33, 3.0);
+insert into low_alcohol (id, subcategory, producer, volume, strength) values ('28d8df2a-d8fb-4054-888b-b31c39b99eec', 'hard_lemonade', 'OrangeStick', 0.50, 5.2);
+insert into low_alcohol (id, subcategory, producer, volume, strength) values ('0721d633-92a2-4923-bc14-f8d3d3ed84b8', 'fruit_wine', 'WildWine', 0.75, 6.8);
+
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('e9b6e5e8-9f59-4d0f-97ba-00e3c4d3c701', 'Свежий яблочный вкус');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('e9b6e5e8-9f59-4d0f-97ba-00e3c4d3c701', 'Без добавления сахара');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('1ba52433-5e23-4745-9cae-3a5bff4e3c0e', 'Яркий ягодный аромат');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('1ba52433-5e23-4745-9cae-3a5bff4e3c0e', 'Газированный напиток');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('cf43cb1d-09ce-4b0b-904d-4233272fd0a5', 'Легкий лимонный вкус');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('cf43cb1d-09ce-4b0b-904d-4233272fd0a5', 'Освежающий эффект');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('a22bb36e-2e48-46b3-925a-b47a7332ab53', 'Персиковый вкус');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('a22bb36e-2e48-46b3-925a-b47a7332ab53', 'Оригинальный лимонад');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('283c7c85-3c6f-421e-b783-1b0a9c5f8b36', 'Вино с ароматом вишни');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('283c7c85-3c6f-421e-b783-1b0a9c5f8b36', 'Яркий цвет');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('a6457e0b-f0bb-48b6-82b5-6059b1593c24', 'Грушевый вкус');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('a6457e0b-f0bb-48b6-82b5-6059b1593c24', 'Натуральный состав');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('c542b38e-e760-4781-9048-8bbf6a52a8ee', 'Тропический лайм');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('c542b38e-e760-4781-9048-8bbf6a52a8ee', 'Минимум калорий');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('30ba93b9-47f8-4d84-9c30-0cd501bb1f43', 'Малиновая свежесть');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('30ba93b9-47f8-4d84-9c30-0cd501bb1f43', 'Низкая крепость');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('28d8df2a-d8fb-4054-888b-b31c39b99eec', 'Апельсиновый вкус');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('28d8df2a-d8fb-4054-888b-b31c39b99eec', 'Легкая игристость');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('0721d633-92a2-4923-bc14-f8d3d3ed84b8', 'Смесь лесных ягод');
+insert into low_alcohol_feature (low_alcohol_id, feature) values ('0721d633-92a2-4923-bc14-f8d3d3ed84b8', 'Приятная сладость');

@@ -1,9 +1,9 @@
 package com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.service;
 
 import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.Customer;
-import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.repository.CustomerRepository;
-import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.model.CustomerRecommendationsProjection;
 import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.model.CustomerRecommendationsDTO;
+import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.model.CustomerRecommendationsProjection;
+import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -14,7 +14,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service

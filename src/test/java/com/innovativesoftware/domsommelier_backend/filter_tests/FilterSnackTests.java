@@ -91,8 +91,8 @@ public class FilterSnackTests {
         assertFalse(resultList.isEmpty());
         resultList.forEach(
                 product -> {
-                    assertInstanceOf(Integer.class, product.get("price"));
-                    assertTrue((Integer) product.get("price") >= 1000 && (Integer) product.get("price") <= 5000);
+                    assertInstanceOf(Double.class, product.get("price"));
+                    assertTrue((Double) product.get("price") >= 1000 && (Double) product.get("price") <= 5000);
                 });
     }
 

@@ -1,9 +1,9 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.service.wine;
 
+import com.innovativesoftware.domsommelier_backend.filter_management.service.ProductFilterStrategy;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCardDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.WineRepository;
-import com.innovativesoftware.domsommelier_backend.filter_management.service.ProductFilterStrategy;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

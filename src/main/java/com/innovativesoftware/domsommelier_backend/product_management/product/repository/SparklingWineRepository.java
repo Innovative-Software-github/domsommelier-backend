@@ -11,13 +11,13 @@ import java.util.UUID;
 
 @Repository
 public interface SparklingWineRepository extends JpaRepository<SparklingWine, UUID>, JpaSpecificationExecutor<SparklingWine> {
-    @Query("SELECT DISTINCT w.category.name FROM SparklingWine w")
-    Set<String> findDistinctCategories();
+    @Query("SELECT DISTINCT w.subcategory.name FROM SparklingWine w")
+    Set<String> findDistinctSubcategories();
 
     @Query("SELECT DISTINCT w.product.productCountry.name FROM SparklingWine w")
     Set<String> findDistinctCountryNames();
 
-    @Query("SELECT DISTINCT w.content.name FROM SparklingWine w")
+    @Query("SELECT DISTINCT w.sugarContent.name FROM SparklingWine w")
     Set<String> findDistinctSugarContents();
 
     @Query("SELECT DISTINCT w.producer FROM SparklingWine w")

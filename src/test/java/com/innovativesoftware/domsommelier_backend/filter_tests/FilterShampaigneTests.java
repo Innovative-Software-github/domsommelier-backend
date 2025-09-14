@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductDTO;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.VolumeStrengthUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,13 +17,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-@DisplayName("Тесты для фильтра шампанского/лёгких напитков")
+@DisplayName("Тесты для фильтра шампанского")
 public class FilterShampaigneTests {
 
     @Autowired
@@ -92,8 +93,8 @@ public class FilterShampaigneTests {
         assertFalse(resultList.isEmpty());
         resultList.forEach(
                 product -> {
-                    assertInstanceOf(Integer.class, product.get("price"));
-                    assertTrue((Integer) product.get("price") >= 1000 && (Integer) product.get("price") <= 5000);
+                    assertInstanceOf(Double.class, product.get("price"));
+                    assertTrue((Double) product.get("price") >= 1000 && (Double) product.get("price") <= 5000);
                 });
     }
 
@@ -120,7 +121,7 @@ public class FilterShampaigneTests {
     @DisplayName("Тестирование поля производителя")
     @Test
     void testFilterProducer() throws Exception {
-        for (String producer : List.of("Parmareggio", "Sierra de Madrid")) {
+        for (String producer : List.of("Veuve Clicquot", "Freixenet")) {
             Map<String, Object> params = new HashMap<>();
             params.put("producer", List.of(producer));
             List<Map<String, Object>> resultList = filterProducts(params);
@@ -140,10 +141,10 @@ public class FilterShampaigneTests {
         }
     }
 
-    @DisplayName("Тестирование категории шампанского и пр.")
+    @DisplayName("Тестирование субкатегории шампанского")
     @Test
     void testFilterCategory() throws Exception {
-        for (String feature : List.of("Сыр", "Хамон")) {
+        for (String feature : List.of("Шампанское", "Кава")) {
             Map<String, Object> params = new HashMap<>();
             params.put("subcategory", List.of(feature));
             List<Map<String, Object>> resultList = filterProducts(params);
@@ -168,9 +169,9 @@ public class FilterShampaigneTests {
     @DisplayName("Тестирование вида сахара (sugar_content)")
     @Test
     void testFilterSugarContent() throws Exception {
-        for (String sugarContent : List.of("Сыр", "Хамон")) {
+        for (String sugarContent : List.of("Brut")) {
             Map<String, Object> params = new HashMap<>();
-            params.put("sugar_content", List.of(sugarContent));
+            params.put("sugarContent", List.of(sugarContent));
             List<Map<String, Object>> resultList = filterProducts(params);
 
             assertFalse(resultList.isEmpty());
@@ -180,8 +181,8 @@ public class FilterShampaigneTests {
                             ProductDTO productDTO = getProductById(UUID.fromString((String) product.get("id")));
                             assertNotNull(productDTO);
                             Map<String, Object> details = (Map<String, Object>) productDTO.getDetails();
-                            assertTrue(details.containsKey("sugar_content"));
-                            String sugarContent1 = String.valueOf(details.get("sugar_content"));
+                            assertTrue(details.containsKey("content"));
+                            String sugarContent1 = String.valueOf(details.get("content"));
                             assertEquals(sugarContent, sugarContent1);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
@@ -194,7 +195,7 @@ public class FilterShampaigneTests {
     @Test
     void testFilterColor() throws Exception {
         Map<String, Object> params = new HashMap<>();
-        params.put("color", List.of("Красное"));
+        params.put("color", List.of("Белое"));
         List<Map<String, Object>> resultList = filterProducts(params);
 
         assertFalse(resultList.isEmpty());
@@ -204,7 +205,7 @@ public class FilterShampaigneTests {
                         ProductDTO productDTO = getProductById(UUID.fromString((String) product.get("id")));
                         assertNotNull(productDTO);
                         Map<String, Object> details = (Map<String, Object>) productDTO.getDetails();
-                        assertEquals("Красное", details.get("color"));
+                        assertEquals("Белое", details.get("color"));
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -214,7 +215,7 @@ public class FilterShampaigneTests {
     @DisplayName("Тестирование поля объёма")
     @Test
     void testFilterVolume() throws Exception {
-        for (double volume : List.of(0.75, 1.0)) {
+        for (BigDecimal volume : List.of(BigDecimal.valueOf(0.75), BigDecimal.valueOf(1.00))) {
             Map<String, Object> params = new HashMap<>();
             params.put("volume", List.of(volume));
             List<Map<String, Object>> resultList = filterProducts(params);
@@ -226,7 +227,7 @@ public class FilterShampaigneTests {
                             ProductDTO productDTO = getProductById(UUID.fromString((String) product.get("id")));
                             assertNotNull(productDTO);
                             Map<String, Object> details = (Map<String, Object>) productDTO.getDetails();
-                            assertEquals(volume, details.get("volume"));
+                            assertEquals(0, volume.compareTo(VolumeStrengthUtils.parseVolume(String.valueOf(details.get("volume")))));
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -237,7 +238,7 @@ public class FilterShampaigneTests {
     @DisplayName("Тестирование поля фич")
     @Test
     void testFilterFeatures() throws Exception {
-        for (String feature : List.of("gift_wrapping")) {
+        for (String feature : List.of("Традиционный метод", "Популярно в Испании")) {
             Map<String, Object> params = new HashMap<>();
             params.put("features", List.of(feature));
             List<Map<String, Object>> resultList = filterProducts(params);

@@ -1,8 +1,7 @@
 {
-  "priceMin": 700,
-  "priceMax": 2500,
-  "categorySnack": ["Сыр", "Ассорти"],
-  "drinkPairing": ["для Красного вина"],
-  "region": ["Франция", "Швейцария"],
-  "manufacturer": ["Campari", "Martini"]
+  "price": [1000, 2000],
+  "countries": ["Италия", "Испания"],
+  "producer": ["Parmareggio", "Fromageries Bel"],
+  "snack_category": ["Сыр", "Хамон"],
+  "pairings": ["для Белого вина", "для Игристого вина"]
 }

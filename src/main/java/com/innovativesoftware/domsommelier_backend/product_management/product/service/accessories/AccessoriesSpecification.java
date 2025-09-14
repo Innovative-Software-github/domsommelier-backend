@@ -14,7 +14,11 @@ import java.util.Map;
 public class AccessoriesSpecification extends BaseSpecification<Accessories> {
     @Override
     protected void addSpecificPredicates(Map<String, Object> params, Root<Accessories> root, CriteriaBuilder cb, List<Predicate> predicates) {
-        // Только общие (price, countries, producer, description) – тут ничего специфичного
-        // Поэтому реализовывать ничего не нужно, но метод должен быть
+        params.forEach((key, value) -> {
+            if (isEmpty(value)) return;
+            switch (key) {
+                case "features" -> predicates.add(root.join("features").in((List<?>) value));
+            }
+        });
     }
 }

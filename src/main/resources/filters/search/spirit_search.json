@@ -1,10 +1,9 @@
 {
-  "priceMin": 2000,
-  "priceMax": 10000,
-  "categorySpirit": ["Виски", "Коньяк"],
-  "strength": ["30-40%", "40-50%"],
-  "manufacturer": ["Jameson", "Hennessy"],
-  "countries": ["Шотландия", "Ирландия"],
-  "volume": ["0.5", "1.75"],
-  "features": ["Подарочный набор"]
+  "price": [3000, 5000],
+  "countries": ["Шотландия", "Россия"],
+  "producer": ["Johnnie Walker", "Beluga"],
+  "subcategory": ["Виски", "Водка"],
+  "strength": [38, 40],
+  "volume": [0.5, 0.7],
+  "features": ["gift_set", "limited_edition"]
 }

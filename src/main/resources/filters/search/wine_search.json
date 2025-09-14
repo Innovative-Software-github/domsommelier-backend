@@ -1,12 +1,11 @@
 {
-  "price": [10, 50000],
-  "countries": ["france", "usa", "italy", "russia", "spain", "chile"],
-  "type": ["DRY", "SEMIDRY", "SEMISWEET", "SWEET"],
-  "color": ["RED", "WHITE", "PINK"],
-  "grape": ["merlot", "chardonnay", "tempranillo", "sauvignon_blanc", "cabernet_sauvignon"],
-  "producer": ["Frescobaldi", "Joseph Drouhin", "Guigal", "Louis Jadot", "Fanagoria", "Casillero del Diablo"],
+  "price": [1000, 5000],
+  "countries": ["Франция", "США", "Россия"],
+  "producer": ["Château Lafite Rothschild", "Frescobaldi"],
+  "type": ["Сухое", "Полусладкое"],
+  "color": ["Красное", "Белое"],
   "volume": [0.75, 1.0, 1.5],
-  "year": [1990, 2025],
   "features": ["gift_wrapping", "collection"],
-  "description": null
+  "grape": ["merlot", "chardonnay", "tempranillo", "sauvignon_blanc", "cabernet_sauvignon"],
+  "year": [1990, 2025]
 }

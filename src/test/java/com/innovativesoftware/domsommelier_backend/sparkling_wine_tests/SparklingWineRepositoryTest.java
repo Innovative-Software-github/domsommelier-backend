@@ -31,7 +31,7 @@ public class SparklingWineRepositoryTest {
 
     @Test
     void testFindDistinctCategories() {
-        Set<String> categories = sparklingWineRepository.findDistinctCategories();
+        Set<String> categories = sparklingWineRepository.findDistinctSubcategories();
         assertTrue(categories.contains("Шампанское"));
         assertTrue(categories.contains("Кава"));
         assertEquals(4, categories.size());

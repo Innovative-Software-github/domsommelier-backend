@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -86,21 +85,21 @@ public class FilterAccessoriesTests {
     @Test
     void testFilterPrice() throws Exception {
         Map<String, Object> params = new HashMap<>();
-        params.put("price", List.of(1000, 5000));
+        params.put("price", List.of(500, 800));
         List<Map<String, Object>> resultList = filterProducts(params);
 
         assertFalse(resultList.isEmpty());
         resultList.forEach(
                 product -> {
-                    assertInstanceOf(Integer.class, product.get("price"));
-                    assertTrue((Integer) product.get("price") >= 1000 && (Integer) product.get("price") <= 5000);
+                    assertInstanceOf(Double.class, product.get("price"));
+                    assertTrue((Double) product.get("price") >= 500 && (Double) product.get("price") <= 800);
                 });
     }
 
     @DisplayName("Тестирование поля страны")
     @Test
     void testFilterCountry() throws Exception {
-        for (String country : List.of("Италия", "Франция")) {
+        for (String country : List.of("Шотландия", "США")) {
             Map<String, Object> params = new HashMap<>();
             params.put("countries", List.of(country));
             List<Map<String, Object>> resultList = filterProducts(params);
@@ -120,7 +119,7 @@ public class FilterAccessoriesTests {
     @DisplayName("Тестирование поля производителя")
     @Test
     void testFilterProducer() throws Exception {
-        for (String producer : List.of("Parmareggio", "Sierra de Madrid")) {
+        for (String producer : List.of("Pulltex", "Онегин")) {
             Map<String, Object> params = new HashMap<>();
             params.put("producer", List.of(producer));
             List<Map<String, Object>> resultList = filterProducts(params);
@@ -133,6 +132,31 @@ public class FilterAccessoriesTests {
                             assertNotNull(productDTO);
                             Map<String, Object> details = (Map<String, Object>) productDTO.getDetails();
                             assertEquals(producer, details.get("producer"));
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+        }
+    }
+
+    @DisplayName("Тестирование поля фич")
+    @Test
+    void testFilterFeatures() throws Exception {
+        for (String feature : List.of("Натуральный бузинный вкус", "Идеально для десертов")) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("features", List.of(feature));
+            List<Map<String, Object>> resultList = filterProducts(params);
+
+            assertFalse(resultList.isEmpty());
+            resultList.forEach(
+                    product -> {
+                        try {
+                            ProductDTO productDTO = getProductById(UUID.fromString((String) product.get("id")));
+                            assertNotNull(productDTO);
+                            Map<String, Object> details = (Map<String, Object>) productDTO.getDetails();
+                            assertTrue(details.containsKey("features"));
+                            List<String> features = (List<String>) details.get("features");
+                            assertTrue(features.contains(feature));
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
