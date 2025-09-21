@@ -144,7 +144,7 @@ public class FilterSnackTests {
     void testFilterCategory() throws Exception {
         for (String feature : List.of("Сыр", "Хамон")) {
             Map<String, Object> params = new HashMap<>();
-            params.put("snack_category", List.of(feature));
+            params.put("subcategory", List.of(feature));
             List<Map<String, Object>> resultList = filterProducts(params);
 
             assertFalse(resultList.isEmpty());

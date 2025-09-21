@@ -19,9 +19,9 @@ public class SpiritFilterFieldProvider implements ProductFilterFieldProvider {
             "subcategory", "Категория",
             "strength", "Крепкость",
             "producer", "Производитель",
-            "country_name", "География",
+            "countries", "География",
             "volume", "Объем",
-            "feature", "Особенности"
+            "features", "Особенности"
     );
 
     @Override
@@ -41,8 +41,8 @@ public class SpiritFilterFieldProvider implements ProductFilterFieldProvider {
             case "strength" -> spiritRepo.getDistinctStrength();
             case "producer" -> spiritRepo.getDistinctProducer();
             case "volume" -> spiritRepo.getDistinctVolume();
-            case "country_name" -> spiritRepo.findDistinctCountryNames();
-            case "feature" -> spiritRepo.getDistinctFeature();
+            case "countries" -> spiritRepo.findDistinctCountryNames();
+            case "features" -> spiritRepo.getDistinctFeature();
             default -> Set.of();
         };
     }

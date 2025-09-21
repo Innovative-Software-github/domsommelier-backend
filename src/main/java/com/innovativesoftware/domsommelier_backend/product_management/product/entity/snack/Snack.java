@@ -26,8 +26,8 @@ public class Snack {
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category", nullable = false)
-    private SnackCategory category; // Сыр, Хамон, Брезаола, Ассорти
+    @JoinColumn(name = "subcategory", nullable = false)
+    private SnackCategory subcategory; // Сыр, Хамон, Брезаола, Ассорти
 
     @ElementCollection
     @CollectionTable(name = "gourmet_pairing", joinColumns = @JoinColumn(name = "gourmet_id"))

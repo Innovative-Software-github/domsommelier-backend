@@ -16,9 +16,9 @@ public class AccessoriesFilterFieldProvider implements ProductFilterFieldProvide
     private final AccessoriesRepository accessoriesRepo;
 
     private static final Map<String, String> FIELD_RU_NAMES = Map.of(
-            "country_name", "География",
+            "countries", "География",
             "producer", "Производитель",
-            "feature", "Особенности"
+            "features", "Особенности"
     );
 
     @Override
@@ -34,9 +34,9 @@ public class AccessoriesFilterFieldProvider implements ProductFilterFieldProvide
     @Override
     public Set<String> getLabels(String field) {
         return switch (field) {
-            case "country_name" -> accessoriesRepo.findDistinctCountries();
+            case "countries" -> accessoriesRepo.findDistinctCountries();
             case "producer" -> accessoriesRepo.findDistinctProducers();
-            case "feature" -> accessoriesRepo.findDistinctFeatures();
+            case "features" -> accessoriesRepo.findDistinctFeatures();
             default -> Set.of();
         };
     }

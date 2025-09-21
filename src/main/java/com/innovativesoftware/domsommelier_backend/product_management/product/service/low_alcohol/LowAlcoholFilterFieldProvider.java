@@ -16,8 +16,8 @@ public class LowAlcoholFilterFieldProvider implements ProductFilterFieldProvider
     private final LowAlcoholRepository lowAlcoholRepo;
 
     private static final Map<String, String> FIELD_RU_NAMES = Map.of(
-            "category", "Категория",
-            "country_name", "География",
+            "subcategory", "Субкатегория",
+            "countries", "География",
             "producer", "Производитель",
             "volume", "Объем"
     );
@@ -35,8 +35,8 @@ public class LowAlcoholFilterFieldProvider implements ProductFilterFieldProvider
     @Override
     public Set<String> getLabels(String field) {
         return switch (field) {
-            case "category" -> lowAlcoholRepo.findDistinctCategories();
-            case "country_name" -> lowAlcoholRepo.findDistinctCountryNames();
+            case "subcategory" -> lowAlcoholRepo.findDistinctCategories();
+            case "countries" -> lowAlcoholRepo.findDistinctCountryNames();
             case "producer" -> lowAlcoholRepo.findDistinctProducers();
             case "volume" -> lowAlcoholRepo.findDistinctVolumes();
             default -> Set.of();

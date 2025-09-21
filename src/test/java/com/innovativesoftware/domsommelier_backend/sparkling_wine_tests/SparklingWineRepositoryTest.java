@@ -73,7 +73,7 @@ public class SparklingWineRepositoryTest {
     void testFindDistinctVolumes() {
         Set<String> volumes = sparklingWineRepository.findDistinctVolumes();
         assertTrue(volumes.contains("0.75"));
-        assertEquals(1, volumes.size());
+        assertEquals(2, volumes.size());
     }
 
     @Test

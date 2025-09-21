@@ -16,10 +16,10 @@ public class SnackFilterFieldProvider implements ProductFilterFieldProvider {
     private final SnackRepository snackRepo;
 
     private static final Map<String, String> FIELD_RU_NAMES = Map.of(
-            "category", "Категория",
+            "subcategory", "Субкатегория",
             "producer", "Производитель",
             "smart_selection", "Подбор к напиткам",
-            "country_name", "География"
+            "countries", "География"
     );
 
     @Override
@@ -35,10 +35,10 @@ public class SnackFilterFieldProvider implements ProductFilterFieldProvider {
     @Override
     public Set<String> getLabels(String field) {
         return switch (field) {
-            case "category" -> snackRepo.findDistinctCategories();
+            case "subcategory" -> snackRepo.findDistinctSubcategories();
             case "producer" -> snackRepo.findDistinctProducers();
             case "smart_selection" -> snackRepo.findDistinctPairings();
-            case "country_name" -> snackRepo.findDistinctCountryNames();
+            case "countries" -> snackRepo.findDistinctCountryNames();
             default -> Set.of();
         };
     }

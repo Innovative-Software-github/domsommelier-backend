@@ -19,8 +19,8 @@ public class WineFilterFieldProvider implements ProductFilterFieldProvider {
             "color", "Цвет",
             "type", "Содержание сахара",
             "grape", "Сорт винограда",
-            "feature", "Особенности",
-            "country_name", "География",
+            "features", "Особенности",
+            "countries", "География",
             "producer", "Производитель",
             "volume", "Объем"
     );
@@ -41,8 +41,8 @@ public class WineFilterFieldProvider implements ProductFilterFieldProvider {
             case "color" -> wineRepo.findDistinctColors();
             case "type" -> wineRepo.findDistinctTypes();
             case "grape" -> wineRepo.findDistinctGrapes();
-            case "feature" -> wineRepo.findDistinctFeatures();
-            case "country_name" -> wineRepo.findDistinctCountryNames();
+            case "features" -> wineRepo.findDistinctFeatures();
+            case "countries" -> wineRepo.findDistinctCountryNames();
             case "producer" -> wineRepo.findDistinctProducers();
             case "volume" -> wineRepo.findDistinctVolumes();
             default -> Set.of();

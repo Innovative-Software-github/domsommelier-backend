@@ -12,8 +12,8 @@ import java.util.UUID;
 @Repository
 public interface SnackRepository extends JpaRepository<Snack, UUID>, JpaSpecificationExecutor<Snack> {
 
-    @Query("SELECT DISTINCT s.category.name FROM Snack s")
-    Set<String> findDistinctCategories();
+    @Query("SELECT DISTINCT s.subcategory.name FROM Snack s")
+    Set<String> findDistinctSubcategories();
 
     @Query("SELECT DISTINCT s.producer FROM Snack s")
     Set<String> findDistinctProducers();
