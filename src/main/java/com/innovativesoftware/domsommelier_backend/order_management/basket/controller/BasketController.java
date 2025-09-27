@@ -2,6 +2,7 @@ package com.innovativesoftware.domsommelier_backend.order_management.basket.cont
 
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.BasketDto;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.service.BasketService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,16 +39,21 @@ public class BasketController {
         return ResponseEntity.ok().build();
     }
 
+    @Hidden
+    @Deprecated
     @PostMapping("/{customerId}/promo/{promoId}")
     public ResponseEntity<BasketDto> applyPromo(@PathVariable UUID customerId, @PathVariable UUID promoId) {
         return ResponseEntity.ok(basketService.applyPromo(customerId, promoId));
     }
 
+    @Hidden
+    @Deprecated
     @DeleteMapping("/{customerId}/promo")
     public ResponseEntity<BasketDto> removePromo(@PathVariable UUID customerId) {
         return ResponseEntity.ok(basketService.removePromo(customerId));
     }
 
+    @Hidden
     @PostMapping("/{customerId}/update/{productId}")
     public ResponseEntity<BasketDto> updateQuantity(@PathVariable UUID customerId,
                                                     @PathVariable UUID productId,

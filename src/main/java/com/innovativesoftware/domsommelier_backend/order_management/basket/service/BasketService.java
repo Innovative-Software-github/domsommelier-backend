@@ -1,6 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.order_management.basket.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO;
 import com.innovativesoftware.domsommelier_backend.infrastructure.RedisService;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.BasketDto;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.BasketItemDto;
@@ -52,7 +53,7 @@ public class BasketService {
         List<BasketItemDto> updatedItems = new ArrayList<>(basket.getItems());
 
         Optional<BasketItemDto> existing = updatedItems.stream()
-                .filter(it -> it.getProductId().equals(productId))
+                .filter(it -> it.getProduct().getId().equals(productId))
                 .findFirst();
 
         if (existing.isPresent()) {
@@ -60,9 +61,20 @@ public class BasketService {
         } else {
             // Новый товар
             updatedItems.add(BasketItemDto.builder()
-                    .productId(productId)
-                    .productName(product.getName())
-                    .price(product.getPrice())
+                    .product(BasketItemDto.BasketItemDtoIdClass.builder()
+                            .id(productId)
+                            .name(product.getName())
+                            .article(product.getArticle())
+                            .price(product.getPrice())
+                            .discount(product.getDiscount())
+                            .productCountry(product.getProductCountry().getName())
+                            .productCategoryName(product.getProductCategory().getName().name())
+                            .productPhoto(product.getProductPhoto().stream().map(
+                                    photo -> objectMapper.convertValue(
+                                            photo, FileDTO.class
+                                    )
+                            ).toList())
+                            .build())
                     .quantity(quantity)
                     .build());
         }
@@ -75,7 +87,7 @@ public class BasketService {
     public BasketDto removeItem(UUID customerId, UUID productId) {
         BasketDto basket = getBasket(customerId);
         List<BasketItemDto> updated = basket.getItems().stream()
-                .filter(item -> !item.getProductId().equals(productId))
+                .filter(item -> !item.getProduct().getId().equals(productId))
                 .toList();
 
         basket.setItems(updated);
@@ -93,7 +105,6 @@ public class BasketService {
                 .orElseThrow(() -> new NoSuchElementException("Promo not found"));
 
         BasketDto basket = getBasket(customerId);
-        basket.setPromoId(promoId);
         basket.setDiscount(promo.getDiscount());
         BasketDto result = recalculateBasket(basket);
         redisService.save(basketKey(customerId), result);
@@ -102,7 +113,6 @@ public class BasketService {
 
     public BasketDto removePromo(UUID customerId) {
         BasketDto basket = getBasket(customerId);
-        basket.setPromoId(null);
         basket.setDiscount(0);
         BasketDto result = recalculateBasket(basket);
         redisService.save(basketKey(customerId), result);
@@ -119,7 +129,7 @@ public class BasketService {
 
     private BasketDto recalculateBasket(BasketDto basket) {
         BigDecimal total = basket.getItems().stream()
-                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .map(item -> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         int discount = basket.getDiscount() != null ? basket.getDiscount() : 0;

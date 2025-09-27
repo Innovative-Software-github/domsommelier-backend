@@ -15,7 +15,6 @@ public class BasketDto implements Serializable {
     private UUID customerId;
     @Singular
     private List<BasketItemDto> items;
-    private UUID promoId;
 
     @Builder.Default
     private BigDecimal totalPrice = BigDecimal.ZERO; // Итоговая цена

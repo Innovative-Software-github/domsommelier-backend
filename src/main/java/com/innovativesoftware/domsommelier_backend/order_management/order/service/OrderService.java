@@ -5,8 +5,6 @@ import com.innovativesoftware.domsommelier_backend.customer_management.customer.
 import com.innovativesoftware.domsommelier_backend.customer_management.customer.repository.AddressRepository;
 import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.repository.CustomerRepository;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.BasketDto;
-import com.innovativesoftware.domsommelier_backend.order_management.discount.entity.Promo;
-import com.innovativesoftware.domsommelier_backend.order_management.discount.entity.PromoUse;
 import com.innovativesoftware.domsommelier_backend.order_management.discount.repository.PromoRepository;
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.Order;
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.OrderItem;
@@ -65,7 +63,7 @@ public class OrderService {
         order.setOrderStatus(status);
 
         // 4. Промокод (если есть)
-        if (basket.getPromoId() != null) {
+        /*if (basket.getPromoId() != null) {
             Promo promo = promoRepository.findById(basket.getPromoId())
                     .orElseThrow(() -> new NoSuchElementException("Промокод не найден"));
 
@@ -75,13 +73,13 @@ public class OrderService {
             promoUse.setOrder(order);
             promoUse.setIsUsed(true);
             order.setPromoUse(promoUse);
-        }
+        }*/
 
         // 5. OrderItems
         List<OrderItem> orderItems = basket.getItems().stream()
                 .map(basketItemDto -> {
-                    Product product = productRepository.findById(basketItemDto.getProductId())
-                            .orElseThrow(() -> new NoSuchElementException("Товар не найден: " + basketItemDto.getProductId()));
+                    Product product = productRepository.findById(basketItemDto.getProduct().getId())
+                            .orElseThrow(() -> new NoSuchElementException("Товар не найден: " + basketItemDto.getProduct().getId()));
                     OrderItem orderItem = new OrderItem();
                     orderItem.setOrder(order);
                     orderItem.setProduct(product);
