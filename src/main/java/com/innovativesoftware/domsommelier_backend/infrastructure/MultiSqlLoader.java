@@ -1,6 +1,8 @@
 package com.innovativesoftware.domsommelier_backend.infrastructure;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -13,7 +15,9 @@ import java.sql.Statement;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @Component
+@ConditionalOnProperty(prefix = "db-init", name = "mode", havingValue = "true", matchIfMissing = false)
 public class MultiSqlLoader {
 
     private final DataSource dataSource;
@@ -33,9 +37,12 @@ public class MultiSqlLoader {
                 "data/spirit.sql",
                 "data/lowalcohol.sql",
                 "data/shampaigne.sql",
-                "data/filters.sql"
+                "data/filters.sql",
+                "data/stores.sql"
         );
         try (Connection connection = dataSource.getConnection()) {
+            log.info("db-init: старт выполнения {} sql-файлов", files.size());
+
             for (String file : files) {
                 InputStream is = getClass().getClassLoader().getResourceAsStream(file);
                 if (is == null) {

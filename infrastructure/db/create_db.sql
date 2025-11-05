@@ -1,4 +1,5 @@
 create database domsommelier owner postgres;
+CREATE EXTENSION postgis;
 
 insert into product_country VALUES ('russia');
 insert into product_category VALUES ('food');
