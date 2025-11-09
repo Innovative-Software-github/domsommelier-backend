@@ -17,8 +17,14 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleAllExceptions(Exception ex) {
-        return new ResponseEntity<>("Ошибка: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ApiErrorResponse> handleAllExceptions(Exception ex) {
+        IllegalArgumentException exception = (IllegalArgumentException) ex;
+        ApiErrorResponse response = new ApiErrorResponse(
+                        "Ошибка: " + exception.getMessage(),
+                        String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                ex.getMessage(), null
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({InvalidIdException.class, InvalidValueException.class})
