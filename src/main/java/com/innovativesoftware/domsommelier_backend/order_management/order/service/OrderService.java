@@ -9,15 +9,23 @@ import com.innovativesoftware.domsommelier_backend.order_management.discount.rep
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.Order;
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.OrderItem;
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.OrderStatus;
+import com.innovativesoftware.domsommelier_backend.order_management.order.model.OrderFullDto;
+import com.innovativesoftware.domsommelier_backend.order_management.order.model.OrderHistoryDto;
+import com.innovativesoftware.domsommelier_backend.order_management.order.model.OrderedProductDto;
 import com.innovativesoftware.domsommelier_backend.order_management.order.repository.OrderItemRepository;
 import com.innovativesoftware.domsommelier_backend.order_management.order.repository.OrderRepository;
 import com.innovativesoftware.domsommelier_backend.order_management.order.repository.OrderStatusRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductRepository;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.nio.file.AccessDeniedException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -123,5 +131,76 @@ public class OrderService {
                 });
         order.setOrderStatus(cancelledStatus);
         orderRepository.save(order);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<OrderHistoryDto> getCustomerOrdersHistory(UUID customerId, Pageable pageable) {
+        return orderRepository.findAllByCustomerId(customerId, pageable)
+                .map(this::mapToHistoryDto);
+    }
+
+    @Transactional(readOnly = true)
+    public OrderFullDto getOrderDetails(UUID orderId, UUID customerId) throws AccessDeniedException {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("Заказ не найден"));
+
+        if (!order.getCustomer().getId().equals(customerId)) {
+            throw new AccessDeniedException("Вы не можете просматривать чужой заказ");
+        }
+
+        return mapToFullDto(order);
+    }
+
+    private OrderHistoryDto mapToHistoryDto(Order order) {
+        List<OrderItem> items = order.getOrderItems();
+        BigDecimal total = calculateTotal(items);
+
+        String preview = items.isEmpty() ? "Нет товаров" : items.get(0).getProduct().getName();
+        if (items.size() > 1) {
+            preview += " и еще " + (items.size() - 1) + " поз.";
+        }
+
+        return OrderHistoryDto.builder()
+                .id(order.getId())
+                .date(order.getCreatedAt())
+                .statusName(order.getOrderStatus().getName())
+                .totalAmount(total)
+                .previewText(preview)
+                .build();
+    }
+
+    private OrderFullDto mapToFullDto(Order order) {
+        List<OrderItem> items = order.getOrderItems();
+
+        List<OrderedProductDto> productDtos = items.stream().map(item -> {
+            BigDecimal currentPrice = item.getProduct().getPrice(); // ВАЖНО: берем текущую цену, т.к. исторической нет в OrderItem
+            return OrderedProductDto.builder()
+                    .productId(item.getProduct().getId())
+                    .name(item.getProduct().getName())
+                    .article(item.getProduct().getArticle())
+                    .quantity(item.getQuantity())
+                    .price(currentPrice)
+                    .sum(currentPrice.multiply(BigDecimal.valueOf(item.getQuantity())))
+                    .build();
+        }).collect(Collectors.toList());
+
+        String addressString = "Винотека на ул. " +
+                (order.getAddress() != null ? order.getAddress().getId() : "Неизвестно");
+
+        return OrderFullDto.builder()
+                .id(order.getId())
+                .date(order.getCreatedAt())
+                .statusName(order.getOrderStatus().getName())
+                .pickupAddress(addressString)
+                .totalAmount(calculateTotal(items))
+                .items(productDtos)
+                .build();
+    }
+
+    private BigDecimal calculateTotal(List<OrderItem> items) {
+        if (items == null) return BigDecimal.ZERO;
+        return items.stream()
+                .map(item -> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
