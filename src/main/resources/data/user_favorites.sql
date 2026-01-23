@@ -1,0 +1,17 @@
+INSERT INTO customer_favorite_product (customer_id, product_id) VALUES ('11111111-e5f6-4789-8012-000000000001', '3a4b85d0-f739-4856-a09b-8495f2157e4d');
+INSERT INTO customer_favorite_product (customer_id, product_id) VALUES ('11111111-e5f6-4789-8012-000000000001', '82e5f3b9-0459-4e13-afe7-2ed190dca000');
+INSERT INTO customer_favorite_product (customer_id, product_id) VALUES ('22222222-e5f6-4789-8012-000000000002', '293b85d0-f739-4856-a09b-8495f2157e4d');
+INSERT INTO customer_favorite_product (customer_id, product_id) VALUES ('22222222-e5f6-4789-8012-000000000002', '3f614d9a-bb8c-4bdb-bd46-0be893b2e1f1');
+INSERT INTO customer_favorite_product (customer_id, product_id) VALUES ('33333333-e5f6-4789-8012-000000000003', 'e101a5eb-7c5f-47c3-b706-5a1a9211fd65');
+INSERT INTO customer_favorite_product (customer_id, product_id) VALUES ('33333333-e5f6-4789-8012-000000000003', '3f52055f-3c7b-4b5f-ba31-8fd7aa9a4ff0');
+INSERT INTO customer_favorite_product (customer_id, product_id) VALUES ('44444444-e5f6-4789-8012-000000000004', 'e9b6e5e8-9f59-4d0f-97ba-00e3c4d3c701');
+INSERT INTO customer_favorite_product (customer_id, product_id) VALUES ('44444444-e5f6-4789-8012-000000000004', '1ba52433-5e23-4745-9cae-3a5bff4e3c0e');
+INSERT INTO customer_favorite_product (customer_id, product_id) VALUES ('55555555-e5f6-4789-8012-000000000005', 'ccfe12c7-2a16-4482-9c5b-ca57260fc475');
+INSERT INTO customer_favorite_product (customer_id, product_id) VALUES ('66666666-e5f6-4789-8012-000000000006', '1e225edf-b7b8-4c86-9c7f-c7b863ea13de');
+INSERT INTO customer_favorite_product (customer_id, product_id) VALUES ('66666666-e5f6-4789-8012-000000000006', 'a77c15e3-672d-4b7f-a928-154e674f4532');
+INSERT INTO customer_favorite_product (customer_id, product_id) VALUES ('77777777-e5f6-4789-8012-000000000007', '2e187c2a-4adb-4e2d-9d17-8b6d4c9e2f22');
+INSERT INTO customer_favorite_product (customer_id, product_id) VALUES ('88888888-e5f6-4789-8012-000000000008', 'cda029a7-0c77-4f2c-82b8-38d6e1b22f62');
+INSERT INTO customer_favorite_product (customer_id, product_id) VALUES ('88888888-e5f6-4789-8012-000000000008', 'fcb33c4b-31d2-4412-b2b3-03b77a62f731');
+INSERT INTO customer_favorite_product (customer_id, product_id) VALUES ('99999999-e5f6-4789-8012-000000000009', 'dcfe12c7-2a16-4482-9c5b-ca57260fc475');
+INSERT INTO customer_favorite_product (customer_id, product_id) VALUES ('10101010-e5f6-4789-8012-000000000010', 'f3e364ff-b656-44a3-a16e-2263e560345c');
+INSERT INTO customer_favorite_product (customer_id, product_id) VALUES ('10101010-e5f6-4789-8012-000000000010', 'eb9ca3bc-0e32-4d1d-9f8e-c2bea3a94b11');

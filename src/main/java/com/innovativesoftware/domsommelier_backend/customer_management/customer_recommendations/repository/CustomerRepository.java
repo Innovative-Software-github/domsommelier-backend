@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface CustomerRepository extends JpaRepository<Customer, UUID> {
@@ -19,4 +20,8 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID> {
             order by priority DESC
             limit ?2""", nativeQuery = true)
     List<CustomerRecommendationsProjection> findCustomerRecommendations(UUID customerId, int limit);
+
+    Optional<Customer> findByEmail(String email);
+
+    boolean existsByEmail(String email);
 }

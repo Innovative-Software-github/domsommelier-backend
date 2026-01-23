@@ -1,0 +1,20 @@
+package com.innovativesoftware.domsommelier_backend.order_management.order.model;
+
+import lombok.Builder;
+import lombok.Data;
+
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.UUID;
+
+@Data
+@Builder
+public class OrderFullDto {
+    private UUID id;
+    private OffsetDateTime date;
+    private String statusName;
+    private String pickupAddress;
+    private BigDecimal totalAmount;
+    private List<OrderedProductDto> items;
+}

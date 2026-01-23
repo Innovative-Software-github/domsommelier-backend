@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.nio.file.AccessDeniedException;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -71,6 +72,17 @@ public class GlobalExceptionHandler {
                 details
         );
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
+        ApiErrorResponse response = new ApiErrorResponse(
+                "Ошибка доступа",
+                "ACCESS_ERROR",
+                "Доступ запрещён",
+                null
+        );
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
 

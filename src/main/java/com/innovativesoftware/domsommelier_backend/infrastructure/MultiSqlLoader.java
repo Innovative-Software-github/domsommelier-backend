@@ -17,7 +17,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-@ConditionalOnProperty(prefix = "db-init", name = "mode", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "db-init", name = "mode", havingValue = "true")
 public class MultiSqlLoader {
 
     private final DataSource dataSource;
@@ -31,14 +31,16 @@ public class MultiSqlLoader {
     public void loadSqlScripts() throws Exception {
         List<String> files = List.of(
                 "data/init.sql",
+                "data/stores.sql",
                 "data/accessories.sql",
                 "data/wine.sql",
                 "data/snack.sql",
                 "data/spirit.sql",
                 "data/lowalcohol.sql",
                 "data/shampaigne.sql",
-                "data/filters.sql",
-                "data/stores.sql"
+                "data/users.sql",
+                "data/user_favorites.sql",
+                "data/filters.sql"
         );
         try (Connection connection = dataSource.getConnection()) {
             log.info("db-init: старт выполнения {} sql-файлов", files.size());
