@@ -96,6 +96,7 @@ public class AuthService {
         String token = jwtTokenProvider.createToken(customer);
 
         return AuthModels.AuthResponse.builder()
+                .customerId(customer.getId())
                 .token(token)
                 .firstName(customer.getFirstName())
                 .secondName(customer.getSecondName())
