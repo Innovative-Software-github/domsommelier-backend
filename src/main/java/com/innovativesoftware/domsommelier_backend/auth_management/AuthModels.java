@@ -25,6 +25,7 @@ public class AuthModels {
     @Builder
     public static class AuthResponse {
         private String token;
+        private String customerId;
         private String firstName;
         private String secondName;
     }
