@@ -24,6 +24,7 @@ import java.nio.file.AccessDeniedException;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
 @Tag(name = "Orders", description = "Управление заказами пользователя")
