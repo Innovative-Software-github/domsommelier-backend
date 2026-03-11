@@ -6,6 +6,7 @@ import com.innovativesoftware.domsommelier_backend.exceptions.InvalidValueExcept
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -72,6 +73,17 @@ public class GlobalExceptionHandler {
                 details
         );
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MailException.class)
+    public ResponseEntity<ApiErrorResponse> handleMailException(MailException ex) {
+        ApiErrorResponse response = new ApiErrorResponse(
+                "Ошибка отправки email",
+                "MAIL_ERROR",
+                "Не удалось отправить код подтверждения на почту",
+                null
+        );
+        return new ResponseEntity<>(response, HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     @ExceptionHandler(AccessDeniedException.class)

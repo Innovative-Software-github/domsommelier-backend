@@ -6,8 +6,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,17 +28,19 @@ public class AuthController {
     @Operation(
             summary = "Логин, сервис запрашивает код с почты"
     )
-    public AuthModels.AuthInitiateResponse initiateLogin(@Valid AuthModels.AuthInitiateRequest request) {
+    public ResponseEntity<?> initiateLogin(@RequestBody @Valid AuthModels.AuthInitiateRequest request) {
         AuthModels.AuthInitiateResponse response = new AuthModels.AuthInitiateResponse();
         try {
             authService.initiateLogin(request.getEmail());
             log.info("Код отправлен");
             response.setSuccess("Код отправлен");
-            return response;
+            return ResponseEntity.ok(response);
+        } catch (MailException ex) {
+            throw ex;
         } catch (Exception ex) {
             log.error("Ошибка при попытке инициировать логин");
             response.setSuccess(ex.getMessage());
-            return response;
+            return ResponseEntity.ok(response);
         }
     }
 
@@ -44,7 +48,7 @@ public class AuthController {
     @Operation(
             summary = "Подтверждение входа кодом с email"
     )
-    public ResponseEntity<AuthModels.AuthResponse> confirmLogin(AuthModels.AuthConfirmRequest request) {
+    public ResponseEntity<AuthModels.AuthResponse> confirmLogin(@RequestBody AuthModels.AuthConfirmRequest request) {
         try {
             return ResponseEntity.ok(authService.confirmLogin(request.getEmail(), request.getCode()));
         } catch (BadCredentialsException ex) {
