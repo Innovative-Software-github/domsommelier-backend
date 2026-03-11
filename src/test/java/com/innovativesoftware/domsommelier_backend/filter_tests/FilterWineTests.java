@@ -6,7 +6,6 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.en
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.util.VolumeStrengthUtils;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.io.PrintStream;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,15 +39,6 @@ public class FilterWineTests {
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Test
-    @DisplayName("Тест для проверки русского языка")
-    @Disabled("Тест для проверки кириллицы")
-    void testRussian() {
-        System.out.println("Проверка кириллицы: Франция");
-        PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        out.println("Проверка UTF-8: Франция");
-    }
 
     @BeforeEach
     void setup() {

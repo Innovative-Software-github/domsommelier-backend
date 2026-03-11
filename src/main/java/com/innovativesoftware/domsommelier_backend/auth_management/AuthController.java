@@ -2,8 +2,11 @@ package com.innovativesoftware.domsommelier_backend.auth_management;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +26,7 @@ public class AuthController {
     @Operation(
             summary = "Логин, сервис запрашивает код с почты"
     )
-    public AuthModels.AuthInitiateResponse initiateLogin(AuthModels.AuthInitiateRequest request) {
+    public AuthModels.AuthInitiateResponse initiateLogin(@Valid AuthModels.AuthInitiateRequest request) {
         AuthModels.AuthInitiateResponse response = new AuthModels.AuthInitiateResponse();
         try {
             authService.initiateLogin(request.getEmail());
@@ -41,7 +44,11 @@ public class AuthController {
     @Operation(
             summary = "Подтверждение входа кодом с email"
     )
-    public AuthModels.AuthResponse confirmLogin(AuthModels.AuthConfirmRequest request) {
-        return authService.confirmLogin(request.getEmail(), request.getCode());
+    public ResponseEntity<AuthModels.AuthResponse> confirmLogin(AuthModels.AuthConfirmRequest request) {
+        try {
+            return ResponseEntity.ok(authService.confirmLogin(request.getEmail(), request.getCode()));
+        } catch (BadCredentialsException ex) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
