@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Viewer — Dom Sommelier Dev</title>
+    <style>
+        :root {
+            --bg:        #0d0808;
+            --surface:   #1a0f0f;
+            --border:    #3a2020;
+            --gold:      #c9a84c;
+            --gold-dim:  #7a6030;
+            --red:       #8b2020;
+            --text:      #e8d5b7;
+            --muted:     #7a6060;
+            --green:     #4caf50;
+            --radius:    12px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--gold);
+        }
+
+        .logo span { color: var(--text); font-weight: 400; }
+
+        .badge {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: var(--red);
+            border: 1px solid var(--red);
+            border-radius: 4px;
+            padding: 3px 8px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        input[type="email"] {
+            flex: 1;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="email"]:focus { border-color: var(--gold-dim); }
+        input[type="email"]::placeholder { color: var(--muted); }
+
+        button {
+            background: var(--gold);
+            color: #0d0808;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+
+        button:hover { opacity: 0.85; }
+        button:disabled { opacity: 0.4; cursor: default; }
+
+        .code-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            text-align: center;
+            min-height: 110px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: border-color 0.3s;
+        }
+
+        .code-box.active { border-color: var(--gold-dim); }
+
+        .code {
+            font-size: 52px;
+            font-weight: 800;
+            letter-spacing: 12px;
+            color: var(--gold);
+            font-family: 'Courier New', monospace;
+            line-height: 1;
+        }
+
+        .code.empty { color: var(--muted); font-size: 32px; letter-spacing: 2px; }
+
+        .ttl-bar-wrap {
+            width: 100%;
+            height: 3px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .ttl-bar {
+            height: 100%;
+            background: var(--gold);
+            border-radius: 2px;
+            transition: width 0.9s linear, background 0.5s;
+        }
+
+        .ttl-bar.low { background: var(--red); }
+
+        .ttl-label {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .status {
+            font-size: 12px;
+            margin-top: 16px;
+            text-align: right;
+            color: var(--muted);
+            height: 16px;
+        }
+
+        .status.ok { color: var(--green); }
+        .status.polling::after {
+            content: '';
+            display: inline-block;
+            width: 6px; height: 6px;
+            background: var(--green);
+            border-radius: 50%;
+            margin-left: 6px;
+            vertical-align: middle;
+            animation: pulse 1.2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.2; }
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <header>
+        <div class="logo">Dom <span>Sommelier</span></div>
+        <div class="badge">DEV TOOL</div>
+    </header>
+
+    <div class="card">
+        <h2>OTP Viewer</h2>
+
+        <label for="email">Email пользователя</label>
+        <div class="input-row">
+            <input type="email" id="email" placeholder="user@example.com" autocomplete="off">
+            <button id="btn" onclick="toggle()">Запустить</button>
+        </div>
+
+        <div class="code-box" id="codeBox">
+            <div class="code empty" id="code">····</div>
+            <div class="ttl-bar-wrap" id="barWrap" style="display:none">
+                <div class="ttl-bar" id="bar" style="width:0%"></div>
+            </div>
+            <div class="ttl-label" id="ttlLabel"></div>
+        </div>
+
+        <div class="status" id="status"></div>
+    </div>
+</div>
+
+<script>
+    let interval = null;
+    let running  = false;
+    const MAX_TTL = 300;
+
+    const emailEl   = document.getElementById('email');
+    const btn       = document.getElementById('btn');
+    const codeEl    = document.getElementById('code');
+    const codeBox   = document.getElementById('codeBox');
+    const barWrap   = document.getElementById('barWrap');
+    const bar       = document.getElementById('bar');
+    const ttlLabel  = document.getElementById('ttlLabel');
+    const statusEl  = document.getElementById('status');
+
+    emailEl.addEventListener('keydown', e => { if (e.key === 'Enter') toggle(); });
+
+    function toggle() {
+        if (running) {
+            stop();
+        } else {
+            const email = emailEl.value.trim();
+            if (!email) { emailEl.focus(); return; }
+            start(email);
+        }
+    }
+
+    function start(email) {
+        running = true;
+        btn.textContent = 'Стоп';
+        emailEl.disabled = true;
+        statusEl.className = 'status polling';
+        statusEl.textContent = 'Опрос каждые 2 сек';
+        fetch_code(email);
+        interval = setInterval(() => fetch_code(email), 2000);
+    }
+
+    function stop() {
+        running = false;
+        clearInterval(interval);
+        interval = null;
+        btn.textContent = 'Запустить';
+        emailEl.disabled = false;
+        statusEl.className = 'status';
+        statusEl.textContent = 'Остановлено';
+        reset();
+    }
+
+    function fetch_code(email) {
+        fetch('/dev/otp/code?email=' + encodeURIComponent(email))
+            .then(r => r.json())
+            .then(data => {
+                if (data.found) {
+                    codeEl.textContent = data.code;
+                    codeEl.className   = 'code';
+                    codeBox.className  = 'code-box active';
+                    barWrap.style.display = '';
+                    const pct = Math.round((data.ttl / MAX_TTL) * 100);
+                    bar.style.width = pct + '%';
+                    bar.className   = 'ttl-bar' + (data.ttl < 30 ? ' low' : '');
+                    ttlLabel.textContent = 'Действителен ещё ' + data.ttl + ' сек';
+                } else {
+                    reset();
+                }
+            })
+            .catch(() => {
+                statusEl.className   = 'status';
+                statusEl.textContent = 'Ошибка соединения';
+            });
+    }
+
+    function reset() {
+        codeEl.textContent    = '····';
+        codeEl.className      = 'code empty';
+        codeBox.className     = 'code-box';
+        barWrap.style.display = 'none';
+        bar.style.width       = '0%';
+        ttlLabel.textContent  = 'Нет активного кода';
+    }
+</script>
+</body>
+</html>

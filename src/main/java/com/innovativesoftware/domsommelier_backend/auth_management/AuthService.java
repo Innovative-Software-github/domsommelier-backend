@@ -113,7 +113,7 @@ public class AuthService {
         }
         catch (MailException ex) {
             log.error("Проблема с отправкой email {}", ex.getMessage());
-            throw new RuntimeException(ex);
+            throw ex;
         }
     }
 }
