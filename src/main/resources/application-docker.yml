@@ -1,0 +1,22 @@
+spring:
+  config:
+    import: vault://
+  cloud:
+    vault:
+      enabled: true
+      uri: http://vault:8200
+      authentication: TOKEN
+      token: ${VAULT_TOKEN:}
+      kv:
+        enabled: true
+        backend: secret
+        default-context: domsommelier
+        application-name: domsommelier
+  datasource:
+    url: jdbc:postgresql://db:5432/domsommelier
+  redis:
+    host: redis
+    port: 6379
+
+minio:
+  url: http://minio:9000

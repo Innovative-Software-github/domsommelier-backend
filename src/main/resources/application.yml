@@ -1,8 +1,6 @@
 spring:
   config:
     encoding: UTF-8
-#    activate:
-#      on-profile: default
   application:
     name: domsommelier-backend
   output:
@@ -17,12 +15,6 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
   mail:
-    host: ${SPRING_MAIL_HOST:}
-    port: ${SPRING_MAIL_PORT:}
-    username: ${SPRING_MAIL_USERNAME:}
-    password: ${SPRING_MAIL_PASSWORD:}
-    protocol: ${SPRING_MAIL_PROTOCOL:}
-    from: ${SPRING_MAIL_USERNAME:}
     properties:
       mail:
         smtp:
@@ -41,88 +33,23 @@ spring:
             class: javax.net.ssl.SSLSocketFactory
             fallback: false
 
-# Локальная конфигурация (по умолчанию)
----
-spring:
-  config:
-    activate:
-      on-profile: local
-  datasource:
-    url: jdbc:postgresql://localhost:${POSTGRES_PORT:5432}/${POSTGRES_DB:domsommelier}
-    username: ${POSTGRES_USER:postgres}
-    password: ${POSTGRES_PASSWORD:admin}
-  redis:
-    host: localhost
-    port: ${REDIS_PORT:6379}
-  mail:
-    host: ${MAIL_HOST:}
-    port: ${MAIL_PORT:}
-    username: ${MAIL_USERNAME:}
-    password: ${MAIL_PASSWORD:}
-    protocol: ${MAIL_PROTOCOL:}
-
-minio:
-  url: http://localhost:${MINIO_API_PORT:9000}
-  access:
-    name: ${MINIO_ACCESS_NAME:minioadmin}
-    secret: ${MINIO_ACCESS_SECRET:minioadmin}
-  access-key: ${MINIO_ACCESS_KEY:minioadmin}
-  secret-key: ${MINIO_SECRET_KEY:minioadmin}
-  init:
-    event:
-      files: >
-        italian-wine-casino-small.jpg,
-        italian-wine-casino-large.jpg,
-        french-wine-tasting-large.jpg,
-        french-wine-tasting-small.jpg,
-        spanish-wine-tasting-large.jpg,
-        spanish-wine-tasting-small.jpg
-
-# Docker конфигурация
----
-spring:
-  config:
-    activate:
-      on-profile: docker
-  datasource:
-    url: jdbc:postgresql://${POSTGRES_DOMAIN:db}:${POSTGRES_PORT:5432}/${POSTGRES_DB:domsommelier}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
-  redis:
-    host: ${REDIS_DOMAIN:redis}
-    port: ${REDIS_PORT:6379}
-  mail:
-    host: ${MAIL_HOST:}
-    port: ${MAIL_PORT:}
-    username: ${MAIL_USERNAME:}
-    password: ${MAIL_PASSWORD:}
-    protocol: ${MAIL_PROTOCOL:}
-
-minio:
-  url: http://${MINIO_DOMAIN:minio}:${MINIO_API_PORT:9000}
-  access:
-    name: ${MINIO_ACCESS_NAME:minioadmin}
-    secret: ${MINIO_ACCESS_SECRET:minioadmin}
-  access-key: ${MINIO_ACCESS_KEY:minioadmin}
-  secret-key: ${MINIO_SECRET_KEY:minioadmin}
-  init:
-    event:
-      files: >
-        italian-wine-casino-small.jpg,
-        italian-wine-casino-large.jpg,
-        french-wine-tasting-large.jpg,
-        french-wine-tasting-small.jpg,
-        spanish-wine-tasting-large.jpg,
-        spanish-wine-tasting-small.jpg
-
-# Общие настройки для всех профилей
 db-init:
   mode: true
 
 jwt:
-  secret: ${JWT_SECRET:}
   expiration: 86400000
 
 app:
   email:
     subject: Ваш код для входа
+
+minio:
+  init:
+    event:
+      files: >
+        italian-wine-casino-small.jpg,
+        italian-wine-casino-large.jpg,
+        french-wine-tasting-large.jpg,
+        french-wine-tasting-small.jpg,
+        spanish-wine-tasting-large.jpg,
+        spanish-wine-tasting-small.jpg

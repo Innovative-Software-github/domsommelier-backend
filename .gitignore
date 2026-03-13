@@ -32,4 +32,11 @@ build/
 ### VS Code ###
 .vscode/
 .env.local
-/src/main/resources/application-local.yml
+
+### Secrets ###
+.env
+vault/init-secrets.env
+src/main/resources/application-local.yml
+
+### Runtime logs ###
+mcp_*.log
