@@ -1,42 +1,77 @@
-version: '3.9'
-
 services:
+
+  # ── Vault — secret storage ──
+  vault:
+    image: hashicorp/vault:1.14
+    container_name: vault
+    restart: unless-stopped
+    cap_add:
+      - IPC_LOCK
+    environment:
+      VAULT_ADDR: "http://127.0.0.1:8200"
+    ports:
+      - "8200:8200"
+    volumes:
+      - vault-data:/vault/data
+      - ./vault/config:/vault/config
+    entrypoint: ["sh", "-c", "chown -R vault:vault /vault/data && docker-entrypoint.sh server"]
+    healthcheck:
+      test: ["CMD-SHELL", "vault status 2>&1 | grep -q 'Seal Type'"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - app-network
+
+  # ── Vault initializer (runs once, then exits) ──
+  vault-init:
+    image: hashicorp/vault:1.14
+    container_name: vault-init
+    depends_on:
+      vault:
+        condition: service_healthy
+    environment:
+      VAULT_ADDR: "http://vault:8200"
+    volumes:
+      - ./vault/scripts/init-vault.sh:/scripts/init-vault.sh:ro
+      - ./vault:/vault-config:ro
+      - vault-keys:/vault/keys
+      - vault-secrets:/run/secrets
+    entrypoint: ["sh", "/scripts/init-vault.sh"]
+    restart: "no"
+    networks:
+      - app-network
+
+  # ── Nginx reverse proxy ──
   nginx:
     image: nginx:latest
     container_name: reverse_proxy
     ports:
-      - "${REVERSE_PROXY_PORT}:80"
+      - "80:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf
     networks:
       - app-network
     depends_on:
       - domsommelier-app
 
+  # ── Spring Boot application ──
   domsommelier-app:
-    build: .
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile
     ports:
-      - "${API_PORT}:8080"
+      - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRES_DOMAIN}:${POSTGRES_PORT}/${POSTGRES_DB}
-      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
-      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - SPRING_JPA_HIBERNATE_DDL-AUTO=create-drop
-      - MINIO_URL=http://${MINIO_DOMAIN}:${MINIO_API_PORT}
-      - MINIO_ACCESS_NAME=${MINIO_ROOT_USER}
-      - MINIO_ACCESS_SECRET=${MINIO_ROOT_PASSWORD}
-      - MINIO_ACCESS_KEY=${MINIO_ROOT_USER}
-      - MINIO_SECRET_KEY=${MINIO_ROOT_PASSWORD}
-      - SPRING_REDIS_HOST=${REDIS_DOMAIN}
-      - SPRING_REDIS_PORT=${REDIS_PORT}
-      - SPRING_MAIL_HOST=${MAIL_HOST}
-      - SPRING_MAIL_PORT=${MAIL_PORT}
-      - SPRING_MAIL_USERNAME=${MAIL_USERNAME}
-      - SPRING_MAIL_PASSWORD=${MAIL_PASSWORD}
-      - SPRING_MAIL_PROTOCOL=${MAIL_PROTOCOL}
-      - JWT_SECRET=${JWT_SECRET}
+    volumes:
+      - vault-secrets:/run/secrets:ro
+      - ./vault/scripts/app-entrypoint.sh:/app/entrypoint.sh:ro
+    entrypoint: ["sh", "/app/entrypoint.sh"]
     depends_on:
+      vault-init:
+        condition: service_completed_successfully
       db:
         condition: service_healthy
       redis:
@@ -44,34 +79,40 @@ services:
     networks:
       - app-network
 
+  # ── MinIO object storage ──
   minio:
     image: minio/minio:latest
     container_name: minio
     restart: unless-stopped
-    command: server --console-address ":${MINIO_WEB_PORT}" /data/
     ports:
-      - "${MINIO_API_PORT}:9000"
-      - "${MINIO_WEB_PORT}:9001"
-    environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - "9000:9000"
+      - "9001:9001"
     volumes:
       - minio-storage:/data
+      - vault-secrets:/run/secrets:ro
+      - ./vault/scripts/minio-entrypoint.sh:/scripts/minio-entrypoint.sh:ro
+    entrypoint: ["sh", "/scripts/minio-entrypoint.sh"]
+    command: ["server", "--console-address", ":9001", "/data/"]
+    depends_on:
+      vault-init:
+        condition: service_completed_successfully
     networks:
       - app-network
 
+  # ── PostgreSQL database ──
   db:
     image: postgres:15-alpine
     container_name: db
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER_FILE=/run/secrets/db_user
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
+      - POSTGRES_DB_FILE=/run/secrets/db_name
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "5432:5432"
     volumes:
       - ./infrastructure/db/create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
       - db-data:/var/lib/postgresql/data
+      - vault-secrets:/run/secrets:ro
     deploy:
       resources:
         limits:
@@ -79,16 +120,18 @@ services:
         reservations:
           memory: 256M
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}"]
-      interval: 1s
+      test: ["CMD-SHELL", "pg_isready -U $(cat /run/secrets/db_user) -d $(cat /run/secrets/db_name)"]
+      interval: 5s
       timeout: 5s
       retries: 10
     depends_on:
-      - minio
+      vault-init:
+        condition: service_completed_successfully
     restart: unless-stopped
     networks:
       - app-network
 
+  # ── Redis cache ──
   redis:
     image: redis:latest
     restart: always
@@ -96,7 +139,7 @@ services:
     volumes:
       - cache:/cache-data
     ports:
-      - "${REDIS_PORT}:6379"
+      - "6379:6379"
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 1s
@@ -113,3 +156,6 @@ volumes:
   db-data:
   minio-storage:
   cache:
+  vault-data:
+  vault-keys:
+  vault-secrets:
