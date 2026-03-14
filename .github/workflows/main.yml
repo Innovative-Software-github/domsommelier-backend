@@ -93,27 +93,18 @@ jobs:
             sleep 15
             echo "==> Checking all services..."
             FAILED=false
-            for SVC in vault db redis minio; do
-              STATUS=$(docker inspect --format="{{.State.Status}}" "$SVC" 2>/dev/null || echo "not found")
-              if [ "$STATUS" != "running" ]; then
-                echo "FAIL: $SVC is $STATUS"
-                FAILED=true
-              else
+            for SVC in vault db redis minio domsommelier-app; do
+              if docker ps --filter "name=$SVC" --filter "status=running" -q | grep -q .; then
                 echo "  OK: $SVC is running"
+              else
+                echo "FAIL: $SVC is not running"
+                FAILED=true
               fi
             done
-            # Check app container (name includes project prefix)
-            APP_RUNNING=$(docker ps --filter name=domsommelier-app --filter "status=running" -q)
-            if [ -n "$APP_RUNNING" ]; then
-              echo "  OK: domsommelier-app is running"
-            else
-              echo "FAIL: domsommelier-app is not running"
-              docker-compose logs --tail=50 domsommelier-app
-              FAILED=true
-            fi
             if [ "$FAILED" = "true" ]; then
               echo "==> Deploy FAILED: some services are not running"
               docker-compose ps
+              docker-compose logs --tail=50
               exit 1
             fi
             echo "==> Deploy successful! All services are running."
