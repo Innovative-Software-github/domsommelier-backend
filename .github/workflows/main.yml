@@ -5,6 +5,20 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
+      MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
+      MINIO_ACCESS_NAME: ${{ secrets.MINIO_ACCESS_NAME }}
+      MINIO_ACCESS_SECRET: ${{ secrets.MINIO_ACCESS_SECRET }}
+      MAIL_HOST: ${{ secrets.MAIL_HOST }}
+      MAIL_PORT: ${{ secrets.MAIL_PORT }}
+      MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+      MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+      MAIL_PROTOCOL: ${{ secrets.MAIL_PROTOCOL }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
     steps:
       - name: Deployment
         uses: appleboy/ssh-action@master
@@ -25,26 +39,24 @@ jobs:
               cd "$PROJECT_DIR"
             fi
 
-            # Generate init-secrets.env if it doesn't exist
-            if [ ! -f "$PROJECT_DIR/vault/init-secrets.env" ]; then
-              cat > "$PROJECT_DIR/vault/init-secrets.env" <<SECRETS
-            DB_USER="$DB_USER"
-            DB_PASSWORD="$DB_PASSWORD"
-            DB_NAME="$DB_NAME"
-            MINIO_ROOT_USER="$MINIO_ROOT_USER"
-            MINIO_ROOT_PASSWORD="$MINIO_ROOT_PASSWORD"
-            MINIO_ACCESS_NAME="$MINIO_ACCESS_NAME"
-            MINIO_ACCESS_SECRET="$MINIO_ACCESS_SECRET"
-            MAIL_HOST="$MAIL_HOST"
-            MAIL_PORT="$MAIL_PORT"
-            MAIL_USERNAME="$MAIL_USERNAME"
-            MAIL_PASSWORD="$MAIL_PASSWORD"
-            MAIL_PROTOCOL="$MAIL_PROTOCOL"
-            JWT_SECRET="$JWT_SECRET"
-            SECRETS
-            fi
+            # Always regenerate init-secrets.env from GitHub Secrets
+            cat > "$PROJECT_DIR/vault/init-secrets.env" <<SECRETS
+DB_USER="$DB_USER"
+DB_PASSWORD="$DB_PASSWORD"
+DB_NAME="$DB_NAME"
+MINIO_ROOT_USER="$MINIO_ROOT_USER"
+MINIO_ROOT_PASSWORD="$MINIO_ROOT_PASSWORD"
+MINIO_ACCESS_NAME="$MINIO_ACCESS_NAME"
+MINIO_ACCESS_SECRET="$MINIO_ACCESS_SECRET"
+MAIL_HOST="$MAIL_HOST"
+MAIL_PORT="$MAIL_PORT"
+MAIL_USERNAME="$MAIL_USERNAME"
+MAIL_PASSWORD="$MAIL_PASSWORD"
+MAIL_PROTOCOL="$MAIL_PROTOCOL"
+JWT_SECRET="$JWT_SECRET"
+SECRETS
 
-            # Rebuild and restart containers
-            docker-compose down
+            # Reset Vault volumes to force re-seed with new secrets
+            docker-compose down -v
             docker-compose up --build -d
 
