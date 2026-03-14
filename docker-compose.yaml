@@ -76,6 +76,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    restart: on-failure
     networks:
       - app-network
 
@@ -123,7 +124,8 @@ services:
       test: ["CMD-SHELL", "pg_isready -U $$(cat /run/secrets/db_user) -d $$(cat /run/secrets/db_name)"]
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 30
+      start_period: 30s
     depends_on:
       vault-init:
         condition: service_completed_successfully
