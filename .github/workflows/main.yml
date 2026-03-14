@@ -42,37 +42,59 @@ jobs:
               cd "$PROJECT_DIR"
             fi
 
-            # Always regenerate init-secrets.env from GitHub Secrets
+            # Generate init-secrets.env only if it doesn't exist
+            # To update secrets: delete the file on server, then redeploy
             SECRETS_FILE="$PROJECT_DIR/vault/init-secrets.env"
-            echo "DB_USER=\"$DB_USER\"" > "$SECRETS_FILE"
-            echo "DB_PASSWORD=\"$DB_PASSWORD\"" >> "$SECRETS_FILE"
-            echo "DB_NAME=\"$DB_NAME\"" >> "$SECRETS_FILE"
-            echo "MINIO_ROOT_USER=\"$MINIO_ROOT_USER\"" >> "$SECRETS_FILE"
-            echo "MINIO_ROOT_PASSWORD=\"$MINIO_ROOT_PASSWORD\"" >> "$SECRETS_FILE"
-            echo "MINIO_ACCESS_NAME=\"$MINIO_ACCESS_NAME\"" >> "$SECRETS_FILE"
-            echo "MINIO_ACCESS_SECRET=\"$MINIO_ACCESS_SECRET\"" >> "$SECRETS_FILE"
-            echo "MAIL_HOST=\"$MAIL_HOST\"" >> "$SECRETS_FILE"
-            echo "MAIL_PORT=\"$MAIL_PORT\"" >> "$SECRETS_FILE"
-            echo "MAIL_USERNAME=\"$MAIL_USERNAME\"" >> "$SECRETS_FILE"
-            echo "MAIL_PASSWORD=\"$MAIL_PASSWORD\"" >> "$SECRETS_FILE"
-            echo "MAIL_PROTOCOL=\"$MAIL_PROTOCOL\"" >> "$SECRETS_FILE"
-            echo "JWT_SECRET=\"$JWT_SECRET\"" >> "$SECRETS_FILE"
+            if [ ! -f "$SECRETS_FILE" ]; then
+              echo "==> First deploy: generating init-secrets.env"
+              echo "DB_USER=\"$DB_USER\"" > "$SECRETS_FILE"
+              echo "DB_PASSWORD=\"$DB_PASSWORD\"" >> "$SECRETS_FILE"
+              echo "DB_NAME=\"$DB_NAME\"" >> "$SECRETS_FILE"
+              echo "MINIO_ROOT_USER=\"$MINIO_ROOT_USER\"" >> "$SECRETS_FILE"
+              echo "MINIO_ROOT_PASSWORD=\"$MINIO_ROOT_PASSWORD\"" >> "$SECRETS_FILE"
+              echo "MINIO_ACCESS_NAME=\"$MINIO_ACCESS_NAME\"" >> "$SECRETS_FILE"
+              echo "MINIO_ACCESS_SECRET=\"$MINIO_ACCESS_SECRET\"" >> "$SECRETS_FILE"
+              echo "MAIL_HOST=\"$MAIL_HOST\"" >> "$SECRETS_FILE"
+              echo "MAIL_PORT=\"$MAIL_PORT\"" >> "$SECRETS_FILE"
+              echo "MAIL_USERNAME=\"$MAIL_USERNAME\"" >> "$SECRETS_FILE"
+              echo "MAIL_PASSWORD=\"$MAIL_PASSWORD\"" >> "$SECRETS_FILE"
+              echo "MAIL_PROTOCOL=\"$MAIL_PROTOCOL\"" >> "$SECRETS_FILE"
+              echo "JWT_SECRET=\"$JWT_SECRET\"" >> "$SECRETS_FILE"
+              FIRST_DEPLOY=true
+            fi
 
-            # Reset Vault volumes to force re-seed with new secrets
-            docker-compose down -v
+            # Determine if this is a fresh deploy (no Vault data)
+            VAULT_RUNNING=$(docker ps -q --filter name=vault 2>/dev/null || true)
 
-            # Build image first
-            docker-compose build domsommelier-app
+            if [ -z "$VAULT_RUNNING" ] || [ "$FIRST_DEPLOY" = "true" ]; then
+              echo "==> Fresh deploy: starting all services sequentially"
+              docker-compose down -v
 
-            # Start infrastructure and wait for it to be ready
-            docker-compose up -d vault
-            sleep 5
-            docker-compose up -d vault-init
-            # Wait for vault-init to finish and write secrets
-            echo "Waiting for vault-init..."
-            timeout 60 sh -c 'while docker ps -a --filter name=vault-init --format "{{.Status}}" | grep -qv "Exited (0)"; do sleep 2; done'
-            docker-compose up -d db redis minio
-            echo "Waiting for DB to be healthy..."
-            timeout 120 sh -c 'while ! docker inspect --format="{{.State.Health.Status}}" db 2>/dev/null | grep -q healthy; do sleep 3; done'
-            echo "DB is healthy, starting app..."
-            docker-compose up -d
+              docker-compose build domsommelier-app
+
+              docker-compose up -d vault
+              sleep 5
+              docker-compose up -d vault-init
+              echo "Waiting for vault-init..."
+              timeout 60 sh -c 'while docker ps -a --filter name=vault-init --format "{{.Status}}" | grep -qv "Exited (0)"; do sleep 2; done'
+              docker-compose up -d db redis minio
+              echo "Waiting for DB to be healthy..."
+              timeout 120 sh -c 'while ! docker inspect --format="{{.State.Health.Status}}" db 2>/dev/null | grep -q healthy; do sleep 3; done'
+              echo "DB is healthy, starting app..."
+              docker-compose up -d
+            else
+              echo "==> Regular deploy: rebuilding and restarting app only"
+              docker-compose build domsommelier-app
+              docker-compose up -d --no-deps domsommelier-app
+            fi
+
+            # Verify app is running
+            echo "Waiting for app to start..."
+            sleep 10
+            if docker ps --filter name=domsommelier-app --filter "status=running" -q | grep -q .; then
+              echo "==> Deploy successful! App is running."
+            else
+              echo "==> WARNING: App container is not running!"
+              docker-compose logs --tail=30 domsommelier-app
+              exit 1
+            fi
