@@ -88,13 +88,32 @@ jobs:
               docker-compose up -d --no-deps domsommelier-app
             fi
 
-            # Verify app is running
+            # Verify all services are running
             echo "Waiting for app to start..."
-            sleep 10
-            if docker ps --filter name=domsommelier-app --filter "status=running" -q | grep -q .; then
-              echo "==> Deploy successful! App is running."
+            sleep 15
+            echo "==> Checking all services..."
+            FAILED=false
+            for SVC in vault db redis minio; do
+              STATUS=$(docker inspect --format="{{.State.Status}}" "$SVC" 2>/dev/null || echo "not found")
+              if [ "$STATUS" != "running" ]; then
+                echo "FAIL: $SVC is $STATUS"
+                FAILED=true
+              else
+                echo "  OK: $SVC is running"
+              fi
+            done
+            # Check app container (name includes project prefix)
+            APP_RUNNING=$(docker ps --filter name=domsommelier-app --filter "status=running" -q)
+            if [ -n "$APP_RUNNING" ]; then
+              echo "  OK: domsommelier-app is running"
             else
-              echo "==> WARNING: App container is not running!"
-              docker-compose logs --tail=30 domsommelier-app
+              echo "FAIL: domsommelier-app is not running"
+              docker-compose logs --tail=50 domsommelier-app
+              FAILED=true
+            fi
+            if [ "$FAILED" = "true" ]; then
+              echo "==> Deploy FAILED: some services are not running"
+              docker-compose ps
               exit 1
             fi
+            echo "==> Deploy successful! All services are running."
