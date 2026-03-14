@@ -60,4 +60,19 @@ jobs:
 
             # Reset Vault volumes to force re-seed with new secrets
             docker-compose down -v
-            docker-compose up --build -d
+
+            # Build image first
+            docker-compose build domsommelier-app
+
+            # Start infrastructure and wait for it to be ready
+            docker-compose up -d vault
+            sleep 5
+            docker-compose up -d vault-init
+            # Wait for vault-init to finish and write secrets
+            echo "Waiting for vault-init..."
+            timeout 60 sh -c 'while docker ps -a --filter name=vault-init --format "{{.Status}}" | grep -qv "Exited (0)"; do sleep 2; done'
+            docker-compose up -d db redis minio
+            echo "Waiting for DB to be healthy..."
+            timeout 120 sh -c 'while ! docker inspect --format="{{.State.Health.Status}}" db 2>/dev/null | grep -q healthy; do sleep 3; done'
+            echo "DB is healthy, starting app..."
+            docker-compose up -d
