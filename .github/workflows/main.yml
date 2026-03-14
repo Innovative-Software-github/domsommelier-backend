@@ -1,7 +1,10 @@
+name: Deploy
+
 on:
   push:
     branches:
       - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -20,7 +23,7 @@ jobs:
       MAIL_PROTOCOL: ${{ secrets.MAIL_PROTOCOL }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
     steps:
-      - name: Deployment
+      - name: Deploy to server
         uses: appleboy/ssh-action@master
         with:
           username: root
@@ -40,23 +43,21 @@ jobs:
             fi
 
             # Always regenerate init-secrets.env from GitHub Secrets
-            cat > "$PROJECT_DIR/vault/init-secrets.env" <<SECRETS
-DB_USER="$DB_USER"
-DB_PASSWORD="$DB_PASSWORD"
-DB_NAME="$DB_NAME"
-MINIO_ROOT_USER="$MINIO_ROOT_USER"
-MINIO_ROOT_PASSWORD="$MINIO_ROOT_PASSWORD"
-MINIO_ACCESS_NAME="$MINIO_ACCESS_NAME"
-MINIO_ACCESS_SECRET="$MINIO_ACCESS_SECRET"
-MAIL_HOST="$MAIL_HOST"
-MAIL_PORT="$MAIL_PORT"
-MAIL_USERNAME="$MAIL_USERNAME"
-MAIL_PASSWORD="$MAIL_PASSWORD"
-MAIL_PROTOCOL="$MAIL_PROTOCOL"
-JWT_SECRET="$JWT_SECRET"
-SECRETS
+            SECRETS_FILE="$PROJECT_DIR/vault/init-secrets.env"
+            echo "DB_USER=\"$DB_USER\"" > "$SECRETS_FILE"
+            echo "DB_PASSWORD=\"$DB_PASSWORD\"" >> "$SECRETS_FILE"
+            echo "DB_NAME=\"$DB_NAME\"" >> "$SECRETS_FILE"
+            echo "MINIO_ROOT_USER=\"$MINIO_ROOT_USER\"" >> "$SECRETS_FILE"
+            echo "MINIO_ROOT_PASSWORD=\"$MINIO_ROOT_PASSWORD\"" >> "$SECRETS_FILE"
+            echo "MINIO_ACCESS_NAME=\"$MINIO_ACCESS_NAME\"" >> "$SECRETS_FILE"
+            echo "MINIO_ACCESS_SECRET=\"$MINIO_ACCESS_SECRET\"" >> "$SECRETS_FILE"
+            echo "MAIL_HOST=\"$MAIL_HOST\"" >> "$SECRETS_FILE"
+            echo "MAIL_PORT=\"$MAIL_PORT\"" >> "$SECRETS_FILE"
+            echo "MAIL_USERNAME=\"$MAIL_USERNAME\"" >> "$SECRETS_FILE"
+            echo "MAIL_PASSWORD=\"$MAIL_PASSWORD\"" >> "$SECRETS_FILE"
+            echo "MAIL_PROTOCOL=\"$MAIL_PROTOCOL\"" >> "$SECRETS_FILE"
+            echo "JWT_SECRET=\"$JWT_SECRET\"" >> "$SECRETS_FILE"
 
             # Reset Vault volumes to force re-seed with new secrets
             docker-compose down -v
             docker-compose up --build -d
-
