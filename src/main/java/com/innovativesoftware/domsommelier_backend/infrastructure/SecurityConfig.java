@@ -24,13 +24,22 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtFilter;
 
+    private static final String[] PUBLIC_PATHS = {
+            "/api/v1/auth/**",
+            "/api/v1/saved/**",
+            "/api/v1/basket/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/dev/**"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> req
-                        .requestMatchers("/api/v1/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/dev/**").permitAll()
+                        .requestMatchers(PUBLIC_PATHS).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
