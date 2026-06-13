@@ -37,6 +37,18 @@ public class WineStore {
     @Formula("(location[1])")
     private Double latitude;
 
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "working_hours")
+    private String workingHours;
+
     @Column(name = "city", nullable = false)
     private String city;
 

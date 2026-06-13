@@ -1,4 +1,5 @@
 insert into product_category (name, label) values ('wine', 'Вино'), ('snack', 'Снэки'), ('spirit', 'Крепкое'), ('champagne_and_sparkling', 'Шампанское и игристое'), ('low_alcohol', 'Слабоалкогольные напитки'), ('accessories', 'Аксессуары');
+insert into order_status (name) values ('NEW'), ('CANCELLED'), ('COMPLETED');
 insert into product_country values ('Россия'), ('Ирландия'), ('Шотландия'), ('Пуэрто-Рико'), ('Франция'), ('США'), ('Италия'), ('Германия'), ('Испания'), ('Португалия'), ('Бельгия'), ('Китай'), ('Канада'), ('Мексика'), ('Австралия'), ('Новая Зеландия'), ('Аргентина'), ('Перу'), ('Польша'), ('Чили'), ('Чехия'), ('Швейцария'), ('Англия'), ('Швеция');
 --wine
 insert into product (id, article, name, initial_price, price, category_name, country_name, created_at) values ('293b85d0-f739-4856-a09b-8495f2157e4d', 'WINE101', 'Louis Jadot Beaujolais', 1400, 1500, 'wine', 'Франция', date '2024-09-27' + time '14:00');

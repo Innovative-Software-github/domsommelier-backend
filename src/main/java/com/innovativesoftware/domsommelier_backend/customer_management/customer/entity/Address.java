@@ -1,12 +1,10 @@
 package com.innovativesoftware.domsommelier_backend.customer_management.customer.entity;
 
-import com.innovativesoftware.domsommelier_backend.order_management.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -30,7 +28,4 @@ public class Address {
 
     @Column(name = "apartment")
     private Integer apartment;
-
-    @OneToMany(mappedBy = "address")
-    private List<Order> orders;
 }

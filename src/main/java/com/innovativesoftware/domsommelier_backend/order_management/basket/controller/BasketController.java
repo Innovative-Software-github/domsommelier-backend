@@ -40,6 +40,12 @@ public class BasketController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/{customerId}/clear")
+    public ResponseEntity<Void> clearBasketDelete(@PathVariable UUID customerId) {
+        basketService.clearBasket(customerId);
+        return ResponseEntity.ok().build();
+    }
+
     @Hidden
     @Deprecated
     @PostMapping("/{customerId}/promo/{promoId}")
@@ -62,12 +68,12 @@ public class BasketController {
         return ResponseEntity.ok(basketService.updateQuantity(customerId, productId, quantity));
     }
 
-    @PostMapping("/{customerId}/checkout/{addressId}")
+    @PostMapping("/{customerId}/checkout/{wineStoreId}")
     public ResponseEntity<UUID> checkout(
             @PathVariable UUID customerId,
-            @PathVariable UUID addressId
+            @PathVariable Long wineStoreId
     ) {
-        UUID orderId = basketService.checkoutBasket(customerId, addressId);
+        UUID orderId = basketService.checkoutBasket(customerId, wineStoreId);
         return ResponseEntity.ok(orderId);
     }
 }

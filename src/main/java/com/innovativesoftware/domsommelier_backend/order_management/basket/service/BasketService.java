@@ -144,9 +144,9 @@ public class BasketService {
     }
 
     // Оформить заказ (Basket -> Order)
-    public UUID checkoutBasket(UUID customerId, UUID addressId) {
+    public UUID checkoutBasket(UUID customerId, Long wineStoreId) {
         BasketDto basket = getBasket(customerId);
-        Order order = orderService.createOrderFromBasket(basket, customerId, addressId);
+        Order order = orderService.createOrderFromBasket(basket, customerId, wineStoreId);
         clearBasket(customerId);
         return order.getId();
     }

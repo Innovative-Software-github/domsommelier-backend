@@ -42,6 +42,13 @@ jobs:
               cd "$PROJECT_DIR"
             fi
 
+            # Ensure production Spring profile is set in .env
+            if ! grep -q 'SPRING_PROFILES_ACTIVE' "$PROJECT_DIR/.env" 2>/dev/null; then
+              echo 'SPRING_PROFILES_ACTIVE=docker,prod' >> "$PROJECT_DIR/.env"
+            else
+              sed -i 's/^SPRING_PROFILES_ACTIVE=.*/SPRING_PROFILES_ACTIVE=docker,prod/' "$PROJECT_DIR/.env"
+            fi
+
             # Generate init-secrets.env only if it doesn't exist
             # To update secrets: delete the file on server, then redeploy
             SECRETS_FILE="$PROJECT_DIR/vault/init-secrets.env"

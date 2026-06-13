@@ -61,12 +61,12 @@ public class OrderController {
     @Operation(summary = "Создать заказ")
     @PostMapping
     public ResponseEntity<UUID> createOrder(
-            @RequestParam UUID addressId,
+            @RequestParam Long wineStoreId,
             @RequestBody BasketDto basketDto,
             @Parameter(hidden = true) @AuthenticationPrincipal AppUserDetails userDetails
     ) {
         UUID customerId = getUserId(userDetails);
-        Order createdOrder = orderService.createOrderFromBasket(basketDto, customerId, addressId);
+        Order createdOrder = orderService.createOrderFromBasket(basketDto, customerId, wineStoreId);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder.getId());
     }
 

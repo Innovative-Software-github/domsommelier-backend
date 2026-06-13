@@ -1,8 +1,8 @@
 package com.innovativesoftware.domsommelier_backend.order_management.order.entity;
 
-import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.Address;
 import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.Customer;
 import com.innovativesoftware.domsommelier_backend.order_management.discount.entity.PromoUse;
+import com.innovativesoftware.domsommelier_backend.product_management.store.entity.WineStore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,8 +26,8 @@ public class Order {
     private OffsetDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "address_id", nullable = false)
-    private Address address;
+    @JoinColumn(name = "wine_store_id", nullable = false)
+    private WineStore wineStore;
 
     @ManyToOne
     @JoinColumn(name = "order_status", nullable = false)
@@ -37,7 +37,7 @@ public class Order {
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
 
     @OneToOne(mappedBy = "order")

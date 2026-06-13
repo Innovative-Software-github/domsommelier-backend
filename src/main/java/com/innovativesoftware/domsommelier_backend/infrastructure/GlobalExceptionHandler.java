@@ -4,6 +4,7 @@ import com.innovativesoftware.domsommelier_backend.exceptions.ApiErrorResponse;
 import com.innovativesoftware.domsommelier_backend.exceptions.InvalidIdException;
 import com.innovativesoftware.domsommelier_backend.exceptions.InvalidValueException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import jakarta.persistence.EntityNotFoundException;
 import java.nio.file.AccessDeniedException;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -84,6 +86,28 @@ public class GlobalExceptionHandler {
                 null
         );
         return new ResponseEntity<>(response, HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleEntityNotFoundException(EntityNotFoundException ex) {
+        ApiErrorResponse response = new ApiErrorResponse(
+                "Элемент не найден",
+                String.valueOf(HttpStatus.NOT_FOUND.value()),
+                ex.getMessage(),
+                null
+        );
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        ApiErrorResponse response = new ApiErrorResponse(
+                "Ошибка данных",
+                String.valueOf(HttpStatus.BAD_REQUEST.value()),
+                "Некорректные данные для создания заказа",
+                ex.getMostSpecificCause().getMessage()
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AccessDeniedException.class)

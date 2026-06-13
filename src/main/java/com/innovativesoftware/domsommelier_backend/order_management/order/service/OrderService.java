@@ -1,8 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.order_management.order.service;
 
-import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.Address;
 import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.Customer;
-import com.innovativesoftware.domsommelier_backend.customer_management.customer.repository.AddressRepository;
 import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.repository.CustomerRepository;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.BasketDto;
 import com.innovativesoftware.domsommelier_backend.order_management.discount.repository.PromoRepository;
@@ -17,12 +15,16 @@ import com.innovativesoftware.domsommelier_backend.order_management.order.reposi
 import com.innovativesoftware.domsommelier_backend.order_management.order.repository.OrderStatusRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.store.entity.WineStore;
+import com.innovativesoftware.domsommelier_backend.product_management.store.repository.WineStoreRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.nio.file.AccessDeniedException;
@@ -42,17 +44,21 @@ public class OrderService {
     private final OrderStatusRepository orderStatusRepository;
     private final ProductRepository productRepository;
     private final CustomerRepository customerRepository;
-    private final AddressRepository addressRepository;
+    private final WineStoreRepository wineStoreRepository;
     private final PromoRepository promoRepository;
 
     @Transactional
-    public Order createOrderFromBasket(BasketDto basket, UUID customerId, UUID addressId) {
-        // 1. Получаем покупателя и адрес
+    public Order createOrderFromBasket(BasketDto basket, UUID customerId, Long wineStoreId) {
+        if (basket.getItems() == null || basket.getItems().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Корзина пуста");
+        }
+
+        // 1. Получаем покупателя и винотеку
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new NoSuchElementException("Покупатель не найден"));
 
-        Address address = addressRepository.findById(addressId)
-                .orElseThrow(() -> new NoSuchElementException("Адрес не найден"));
+        WineStore wineStore = wineStoreRepository.findById(wineStoreId)
+                .orElseThrow(() -> new EntityNotFoundException("Винотека не найдена: " + wineStoreId));
 
         // 2. Определяем статус заказа
         OrderStatus status = orderStatusRepository.findById("NEW")
@@ -64,26 +70,12 @@ public class OrderService {
 
         // 3. Инициализируем заказ
         Order order = new Order();
-        order.setId(UUID.randomUUID());
         order.setCreatedAt(OffsetDateTime.now());
         order.setCustomer(customer);
-        order.setAddress(address);
+        order.setWineStore(wineStore);
         order.setOrderStatus(status);
 
-        // 4. Промокод (если есть)
-        /*if (basket.getPromoId() != null) {
-            Promo promo = promoRepository.findById(basket.getPromoId())
-                    .orElseThrow(() -> new NoSuchElementException("Промокод не найден"));
-
-            PromoUse promoUse = new PromoUse();
-            promoUse.setPromo(promo);
-            promoUse.setCustomer(customer);
-            promoUse.setOrder(order);
-            promoUse.setIsUsed(true);
-            order.setPromoUse(promoUse);
-        }*/
-
-        // 5. OrderItems
+        // 4. OrderItems
         List<OrderItem> orderItems = basket.getItems().stream()
                 .map(basketItemDto -> {
                     Product product = productRepository.findById(basketItemDto.getProduct().getId())
@@ -98,13 +90,8 @@ public class OrderService {
 
         order.setOrderItems(orderItems);
 
-        // 6. Сохраняем заказ (всё сохраняется каскадно)
-        Order savedOrder = orderRepository.save(order);
-
-        // 7. Сохраняем позиции заказа отдельно, если не настроен cascade (optional)
-        orderItems.forEach(orderItemRepository::save);
-
-        return savedOrder;
+        // 5. Сохраняем заказ вместе с позициями (cascade)
+        return orderRepository.save(order);
     }
 
     public Optional<Order> findOrderById(UUID orderId) {
@@ -184,8 +171,9 @@ public class OrderService {
                     .build();
         }).collect(Collectors.toList());
 
-        String addressString = "Винотека на ул. " +
-                (order.getAddress() != null ? order.getAddress().getId() : "Неизвестно");
+        String addressString = order.getWineStore() != null
+                ? order.getWineStore().getName() + ", " + order.getWineStore().getAddress()
+                : "Неизвестно";
 
         return OrderFullDto.builder()
                 .id(order.getId())
