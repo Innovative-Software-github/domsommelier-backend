@@ -1,6 +1,10 @@
 package com.innovativesoftware.domsommelier_backend.saved_management.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Singular;
 
 import java.io.Serializable;
 import java.util.List;
@@ -14,5 +18,5 @@ public class SavedDto implements Serializable {
     private UUID customerId;
 
     @Singular
-    private List<UUID> items;
+    private List<SavedItemDto> items;
 }

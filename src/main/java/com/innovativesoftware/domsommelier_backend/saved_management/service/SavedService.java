@@ -1,8 +1,12 @@
 package com.innovativesoftware.domsommelier_backend.saved_management.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO;
 import com.innovativesoftware.domsommelier_backend.infrastructure.RedisService;
+import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductRepository;
 import com.innovativesoftware.domsommelier_backend.saved_management.model.SavedDto;
+import com.innovativesoftware.domsommelier_backend.saved_management.model.SavedItemDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,33 +20,52 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class SavedService {
-    
+
     private final RedisService redisService;
     private final ProductRepository productRepository;
+    private final ObjectMapper objectMapper;
 
     private String savedKey(UUID customerId) {
         return "saved:" + customerId;
     }
-    
+
     public SavedDto getSaved(UUID customerId) {
-        Object obj = redisService.getObject(savedKey(customerId));
-        if (obj instanceof SavedDto savedDto) {
+        SavedDto savedDto = redisService.getObject(savedKey(customerId), SavedDto.class);
+        if (savedDto != null) {
             return savedDto;
         }
         return SavedDto.builder().customerId(customerId).build();
     }
-    
+
     public SavedDto addItem(UUID customerId, UUID productId) {
-        productRepository.findById(productId)
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NoSuchElementException("Product not found"));
 
         SavedDto saved = getSaved(customerId);
-        List<UUID> updatedItems = new ArrayList<>(saved.getItems());
-        if (updatedItems.contains(productId)) {
+        List<SavedItemDto> updatedItems = new ArrayList<>(saved.getItems());
+
+        boolean alreadySaved = updatedItems.stream()
+                .anyMatch(item -> item.getProduct().getId().equals(productId));
+        if (alreadySaved) {
             throw new IllegalArgumentException("Product already in saved");
         }
-        updatedItems.add(productId);
 
+        SavedItemDto newItem = SavedItemDto.builder()
+                .product(SavedItemDto.SavedProductDto.builder()
+                        .id(productId)
+                        .name(product.getName())
+                        .article(product.getArticle())
+                        .price(product.getPrice())
+                        .discount(product.getDiscount())
+                        .productCountry(product.getProductCountry().getName())
+                        .productCategoryName(product.getProductCategory().getName().name())
+                        .productPhoto(product.getProductPhoto().stream()
+                                .map(photo -> objectMapper.convertValue(photo, FileDTO.class))
+                                .toList())
+                        .build())
+                .build();
+
+        updatedItems.add(newItem);
         saved.setItems(updatedItems);
         redisService.save(savedKey(customerId), saved);
         return saved;
@@ -50,12 +73,15 @@ public class SavedService {
 
     public SavedDto removeItem(UUID customerId, UUID productId) {
         SavedDto saved = getSaved(customerId);
-        List<UUID> updatedItems = new ArrayList<>(saved.getItems());
-        if (!updatedItems.contains(productId)) {
+        List<SavedItemDto> updatedItems = new ArrayList<>(saved.getItems());
+
+        boolean removed = updatedItems.removeIf(item -> item.getProduct().getId().equals(productId));
+        if (!removed) {
             throw new NoSuchElementException("Product not found in saved");
         }
-        updatedItems.remove(productId);
+
         saved.setItems(updatedItems);
+        redisService.save(savedKey(customerId), saved);
         return saved;
     }
 

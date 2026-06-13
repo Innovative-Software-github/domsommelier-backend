@@ -4,6 +4,7 @@ import com.innovativesoftware.domsommelier_backend.auth_management.JwtAuthentica
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,13 +25,23 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtFilter;
 
+    // Полностью открытые пути (любой HTTP-метод)
     private static final String[] PUBLIC_PATHS = {
             "/api/v1/auth/**",
+            "/api/v1/products/**",
+            "/api/v1/filters/**",
             "/api/v1/saved/**",
             "/api/v1/basket/**",
+            "/api/v1/wine-stores/**",
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/dev/**"
+    };
+
+    // Открытые только для чтения (GET)
+    private static final String[] PUBLIC_GET_PATHS = {
+            "/api/v1/events/**",
+            "/api/v1/news/**"
     };
 
     @Bean
@@ -40,6 +51,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(PUBLIC_PATHS).permitAll()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_GET_PATHS).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
