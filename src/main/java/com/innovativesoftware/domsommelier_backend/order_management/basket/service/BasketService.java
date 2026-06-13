@@ -36,9 +36,9 @@ public class BasketService {
 
     // Получить корзину (если нет в Redis — создать пустую)
     public BasketDto getBasket(UUID customerId) {
-        Object obj = redisService.getObject(basketKey(customerId));
-        if (obj instanceof BasketDto basket) {
-            return recalculateBasket(basket); // всегда пересчитываем сумму
+        BasketDto basket = redisService.getObject(basketKey(customerId), BasketDto.class);
+        if (basket != null) {
+            return recalculateBasket(basket);
         }
         return BasketDto.builder().customerId(customerId).build();
     }
