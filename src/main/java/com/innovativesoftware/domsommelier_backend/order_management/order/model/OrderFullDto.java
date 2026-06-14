@@ -19,6 +19,7 @@ public class OrderFullDto {
     private BigDecimal totalAmount;
     private List<OrderedProductDto> items;
     private String customerPhone;
+    private String customerName;
     private LocalDate pickupDate;
     private String paymentMethod;
 }

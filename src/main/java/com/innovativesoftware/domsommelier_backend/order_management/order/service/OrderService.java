@@ -81,7 +81,11 @@ public class OrderService {
             order.setCustomerName(checkoutData.getCustomerName());
             order.setCustomerPhone(checkoutData.getCustomerPhone());
             order.setPickupDate(checkoutData.getPickupDate());
-            order.setPaymentMethod(checkoutData.getPaymentMethod());
+            order.setPaymentMethod(
+                    checkoutData.getPaymentMethod() != null
+                            ? checkoutData.getPaymentMethod().toLowerCase()
+                            : null
+            );
         }
 
         // 4. OrderItems со snapshot цены
@@ -217,6 +221,7 @@ public class OrderService {
                 .totalAmount(total)
                 .items(productDtos)
                 .customerPhone(order.getCustomerPhone())
+                .customerName(order.getCustomerName())
                 .pickupDate(order.getPickupDate())
                 .paymentMethod(order.getPaymentMethod())
                 .build();
