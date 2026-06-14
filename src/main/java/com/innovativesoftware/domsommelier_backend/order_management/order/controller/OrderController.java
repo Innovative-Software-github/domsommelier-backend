@@ -6,6 +6,7 @@ import com.innovativesoftware.domsommelier_backend.order_management.order.entity
 import com.innovativesoftware.domsommelier_backend.order_management.order.model.OrderFullDto;
 import com.innovativesoftware.domsommelier_backend.order_management.order.model.OrderHistoryDto;
 import com.innovativesoftware.domsommelier_backend.order_management.order.service.OrderService;
+import java.util.Map;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -73,18 +74,16 @@ public class OrderController {
     // 4. ОТМЕНА ЗАКАЗА
     @Operation(summary = "Отменить заказ")
     @PostMapping("/{id}/cancel")
-    public ResponseEntity<Void> cancelOrder(
+    public ResponseEntity<Map<String, String>> cancelOrder(
             @PathVariable UUID id,
             @Parameter(hidden = true) @AuthenticationPrincipal AppUserDetails userDetails
     ) throws AccessDeniedException {
         UUID customerId = getUserId(userDetails);
 
-        // В хорошей архитектуре нужно передать customerId в метод cancelOrder для проверки прав,
-        // но оставим пока как в твоей реализации, добавив проверку чтения
         orderService.getOrderDetails(id, customerId); // Проверка прав (упадет, если заказ чужой)
         orderService.cancelOrder(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(Map.of("status", "cancelled"));
     }
 
     // --- Private Helper ---

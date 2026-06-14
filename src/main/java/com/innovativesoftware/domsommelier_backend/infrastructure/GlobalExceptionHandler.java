@@ -121,6 +121,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ApiErrorResponse> handleIllegalStateException(IllegalStateException ex) {
+        ApiErrorResponse response = new ApiErrorResponse(
+                "Конфликт состояния",
+                "CONFLICT",
+                ex.getMessage(),
+                null
+        );
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
 
     /*
     @ExceptionHandler({ConstraintViolationException.class})
