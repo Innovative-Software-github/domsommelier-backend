@@ -1,6 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.order_management.basket.controller;
 
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.BasketDto;
+import com.innovativesoftware.domsommelier_backend.order_management.basket.model.CheckoutRequestDto;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.service.BasketService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
@@ -71,9 +72,10 @@ public class BasketController {
     @PostMapping("/{customerId}/checkout/{wineStoreId}")
     public ResponseEntity<UUID> checkout(
             @PathVariable UUID customerId,
-            @PathVariable Long wineStoreId
+            @PathVariable Long wineStoreId,
+            @RequestBody(required = false) CheckoutRequestDto checkoutData
     ) {
-        UUID orderId = basketService.checkoutBasket(customerId, wineStoreId);
+        UUID orderId = basketService.checkoutBasket(customerId, wineStoreId, checkoutData);
         return ResponseEntity.ok(orderId);
     }
 }

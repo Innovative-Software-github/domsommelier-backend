@@ -3,6 +3,7 @@ package com.innovativesoftware.domsommelier_backend.order_management.order.servi
 import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.Customer;
 import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.repository.CustomerRepository;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.BasketDto;
+import com.innovativesoftware.domsommelier_backend.order_management.basket.model.CheckoutRequestDto;
 import com.innovativesoftware.domsommelier_backend.order_management.discount.repository.PromoRepository;
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.Order;
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.OrderItem;
@@ -48,7 +49,8 @@ public class OrderService {
     private final PromoRepository promoRepository;
 
     @Transactional
-    public Order createOrderFromBasket(BasketDto basket, UUID customerId, Long wineStoreId) {
+    public Order createOrderFromBasket(BasketDto basket, UUID customerId, Long wineStoreId,
+                                       CheckoutRequestDto checkoutData) {
         if (basket.getItems() == null || basket.getItems().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Корзина пуста");
         }
@@ -75,22 +77,43 @@ public class OrderService {
         order.setWineStore(wineStore);
         order.setOrderStatus(status);
 
-        // 4. OrderItems
+        if (checkoutData != null) {
+            order.setCustomerName(checkoutData.getCustomerName());
+            order.setCustomerPhone(checkoutData.getCustomerPhone());
+            order.setPickupDate(checkoutData.getPickupDate());
+            order.setPaymentMethod(checkoutData.getPaymentMethod());
+        }
+
+        // 4. OrderItems со snapshot цены
         List<OrderItem> orderItems = basket.getItems().stream()
                 .map(basketItemDto -> {
                     Product product = productRepository.findById(basketItemDto.getProduct().getId())
                             .orElseThrow(() -> new NoSuchElementException("Товар не найден: " + basketItemDto.getProduct().getId()));
+                    BigDecimal unitPrice = product.getPrice();
                     OrderItem orderItem = new OrderItem();
                     orderItem.setOrder(order);
                     orderItem.setProduct(product);
                     orderItem.setQuantity(basketItemDto.getQuantity());
+                    orderItem.setUnitPrice(unitPrice);
                     return orderItem;
                 })
                 .collect(Collectors.toList());
 
         order.setOrderItems(orderItems);
 
-        // 5. Сохраняем заказ вместе с позициями (cascade)
+        // 5. Считаем totalAmount из snapshot (с учётом скидки корзины)
+        BigDecimal rawTotal = orderItems.stream()
+                .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        int discount = basket.getDiscount() != null ? basket.getDiscount() : 0;
+        BigDecimal total = discount > 0
+                ? rawTotal.subtract(rawTotal.multiply(BigDecimal.valueOf(discount))
+                        .divide(BigDecimal.valueOf(100), 2, java.math.RoundingMode.HALF_UP))
+                : rawTotal;
+        order.setTotalAmount(total);
+
+        // 6. Сохраняем заказ вместе с позициями (cascade)
         return orderRepository.save(order);
     }
 
@@ -140,7 +163,11 @@ public class OrderService {
 
     private OrderHistoryDto mapToHistoryDto(Order order) {
         List<OrderItem> items = order.getOrderItems();
-        BigDecimal total = calculateTotal(items);
+
+        // Используем snapshot totalAmount если есть, иначе считаем из текущих цен (для старых заказов)
+        BigDecimal total = order.getTotalAmount() != null
+                ? order.getTotalAmount()
+                : calculateTotalFromCurrentPrices(items);
 
         String preview = items.isEmpty() ? "Нет товаров" : items.get(0).getProduct().getName();
         if (items.size() > 1) {
@@ -160,14 +187,17 @@ public class OrderService {
         List<OrderItem> items = order.getOrderItems();
 
         List<OrderedProductDto> productDtos = items.stream().map(item -> {
-            BigDecimal currentPrice = item.getProduct().getPrice(); // ВАЖНО: берем текущую цену, т.к. исторической нет в OrderItem
+            // Используем unitPrice snapshot если есть, иначе текущую цену (для старых заказов)
+            BigDecimal price = item.getUnitPrice() != null
+                    ? item.getUnitPrice()
+                    : item.getProduct().getPrice();
             return OrderedProductDto.builder()
                     .productId(item.getProduct().getId())
                     .name(item.getProduct().getName())
                     .article(item.getProduct().getArticle())
                     .quantity(item.getQuantity())
-                    .price(currentPrice)
-                    .sum(currentPrice.multiply(BigDecimal.valueOf(item.getQuantity())))
+                    .price(price)
+                    .sum(price.multiply(BigDecimal.valueOf(item.getQuantity())))
                     .build();
         }).collect(Collectors.toList());
 
@@ -175,17 +205,24 @@ public class OrderService {
                 ? order.getWineStore().getName() + ", " + order.getWineStore().getAddress()
                 : "Неизвестно";
 
+        BigDecimal total = order.getTotalAmount() != null
+                ? order.getTotalAmount()
+                : calculateTotalFromCurrentPrices(items);
+
         return OrderFullDto.builder()
                 .id(order.getId())
                 .date(order.getCreatedAt())
                 .statusName(order.getOrderStatus().getName())
                 .pickupAddress(addressString)
-                .totalAmount(calculateTotal(items))
+                .totalAmount(total)
                 .items(productDtos)
+                .customerPhone(order.getCustomerPhone())
+                .pickupDate(order.getPickupDate())
+                .paymentMethod(order.getPaymentMethod())
                 .build();
     }
 
-    private BigDecimal calculateTotal(List<OrderItem> items) {
+    private BigDecimal calculateTotalFromCurrentPrices(List<OrderItem> items) {
         if (items == null) return BigDecimal.ZERO;
         return items.stream()
                 .map(item -> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))

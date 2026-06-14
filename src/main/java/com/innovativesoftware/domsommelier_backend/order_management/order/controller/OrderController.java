@@ -67,7 +67,7 @@ public class OrderController {
             @Parameter(hidden = true) @AuthenticationPrincipal AppUserDetails userDetails
     ) {
         UUID customerId = getUserId(userDetails);
-        Order createdOrder = orderService.createOrderFromBasket(basketDto, customerId, wineStoreId);
+        Order createdOrder = orderService.createOrderFromBasket(basketDto, customerId, wineStoreId, null);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder.getId());
     }
 

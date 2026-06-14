@@ -5,6 +5,7 @@ import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO
 import com.innovativesoftware.domsommelier_backend.infrastructure.RedisService;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.BasketDto;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.BasketItemDto;
+import com.innovativesoftware.domsommelier_backend.order_management.basket.model.CheckoutRequestDto;
 import com.innovativesoftware.domsommelier_backend.order_management.discount.entity.Promo;
 import com.innovativesoftware.domsommelier_backend.order_management.discount.repository.PromoRepository;
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.Order;
@@ -144,9 +145,9 @@ public class BasketService {
     }
 
     // Оформить заказ (Basket -> Order)
-    public UUID checkoutBasket(UUID customerId, Long wineStoreId) {
+    public UUID checkoutBasket(UUID customerId, Long wineStoreId, CheckoutRequestDto checkoutData) {
         BasketDto basket = getBasket(customerId);
-        Order order = orderService.createOrderFromBasket(basket, customerId, wineStoreId);
+        Order order = orderService.createOrderFromBasket(basket, customerId, wineStoreId, checkoutData);
         clearBasket(customerId);
         return order.getId();
     }

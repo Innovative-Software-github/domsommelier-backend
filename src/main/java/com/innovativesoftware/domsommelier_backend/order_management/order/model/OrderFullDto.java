@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -17,4 +18,7 @@ public class OrderFullDto {
     private String pickupAddress;
     private BigDecimal totalAmount;
     private List<OrderedProductDto> items;
+    private String customerPhone;
+    private LocalDate pickupDate;
+    private String paymentMethod;
 }
