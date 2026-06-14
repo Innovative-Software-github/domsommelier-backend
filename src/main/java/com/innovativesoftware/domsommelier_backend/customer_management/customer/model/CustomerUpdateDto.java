@@ -7,4 +7,5 @@ public class CustomerUpdateDto {
     private String firstName;
     private String secondName;
     private String middleName;
+    private String phone;
 }

@@ -13,4 +13,5 @@ public class CustomerProfileDto {
     private String secondName;
     private String middleName;
     private String email;
+    private String phone;
 }

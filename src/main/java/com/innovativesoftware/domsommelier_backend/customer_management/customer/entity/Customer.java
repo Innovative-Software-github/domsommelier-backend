@@ -35,6 +35,9 @@ public class Customer {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name = "phone")
+    private String phone;
+
     // Основная винотека для самовывоза
     @ManyToOne
     @JoinColumn(name = "default_wine_store_id")

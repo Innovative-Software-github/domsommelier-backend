@@ -46,10 +46,11 @@ public class CustomerController {
                 .secondName(customer.getSecondName())
                 .middleName(customer.getMiddleName())
                 .email(customer.getEmail())
+                .phone(customer.getPhone())
                 .build());
     }
 
-    @Operation(summary = "Обновить профиль", description = "Обновляет имя, фамилию, отчество")
+    @Operation(summary = "Обновить профиль", description = "Обновляет имя, фамилию, отчество, телефон")
     @PutMapping("/profile")
     public ResponseEntity<CustomerProfileDto> updateProfile(
             @Parameter(hidden = true) @AuthenticationPrincipal AppUserDetails userDetails,
@@ -60,6 +61,7 @@ public class CustomerController {
         if (dto.getFirstName() != null) customer.setFirstName(dto.getFirstName());
         if (dto.getSecondName() != null) customer.setSecondName(dto.getSecondName());
         if (dto.getMiddleName() != null) customer.setMiddleName(dto.getMiddleName());
+        if (dto.getPhone() != null) customer.setPhone(dto.getPhone());
 
         customerRepository.save(customer);
 
@@ -69,6 +71,7 @@ public class CustomerController {
                 .secondName(customer.getSecondName())
                 .middleName(customer.getMiddleName())
                 .email(customer.getEmail())
+                .phone(customer.getPhone())
                 .build());
     }
 
