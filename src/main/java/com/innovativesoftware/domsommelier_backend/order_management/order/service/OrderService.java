@@ -8,9 +8,9 @@ import com.innovativesoftware.domsommelier_backend.order_management.discount.rep
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.Order;
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.OrderItem;
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.OrderStatus;
+import com.innovativesoftware.domsommelier_backend.order_management.order.mapper.OrderDtoMapper;
 import com.innovativesoftware.domsommelier_backend.order_management.order.model.OrderFullDto;
 import com.innovativesoftware.domsommelier_backend.order_management.order.model.OrderHistoryDto;
-import com.innovativesoftware.domsommelier_backend.order_management.order.model.OrderedProductDto;
 import com.innovativesoftware.domsommelier_backend.order_management.order.repository.OrderItemRepository;
 import com.innovativesoftware.domsommelier_backend.order_management.order.repository.OrderRepository;
 import com.innovativesoftware.domsommelier_backend.order_management.order.repository.OrderStatusRepository;
@@ -47,6 +47,7 @@ public class OrderService {
     private final CustomerRepository customerRepository;
     private final WineStoreRepository wineStoreRepository;
     private final PromoRepository promoRepository;
+    private final OrderDtoMapper orderDtoMapper;
 
     @Transactional
     public Order createOrderFromBasket(BasketDto basket, UUID customerId, Long wineStoreId,
@@ -167,11 +168,7 @@ public class OrderService {
 
     private OrderHistoryDto mapToHistoryDto(Order order) {
         List<OrderItem> items = order.getOrderItems();
-
-        // Используем snapshot totalAmount если есть, иначе считаем из текущих цен (для старых заказов)
-        BigDecimal total = order.getTotalAmount() != null
-                ? order.getTotalAmount()
-                : calculateTotalFromCurrentPrices(items);
+        BigDecimal total = orderDtoMapper.resolveTotalAmount(order);
 
         String preview = items.isEmpty() ? "Нет товаров" : items.get(0).getProduct().getName();
         if (items.size() > 1) {
@@ -188,49 +185,17 @@ public class OrderService {
     }
 
     private OrderFullDto mapToFullDto(Order order) {
-        List<OrderItem> items = order.getOrderItems();
-
-        List<OrderedProductDto> productDtos = items.stream().map(item -> {
-            // Используем unitPrice snapshot если есть, иначе текущую цену (для старых заказов)
-            BigDecimal price = item.getUnitPrice() != null
-                    ? item.getUnitPrice()
-                    : item.getProduct().getPrice();
-            return OrderedProductDto.builder()
-                    .productId(item.getProduct().getId())
-                    .name(item.getProduct().getName())
-                    .article(item.getProduct().getArticle())
-                    .quantity(item.getQuantity())
-                    .price(price)
-                    .sum(price.multiply(BigDecimal.valueOf(item.getQuantity())))
-                    .build();
-        }).collect(Collectors.toList());
-
-        String addressString = order.getWineStore() != null
-                ? order.getWineStore().getName() + ", " + order.getWineStore().getAddress()
-                : "Неизвестно";
-
-        BigDecimal total = order.getTotalAmount() != null
-                ? order.getTotalAmount()
-                : calculateTotalFromCurrentPrices(items);
-
         return OrderFullDto.builder()
                 .id(order.getId())
                 .date(order.getCreatedAt())
                 .statusName(order.getOrderStatus().getName())
-                .pickupAddress(addressString)
-                .totalAmount(total)
-                .items(productDtos)
-                .customerPhone(order.getCustomerPhone())
-                .customerName(order.getCustomerName())
+                .pickupAddress(orderDtoMapper.resolvePickupAddress(order))
+                .totalAmount(orderDtoMapper.resolveTotalAmount(order))
+                .items(orderDtoMapper.mapOrderItems(order.getOrderItems()))
+                .customerPhone(orderDtoMapper.resolveCustomerPhone(order))
+                .customerName(orderDtoMapper.resolveCustomerName(order))
                 .pickupDate(order.getPickupDate())
                 .paymentMethod(order.getPaymentMethod())
                 .build();
-    }
-
-    private BigDecimal calculateTotalFromCurrentPrices(List<OrderItem> items) {
-        if (items == null) return BigDecimal.ZERO;
-        return items.stream()
-                .map(item -> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

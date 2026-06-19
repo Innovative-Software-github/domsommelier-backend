@@ -23,3 +23,6 @@ spring:
 
 minio:
   url: http://minio:9000
+
+db-init:
+  mode: false
