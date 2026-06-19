@@ -4,6 +4,7 @@ import com.innovativesoftware.domsommelier_backend.infrastructure.BucketRegistry
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductPhotoOperationService;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.innovativesoftware.domsommelier_backend.infrastructure.security.RequiresAdmin;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +19,7 @@ public class ProductPhotoController {
     private ProductPhotoOperationService fileOperationService;
 
     @PostMapping("upload")
+    @RequiresAdmin
     public void uploadPhoto(@RequestBody MultipartFile[] files, @RequestParam String productId) {
         fileOperationService.uploadFilesWithRef(files, BUCKET, productId);
     }

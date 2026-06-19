@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
+@EnableMethodSecurity
 @Configuration
 public class SecurityConfig {
 
@@ -29,10 +31,8 @@ public class SecurityConfig {
     private static final String[] PUBLIC_PATHS = {
             "/api/v1/auth/**",
             "/api/v1/products/**",
-            "/api/v1/filters/**",
             "/api/v1/saved/**",
             "/api/v1/basket/**",
-            "/api/v1/wine-stores/**",
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/dev/**"
@@ -41,7 +41,9 @@ public class SecurityConfig {
     // Открытые только для чтения (GET)
     private static final String[] PUBLIC_GET_PATHS = {
             "/api/v1/events/**",
-            "/api/v1/news/**"
+            "/api/v1/news/**",
+            "/api/v1/wine-stores/**",
+            "/api/v1/filters/**"
     };
 
     @Bean
@@ -52,6 +54,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(PUBLIC_PATHS).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_GET_PATHS).permitAll()
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

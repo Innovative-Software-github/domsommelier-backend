@@ -16,13 +16,16 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-//@EnableWebSecurity
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
 
+    /**
+     * Роль берётся из БД через {@link UserDetailsService}, а не из JWT claim {@code role}.
+     * Это гарантирует актуальные authorities без перевыпуска токена после смены роли.
+     */
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,

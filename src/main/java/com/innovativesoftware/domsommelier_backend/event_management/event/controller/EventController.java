@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import com.innovativesoftware.domsommelier_backend.infrastructure.security.RequiresAdmin;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +47,7 @@ public class EventController {
 
     @Operation(summary = "Создать новое мероприятие")
     @PostMapping
+    @RequiresAdmin
     public ResponseEntity<EventDTO> createEvent(
             @Parameter(description = "Данные мероприятия") @RequestBody @Valid EventDTO eventDTO) {
         return ResponseEntity.ok(eventService.createEvent(eventDTO));
@@ -53,6 +55,7 @@ public class EventController {
 
     @Operation(summary = "Обновить мероприятие по id")
     @PutMapping("/{id}")
+    @RequiresAdmin
     public ResponseEntity<EventDTO> updateEvent(
             @Parameter(description = "ID мероприятия", required = true) @PathVariable UUID id,
             @Parameter(description = "Новые данные мероприятия") @RequestBody @Valid EventDTO eventDTO
@@ -62,6 +65,7 @@ public class EventController {
 
     @Operation(summary = "Удалить мероприятие по id")
     @DeleteMapping("/{id}")
+    @RequiresAdmin
     public ResponseEntity<Void> deleteEvent(
             @Parameter(description = "ID мероприятия", required = true) @PathVariable UUID id) {
         eventService.deleteEvent(id);

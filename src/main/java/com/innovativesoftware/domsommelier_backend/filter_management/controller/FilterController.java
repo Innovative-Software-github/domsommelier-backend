@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import com.innovativesoftware.domsommelier_backend.infrastructure.security.RequiresAdmin;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -31,6 +32,7 @@ public class FilterController {
 
     @Hidden
     @PostMapping
+    @RequiresAdmin
     @Operation(summary = "Создать новый фильтр")
     public ResponseEntity<UUID> create(
             @RequestBody HashMap<String, Object> filterDTO
@@ -57,6 +59,7 @@ public class FilterController {
 
     @Hidden
     @PutMapping("/{id}")
+    @RequiresAdmin
     @Operation(summary = "Обновить фильтр по идентификатору")
     public ResponseEntity<FilterDto> update(@PathVariable UUID id, @RequestBody Map<String, Object> filterDTO) {
         return ResponseEntity.ok(filterService.update(id, filterDTO));
@@ -64,6 +67,7 @@ public class FilterController {
 
     @Hidden
     @DeleteMapping("/{id}")
+    @RequiresAdmin
     @Operation(summary = "Удалить фильтр по идентификатору")
     public ResponseEntity<UUID> delete(@PathVariable UUID id) {
         return ResponseEntity.ok(filterService.delete(id));

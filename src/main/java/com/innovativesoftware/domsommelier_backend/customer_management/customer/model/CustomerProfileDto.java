@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.customer_management.customer.model;
 
+import com.innovativesoftware.domsommelier_backend.shared.domain.Role;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,4 +15,5 @@ public class CustomerProfileDto {
     private String middleName;
     private String email;
     private String phone;
+    private Role role;
 }

@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.customer_management.customer.entity;
 
+import com.innovativesoftware.domsommelier_backend.shared.domain.Role;
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import com.innovativesoftware.domsommelier_backend.product_management.store.entity.WineStore;
 import jakarta.persistence.*;
@@ -52,7 +53,12 @@ public class Customer {
     )
     private List<Product> favoriteProducts = new ArrayList<>();
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "role")
-//    private Role role;
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role = Role.ROLE_USER;
+
+    public Role getRoleOrDefault() {
+        return role != null ? role : Role.ROLE_USER;
+    }
 }

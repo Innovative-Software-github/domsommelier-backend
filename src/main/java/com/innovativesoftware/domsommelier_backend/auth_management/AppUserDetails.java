@@ -1,8 +1,10 @@
 package com.innovativesoftware.domsommelier_backend.auth_management;
 
 import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.Customer;
+import com.innovativesoftware.domsommelier_backend.shared.domain.Role;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -26,8 +28,8 @@ public class AppUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // return Collections.singletonList(new SimpleGrantedAuthority(this.customer.getRole().name()));
-        return List.of();
+        Role role = customer.getRoleOrDefault();
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override

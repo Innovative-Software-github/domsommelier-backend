@@ -3,6 +3,7 @@ package com.innovativesoftware.domsommelier_backend.auth_management;
 import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.Customer;
 import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.repository.CustomerRepository;
 import com.innovativesoftware.domsommelier_backend.infrastructure.RedisService;
+import com.innovativesoftware.domsommelier_backend.shared.domain.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
@@ -95,11 +96,14 @@ public class AuthService {
 
         String token = jwtTokenProvider.createToken(customer);
 
+        Role role = customer.getRoleOrDefault();
+
         return AuthModels.AuthResponse.builder()
                 .customerId(customer.getId().toString())
                 .token(token)
                 .firstName(customer.getFirstName())
                 .secondName(customer.getSecondName())
+                .role(role)
                 .build();
     }
 

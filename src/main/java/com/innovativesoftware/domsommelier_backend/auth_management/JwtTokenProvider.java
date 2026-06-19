@@ -1,6 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.auth_management;
 
 import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.Customer;
+import com.innovativesoftware.domsommelier_backend.shared.domain.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -30,7 +31,8 @@ public class JwtTokenProvider {
     public String createToken(Customer customer) {
         Claims claims = Jwts.claims().setSubject(customer.getEmail());
         claims.put("id", customer.getId());
-//        claims.put("role", customer.getRole().name());
+        Role role = customer.getRoleOrDefault();
+        claims.put("role", role.name());
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + jwtProperties.getExpiration());

@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.auth_management;
 
+import com.innovativesoftware.domsommelier_backend.shared.domain.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
@@ -32,5 +33,6 @@ public class AuthModels {
         private String customerId;
         private String firstName;
         private String secondName;
+        private Role role;
     }
 }

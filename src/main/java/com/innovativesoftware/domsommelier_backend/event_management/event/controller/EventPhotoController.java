@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import com.innovativesoftware.domsommelier_backend.infrastructure.security.RequiresAdmin;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,7 @@ public class EventPhotoController {
 
     @Operation(summary="Загрузка фото к мероприятию")
     @PostMapping(path = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequiresAdmin
     public List<EventPhotoDTO> uploadPhoto(
             @RequestPart("files") MultipartFile[] files,
             @RequestPart("description") String description,
@@ -114,12 +116,14 @@ public class EventPhotoController {
 
     @Operation(summary="Обновить описание фото")
     @PutMapping("/{photoId}/description")
+    @RequiresAdmin
     public EventPhotoDTO updatePhotoDescription(@PathVariable UUID photoId, @RequestBody String desc) {
         return service.updatePhotoDescription(photoId, desc);
     }
 
     @Operation(summary="Удалить фото по photoId")
     @DeleteMapping("/{photoId}")
+    @RequiresAdmin
     public void deletePhoto(@PathVariable UUID photoId) {
         service.deletePhoto(photoId);
     }

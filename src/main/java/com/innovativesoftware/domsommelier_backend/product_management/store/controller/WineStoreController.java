@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import com.innovativesoftware.domsommelier_backend.infrastructure.security.RequiresAdmin;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,12 +41,14 @@ public class WineStoreController {
     }
 
     @PostMapping
+    @RequiresAdmin
     @Operation(summary = "Создать винотеку")
     public ResponseEntity<WineStoreResponseDto> createWineStore(@RequestBody @Valid WineStoreRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(wineStoreService.createWineStore(requestDto));
     }
 
     @PutMapping("/{id}")
+    @RequiresAdmin
     @Operation(summary = "Обновить данные винотеки")
     public ResponseEntity<WineStoreResponseDto> updateWineStore(
             @PathVariable Long id,
@@ -55,6 +58,7 @@ public class WineStoreController {
     }
 
     @DeleteMapping("/{id}")
+    @RequiresAdmin
     @Operation(summary = "Удалить винотеку")
     public ResponseEntity<Void> deleteWineStore(@PathVariable Long id) {
         wineStoreService.deleteWineStore(id);

@@ -4,6 +4,7 @@ import com.innovativesoftware.domsommelier_backend.infrastructure.BucketRegistry
 import com.innovativesoftware.domsommelier_backend.news_management.service.NewsPhotoOperationService;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.innovativesoftware.domsommelier_backend.infrastructure.security.RequiresAdmin;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +18,7 @@ public class NewsPhotoController {
     private NewsPhotoOperationService fileOperationService;
 
     @PostMapping("upload")
+    @RequiresAdmin
     public void uploadPhoto(@RequestBody MultipartFile[] files, @RequestParam String newsId) {
         fileOperationService.uploadFilesWithRef(files, BUCKET, newsId);
     }

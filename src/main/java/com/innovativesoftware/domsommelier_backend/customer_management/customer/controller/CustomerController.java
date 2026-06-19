@@ -40,14 +40,7 @@ public class CustomerController {
     ) {
         Customer customer = getCustomer(userDetails.getId());
 
-        return ResponseEntity.ok(CustomerProfileDto.builder()
-                .id(customer.getId())
-                .firstName(customer.getFirstName())
-                .secondName(customer.getSecondName())
-                .middleName(customer.getMiddleName())
-                .email(customer.getEmail())
-                .phone(customer.getPhone())
-                .build());
+        return ResponseEntity.ok(toProfileDto(customer));
     }
 
     @Operation(summary = "Обновить профиль", description = "Обновляет имя, фамилию, отчество, телефон")
@@ -65,14 +58,19 @@ public class CustomerController {
 
         customerRepository.save(customer);
 
-        return ResponseEntity.ok(CustomerProfileDto.builder()
+        return ResponseEntity.ok(toProfileDto(customer));
+    }
+
+    private CustomerProfileDto toProfileDto(Customer customer) {
+        return CustomerProfileDto.builder()
                 .id(customer.getId())
                 .firstName(customer.getFirstName())
                 .secondName(customer.getSecondName())
                 .middleName(customer.getMiddleName())
                 .email(customer.getEmail())
                 .phone(customer.getPhone())
-                .build());
+                .role(customer.getRoleOrDefault())
+                .build();
     }
 
     private Customer getCustomer(UUID id) {

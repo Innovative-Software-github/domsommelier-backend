@@ -6,6 +6,7 @@ import com.innovativesoftware.domsommelier_backend.news_management.model.NewsWit
 import com.innovativesoftware.domsommelier_backend.news_management.service.NewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import com.innovativesoftware.domsommelier_backend.infrastructure.security.RequiresAdmin;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class NewsController {
     public List<NewsWithFileListDTO> findAllEvents() { return newsService.findAllNews();}
 
     @PostMapping("")
+    @RequiresAdmin
     public ResponseEntity<String> addNews(@RequestBody NewsWithoutFilesRequest newsWithoutFilesRequest) {
         return ResponseEntity.ok(String.valueOf(newsService.addNews(newsWithoutFilesRequest)));
     }
@@ -32,11 +34,13 @@ public class NewsController {
     }
 
     @DeleteMapping("/id")
+    @RequiresAdmin
     public void deleteNewsById(@RequestParam String id) {
         newsService.deleteNewsById(id);
     }
 
     @PutMapping("")
+    @RequiresAdmin
     public void updateNews(@RequestBody NewsWithFilesRequest newsWithFilesRequest) {
         try {
             newsService.updateNews(newsWithFilesRequest);
