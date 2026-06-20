@@ -2,7 +2,6 @@ package com.innovativesoftware.domsommelier_backend.event_management.event.model
 
 import com.innovativesoftware.domsommelier_backend.annotations.ConsistentDatesAndPrices;
 import com.innovativesoftware.domsommelier_backend.annotations.EventTypeSubset;
-import com.innovativesoftware.domsommelier_backend.annotations.NotBeforeToday;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,13 +20,11 @@ public class EventFilterRequest {
 
     @Schema(description = "Дата начала (формат: ISO 8601, например: 2025-07-11T20:00:00.000Z)",
             example = "2025-07-11T20:00:00.000Z", type = "string", format = "date-time")
-    @NotBeforeToday(message = "Дата начала должна быть не раньше сегодняшней даты")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][XXX]")
     private OffsetDateTime dateStart;
 
     @Schema(description = "Дата конца (формат: ISO 8601, например: 2025-07-15T20:00:00.000Z)",
             example = "2025-07-15T20:00:00.000Z", type = "string", format = "date-time")
-    @NotBeforeToday(message = "Дата конца должна быть не раньше сегодняшней даты")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss[.SSS][XXX]")
     private OffsetDateTime dateEnd;
 
@@ -40,6 +37,9 @@ public class EventFilterRequest {
     @Schema(description = "Тип мероприятия (wineCasino или degustation)", example = "wineCasino", allowableValues = {"wineCasino", "degustation"})
     @EventTypeSubset(message = "Недопустимый тип мероприятия. Допустимые значения: wineCasino, degustation")
     private String type;
+
+    @Schema(description = "ID винотеки", example = "1")
+    private Long wineStoreId;
 
     @Schema(description = "Номер страницы (с 0)", example = "0")
     private Integer page = 0;

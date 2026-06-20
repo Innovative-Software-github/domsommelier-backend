@@ -13,4 +13,6 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
     List<Event> findByType(String type);
 
     Page<Event> findAll(Specification<Event> spec, Pageable pageable);
+
+    boolean existsByWineStore_Id(Long wineStoreId);
 }

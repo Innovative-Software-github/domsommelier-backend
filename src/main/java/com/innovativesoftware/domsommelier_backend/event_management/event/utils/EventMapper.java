@@ -4,42 +4,50 @@ import com.innovativesoftware.domsommelier_backend.event_management.event.entity
 import com.innovativesoftware.domsommelier_backend.event_management.event.model.EventDTO;
 import com.innovativesoftware.domsommelier_backend.event_management.event.model.EventFullDTO;
 import com.innovativesoftware.domsommelier_backend.event_management.event.model.EventListDTO;
-import org.springframework.beans.BeanUtils;
+import com.innovativesoftware.domsommelier_backend.product_management.store.entity.WineStore;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class EventMapper {
+
+    private EventMapper() {
+    }
+
     public static EventDTO toDto(Event event) {
         EventDTO dto = new EventDTO();
-        BeanUtils.copyProperties(event, dto);
+        dto.setId(event.getId());
+        dto.setType(event.getType());
+        dto.setPrice(event.getPrice());
+        dto.setDatetime(event.getDatetime());
+        dto.setTitle(event.getTitle());
+        dto.setSmallCover(event.getSmallCover());
+        dto.setLargeCover(event.getLargeCover());
+        dto.setCity(event.getCity());
+        dto.setAddress(event.getAddress());
+        dto.setDescription(event.getDescription());
+        dto.setRegistrationLink(event.getRegistrationLink());
+        dto.setWineStoreId(resolveWineStoreId(event));
         return dto;
     }
 
-    public static Event toEntity(EventDTO dto) {
-        Event event = new Event();
-        BeanUtils.copyProperties(dto, event);
-        return event;
-    }
-
-    public static void updateEventFromDto(EventDTO dto, Event event) {
+    public static void applyScalars(Event event, EventDTO dto) {
         event.setType(dto.getType());
         event.setPrice(dto.getPrice());
         event.setDatetime(dto.getDatetime());
         event.setTitle(dto.getTitle());
         event.setSmallCover(dto.getSmallCover());
         event.setLargeCover(dto.getLargeCover());
-        event.setCity(dto.getCity());
-        event.setAddress(dto.getAddress());
-        event.setWineryIndex(dto.getWineryIndex());
         event.setDescription(dto.getDescription());
         event.setRegistrationLink(dto.getRegistrationLink());
     }
 
-    // Для full
+    public static void applyWineStoreLocation(Event event, WineStore wineStore) {
+        event.setWineStore(wineStore);
+        event.setCity(wineStore.getCity());
+        event.setAddress(wineStore.getAddress());
+    }
+
     public static EventFullDTO toFullDto(Event event, String smallCoverUrl, String largeCoverUrl) {
         return EventFullDTO.builder()
                 .id(event.getId().toString())
@@ -51,13 +59,13 @@ public class EventMapper {
                 .largeCover(largeCoverUrl)
                 .city(event.getCity())
                 .address(event.getAddress())
-                .wineryIndex(event.getWineryIndex())
                 .description(event.getDescription())
                 .registrationLink(event.getRegistrationLink())
+                .wineStoreId(resolveWineStoreId(event))
+                .wineStoreName(resolveWineStoreName(event))
                 .build();
     }
 
-    // Для списка (короткое)
     public static EventListDTO toListDto(Event event, String smallCoverUrl) {
         return EventListDTO.builder()
                 .id(event.getId().toString())
@@ -66,14 +74,23 @@ public class EventMapper {
                 .dateTime(formatToIsoWithMillisZ(event.getDatetime()))
                 .title(event.getTitle())
                 .smallCover(smallCoverUrl)
+                .city(event.getCity())
+                .wineStoreId(resolveWineStoreId(event))
+                .wineStoreName(resolveWineStoreName(event))
                 .build();
     }
 
-    private static String formatToIsoWithMillisZ(OffsetDateTime dateTime) {
-        return dateTime.format(DateTimeFormatter.ISO_INSTANT);  // 2025-07-11T20:00:00.000Z
+    private static Long resolveWineStoreId(Event event) {
+        WineStore wineStore = event.getWineStore();
+        return wineStore != null ? wineStore.getId() : null;
     }
 
-    private static LocalDateTime combineDateAndTime(LocalDate date, LocalTime time) {
-        return date.atTime(time);
+    private static String resolveWineStoreName(Event event) {
+        WineStore wineStore = event.getWineStore();
+        return wineStore != null ? wineStore.getName() : null;
+    }
+
+    private static String formatToIsoWithMillisZ(OffsetDateTime dateTime) {
+        return dateTime.format(DateTimeFormatter.ISO_INSTANT);
     }
 }

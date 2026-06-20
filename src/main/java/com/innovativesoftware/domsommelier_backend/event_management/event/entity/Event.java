@@ -1,8 +1,12 @@
 package com.innovativesoftware.domsommelier_backend.event_management.event.entity;
 
+import com.innovativesoftware.domsommelier_backend.product_management.store.entity.WineStore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,12 +47,13 @@ public class Event {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "winery_index")
-    private String wineryIndex;
-
     @Column(name = "description", length = 2000)
     private String description;
 
     @Column(name = "registration_link")
     private String registrationLink;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "wine_store_id")
+    private WineStore wineStore;
 }

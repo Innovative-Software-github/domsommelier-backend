@@ -1,6 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.product_management.store.service;
 
 import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.repository.CustomerRepository;
+import com.innovativesoftware.domsommelier_backend.event_management.event.repository.EventRepository;
 import com.innovativesoftware.domsommelier_backend.order_management.order.repository.OrderRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.store.entity.WineStore;
 import com.innovativesoftware.domsommelier_backend.product_management.store.entity.WineStorePoint;
@@ -27,6 +28,7 @@ public class WineStoreServiceImpl implements WineStoreService {
     private final WineStoreMapper wineStoreMapper;
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
+    private final EventRepository eventRepository;
 
     @Override
     public Page<WineStoreResponseDto> getAllWineStores(
@@ -73,6 +75,9 @@ public class WineStoreServiceImpl implements WineStoreService {
         }
         if (customerRepository.existsByDefaultWineStore_Id(id)) {
             throw new IllegalStateException("Невозможно удалить винотеку: она привязана к клиентам");
+        }
+        if (eventRepository.existsByWineStore_Id(id)) {
+            throw new IllegalStateException("Невозможно удалить винотеку: есть связанные мероприятия");
         }
         wineStoreRepository.deleteById(id);
     }

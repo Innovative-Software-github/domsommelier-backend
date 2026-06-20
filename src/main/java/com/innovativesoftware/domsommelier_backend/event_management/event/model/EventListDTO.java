@@ -12,4 +12,7 @@ public class EventListDTO {
     private String dateTime;         // ISO 8601
     private String title;
     private String smallCover;
+    private String city;
+    private Long wineStoreId;
+    private String wineStoreName;
 }

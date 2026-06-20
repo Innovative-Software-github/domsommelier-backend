@@ -43,7 +43,8 @@ CREATE_EVENT='{
   "title": "Мероприятие для теста фото",
   "city": "Москва",
   "address": "ул. Тестовая, д. 10",
-  "description": "Тестовое мероприятие"
+  "description": "Тестовое мероприятие",
+  "wineStoreId": 1
 }'
 EVENT_RESP=$(curl -s -X POST "$BASE_URL/api/v1/events" \
   -H "$AUTH" -H "Content-Type: application/json" \

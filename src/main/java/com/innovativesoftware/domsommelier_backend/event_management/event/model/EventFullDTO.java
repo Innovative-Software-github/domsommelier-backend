@@ -15,7 +15,8 @@ public class EventFullDTO {
     private String largeCover;
     private String city;
     private String address;
-    private String wineryIndex;
     private String description;
     private String registrationLink;
+    private Long wineStoreId;
+    private String wineStoreName;
 }

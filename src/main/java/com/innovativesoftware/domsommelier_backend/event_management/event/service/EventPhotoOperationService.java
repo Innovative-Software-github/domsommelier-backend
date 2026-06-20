@@ -74,10 +74,7 @@ public class EventPhotoOperationService extends FileOperationService {
      * Получить все фото для мероприятия.
      */
     public List<EventPhotoDTO> getPhotosByEvent(UUID eventId) {
-        List<EventPhoto> photos = eventPhotoRepository.findAll()
-                .stream()
-                .filter(p -> p.getEvent().getId().equals(eventId))
-                .toList();
+        List<EventPhoto> photos = eventPhotoRepository.findByEvent_Id(eventId);
 
         return photos.stream()
                 .map(photo -> EventPhotoDTO.builder()
@@ -155,7 +152,22 @@ public class EventPhotoOperationService extends FileOperationService {
     public void deletePhoto(UUID photoId) {
         EventPhoto photo = eventPhotoRepository.findById(photoId)
                 .orElseThrow(() -> new NoSuchElementException("Photo not found"));
-        fileService.deleteFile(photo.getBucket(), photo.getName()); // реализуй этот метод в MinioService
+        deletePhotoEntity(photo);
+    }
+
+    /**
+     * Удалить все фото мероприятия (из MinIO и из базы).
+     */
+    @Transactional
+    public void deletePhotosByEventId(UUID eventId) {
+        List<EventPhoto> photos = eventPhotoRepository.findByEvent_Id(eventId);
+        for (EventPhoto photo : photos) {
+            deletePhotoEntity(photo);
+        }
+    }
+
+    private void deletePhotoEntity(EventPhoto photo) {
+        fileService.deleteFile(photo.getBucket(), photo.getName());
         eventPhotoRepository.delete(photo);
     }
 }

@@ -98,6 +98,7 @@ public class EventController {
                 filter.getPriceMin(),
                 filter.getPriceMax(),
                 eventType,
+                filter.getWineStoreId(),
                 filter.getPage(),
                 filter.getSize()
         );
