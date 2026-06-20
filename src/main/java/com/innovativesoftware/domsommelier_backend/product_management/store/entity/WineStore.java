@@ -28,6 +28,10 @@ public class WineStore {
 //    @Column(name = "location", nullable = false, columnDefinition = "point")
 //    private Point location;
     @Column(name = "location", nullable = false, columnDefinition = "point")
+    @org.hibernate.annotations.ColumnTransformer(
+            read = "location::text",
+            write = "cast(? as point)"
+    )
     @Convert(converter = PointConverter.class)
     private WineStorePoint location;
 

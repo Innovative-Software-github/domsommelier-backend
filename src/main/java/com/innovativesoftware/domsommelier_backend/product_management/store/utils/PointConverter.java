@@ -12,7 +12,7 @@ public class PointConverter implements AttributeConverter<WineStorePoint, String
         if (point == null) {
             return null;
         }
-        return String.format("(%f,%f)", point.getLongitude(), point.getLatitude());
+        return String.format("(%s,%s)", point.getLongitude(), point.getLatitude());
     }
 
     @Override
