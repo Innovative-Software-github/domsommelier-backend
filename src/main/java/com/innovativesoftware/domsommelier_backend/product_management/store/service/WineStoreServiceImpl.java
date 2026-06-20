@@ -1,5 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.product_management.store.service;
 
+import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.repository.CustomerRepository;
+import com.innovativesoftware.domsommelier_backend.order_management.order.repository.OrderRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.store.entity.WineStore;
 import com.innovativesoftware.domsommelier_backend.product_management.store.entity.WineStorePoint;
 import com.innovativesoftware.domsommelier_backend.product_management.store.model.WineStoreFilterDto;
@@ -23,6 +25,8 @@ public class WineStoreServiceImpl implements WineStoreService {
 
     private final WineStoreRepository wineStoreRepository;
     private final WineStoreMapper wineStoreMapper;
+    private final OrderRepository orderRepository;
+    private final CustomerRepository customerRepository;
 
     @Override
     public Page<WineStoreResponseDto> getAllWineStores(
@@ -44,15 +48,8 @@ public class WineStoreServiceImpl implements WineStoreService {
     @Override
     @Transactional
     public WineStoreResponseDto createWineStore(WineStoreRequestDto requestDto) {
-        WineStore store = WineStore.builder()
-                .name(requestDto.getName())
-                .address(requestDto.getAddress())
-                .phone(requestDto.getPhone())
-                .workingHours(requestDto.getWorkingHours())
-                .city(requestDto.getCity())
-                .district(requestDto.getDistrict())
-                .location(new WineStorePoint(requestDto.getLongitude(), requestDto.getLatitude()))
-                .build();
+        WineStore store = WineStore.builder().build();
+        applyRequest(store, requestDto);
         return wineStoreMapper.toResponseDto(wineStoreRepository.save(store));
     }
 
@@ -61,13 +58,7 @@ public class WineStoreServiceImpl implements WineStoreService {
     public WineStoreResponseDto updateWineStore(Long id, WineStoreRequestDto requestDto) {
         WineStore store = wineStoreRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Винотека не найдена: " + id));
-        store.setName(requestDto.getName());
-        store.setAddress(requestDto.getAddress());
-        store.setPhone(requestDto.getPhone());
-        store.setWorkingHours(requestDto.getWorkingHours());
-        store.setCity(requestDto.getCity());
-        store.setDistrict(requestDto.getDistrict());
-        store.setLocation(new WineStorePoint(requestDto.getLongitude(), requestDto.getLatitude()));
+        applyRequest(store, requestDto);
         return wineStoreMapper.toResponseDto(wineStoreRepository.save(store));
     }
 
@@ -77,6 +68,34 @@ public class WineStoreServiceImpl implements WineStoreService {
         if (!wineStoreRepository.existsById(id)) {
             throw new EntityNotFoundException("Винотека не найдена: " + id);
         }
+        if (orderRepository.existsByWineStore_Id(id)) {
+            throw new IllegalStateException("Невозможно удалить винотеку: есть связанные заказы");
+        }
+        if (customerRepository.existsByDefaultWineStore_Id(id)) {
+            throw new IllegalStateException("Невозможно удалить винотеку: она привязана к клиентам");
+        }
         wineStoreRepository.deleteById(id);
+    }
+
+    private void applyRequest(WineStore store, WineStoreRequestDto requestDto) {
+        store.setName(requestDto.getName().trim());
+        store.setAddress(trimToNull(requestDto.getAddress()));
+        store.setPhone(trimToNull(requestDto.getPhone()));
+        store.setWorkingHours(trimToNull(requestDto.getWorkingHours()));
+        store.setCity(normalizeLocationText(requestDto.getCity()));
+        store.setDistrict(normalizeLocationText(requestDto.getDistrict()));
+        store.setLocation(new WineStorePoint(requestDto.getLongitude(), requestDto.getLatitude()));
+    }
+
+    private static String normalizeLocationText(String value) {
+        return value.trim().toLowerCase();
+    }
+
+    private static String trimToNull(String value) {
+        if (value == null) {
+            return null;
+        }
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 }

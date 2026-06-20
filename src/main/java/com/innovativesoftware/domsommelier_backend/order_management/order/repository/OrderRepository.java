@@ -19,4 +19,6 @@ public interface OrderRepository extends JpaRepository<Order, UUID>, JpaSpecific
     Page<Order> findByCustomerId(UUID customerId, Pageable pageable);
 
     Page<Order> findAllByCustomerId(UUID customerId, Pageable pageable);
+
+    boolean existsByWineStore_Id(Long wineStoreId);
 }

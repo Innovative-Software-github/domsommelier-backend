@@ -29,4 +29,6 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID>, JpaSp
 
     @EntityGraph(attributePaths = {"defaultWineStore"})
     Optional<Customer> findWithDefaultWineStoreById(UUID id);
+
+    boolean existsByDefaultWineStore_Id(Long wineStoreId);
 }
