@@ -54,26 +54,30 @@ HTTP=$(echo "$BODY" | tail -1)
 RESP=$(echo "$BODY" | head -1)
 assert_status "Получить продукт с невалидным UUID — 400" "400" "$HTTP" "$RESP"
 
-# --- 6. Поиск по названию (name — @RequestHeader, не @RequestParam) ---
-BODY=$(curl -s -w "\n%{http_code}" "$BASE_URL/api/v1/products/search?page=0&size=5" \
-  -H "$AUTH" -H "name: Louis")
+# --- 6. Поиск по названию (?q=) ---
+BODY=$(curl -s -w "\n%{http_code}" "$BASE_URL/api/v1/products/search?q=Louis&page=0&size=5" \
+  -H "$AUTH")
 HTTP=$(echo "$BODY" | tail -1)
 RESP=$(echo "$BODY" | head -1)
 assert_status "Поиск продуктов по имени 'Louis'" "200" "$HTTP" "$RESP"
+if ! echo "$RESP" | grep -q '"content"'; then
+  echo -e "${RED}Ответ поиска не содержит content${NC}"
+  exit 1
+fi
 
-# --- 7. Поиск — нет результатов (ASCII-only: Кириллица в HTTP-заголовке ломает запрос) ---
-BODY=$(curl -s -w "\n%{http_code}" "$BASE_URL/api/v1/products/search?page=0&size=5" \
-  -H "$AUTH" -H "name: xyznotfoundxyz")
+# --- 7. Поиск — нет результатов ---
+BODY=$(curl -s -w "\n%{http_code}" "$BASE_URL/api/v1/products/search?q=xyznotfoundxyz&page=0&size=5" \
+  -H "$AUTH")
 HTTP=$(echo "$BODY" | tail -1)
 RESP=$(echo "$BODY" | head -1)
 assert_status "Поиск по несуществующему названию — пустой список" "200" "$HTTP" "$RESP"
 
-# --- 8. Поиск с пагинацией (page=1, size=2) ---
-BODY=$(curl -s -w "\n%{http_code}" "$BASE_URL/api/v1/products/search?page=1&size=2" \
-  -H "$AUTH" -H "name: а")
+# --- 8. Поиск с пагинацией и кириллицей в query ---
+BODY=$(curl -s -w "\n%{http_code}" "$BASE_URL/api/v1/products/search?q=%D0%B2%D0%B8%D0%BD%D0%BE&page=1&size=2" \
+  -H "$AUTH")
 HTTP=$(echo "$BODY" | tail -1)
 RESP=$(echo "$BODY" | head -1)
-assert_status "Поиск с пагинацией (page=1, size=2)" "200" "$HTTP" "$RESP"
+assert_status "Поиск с пагинацией (page=1, size=2) и кириллицей" "200" "$HTTP" "$RESP"
 
 # --- 9. Фильтр по категории: wine (пустое тело = без фильтров) ---
 BODY=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/v1/products/filter?category=wine&page=0&size=5" \

@@ -5,13 +5,16 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.mo
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCategoryProjection;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductNewDTO;
+import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductSearchRequest;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.BaseSpecification;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductNewService;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -46,17 +49,10 @@ public class ProductController {
         return productService.getProductCategories();
     }
 
-    //@Hidden
-    @Operation(summary = "Получение всех продуктов по названию")
+    @Operation(summary = "Поиск продуктов по названию или артикулу")
     @GetMapping("/search")
-    public ResponseEntity<String> searchProductsByName(
-            @RequestHeader String name,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-        String jsonResponse = productService.searchProductsByName(name, pageable);
-        return ResponseEntity.ok(jsonResponse);
+    public Page<ProductCardDto> searchProducts(@Valid @ModelAttribute ProductSearchRequest request) {
+        return productService.searchProducts(request);
     }
 
     //@Hidden

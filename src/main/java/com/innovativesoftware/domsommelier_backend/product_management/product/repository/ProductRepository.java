@@ -5,13 +5,14 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.en
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Set;
 import java.util.UUID;
 
-public interface ProductRepository extends JpaRepository<Product, UUID> {
+public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpecificationExecutor<Product> {
     /*@Query("SELECT p.id FROM Product p WHERE LOWER(p.name) LIKE LOWER(concat('%', :name, '%'))")
     List<UUID> findByNameContainingIgnoreCase(@Param("name") String name);
 
@@ -29,9 +30,6 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     @Query("SELECT p.id FROM Product p")
     List<UUID> findAllIds();*/
-
-    @Query("SELECT p.id FROM Product p WHERE LOWER(p.name) LIKE LOWER(concat('%', :name, '%'))")
-    Page<UUID> findByNameContainingIgnoreCase(@Param("name") String name, Pageable pageable);
 
     @Query("SELECT p.id FROM Product p WHERE p.productCategory.name = :category")
     Page<UUID> findByProductCategory(@Param("category") ProductCategoryEnum category, Pageable pageable);

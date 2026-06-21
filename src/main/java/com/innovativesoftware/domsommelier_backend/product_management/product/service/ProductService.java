@@ -1,20 +1,23 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.service;
 
-import com.google.gson.Gson;
 import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.ProductCountry;
 import com.innovativesoftware.domsommelier_backend.filter_management.service.ProductFilterStrategyFactory;
+import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCardDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCategoryProjection;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCountryProjection;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductDTO;
+import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductSearchRequest;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductCategoryRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductCountryRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +29,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class ProductService {
-    private final Gson gson;
+
+    private static final int MAX_SEARCH_PAGE_SIZE = 50;
+
     @Autowired
     private final ProductRepository productRepository;
     @Autowired
@@ -51,9 +56,38 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public String searchProductsByName(String name, Pageable pageable) {
-        Page<UUID> products = productRepository.findByNameContainingIgnoreCase(name, pageable);
-        return gson.toJson(products.getContent()); // или вернуть сам Page если нужно totalElements/totalPages
+    public Page<ProductCardDto> searchProducts(ProductSearchRequest request) {
+        String query = normalizeQuery(request.getQ());
+        if (query.isEmpty()) {
+            return Page.empty();
+        }
+
+        String city = normalizeCity(request.getCity());
+        int page = request.getPage() != null ? Math.max(request.getPage(), 0) : 0;
+        int size = capPageSize(request.getSize());
+
+        Pageable pageable = PageRequest.of(page, size);
+        Specification<Product> spec = ProductSearchSpecification.byQueryAndCity(query, city);
+
+        return productRepository.findAll(spec, pageable).map(productMapper::toCardDto);
+    }
+
+    private static String normalizeQuery(String q) {
+        return q == null ? "" : q.trim();
+    }
+
+    private static String normalizeCity(String city) {
+        if (city == null || city.isBlank()) {
+            return null;
+        }
+        return city.trim().toLowerCase();
+    }
+
+    private static int capPageSize(Integer size) {
+        if (size == null || size < 1) {
+            return 20;
+        }
+        return Math.min(size, MAX_SEARCH_PAGE_SIZE);
     }
 
     @Transactional(readOnly = true)
