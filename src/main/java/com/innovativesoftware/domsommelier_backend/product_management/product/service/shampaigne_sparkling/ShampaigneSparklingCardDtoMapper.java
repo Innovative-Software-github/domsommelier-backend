@@ -8,6 +8,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.mo
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.shampaigne_sparkling.ShampaigneAndSparklingCardDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.SparklingWineRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductCardDtoMapper;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.ProductPhotoUrls;
 import com.innovativesoftware.domsommelier_backend.product_management.product.util.VolumeStrengthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -31,12 +32,7 @@ public class ShampaigneSparklingCardDtoMapper implements ProductCardDtoMapper {
                 .discount(product.getDiscount())
                 .productCountry(product.getProductCountry().getName())
                 .productCategoryName(product.getProductCategory().getName().name())
-                .productPhoto(product.getProductPhoto().stream().map(photo -> FileDTO.builder()
-                        .id(photo.getId())
-                        .bucket(photo.getBucket())
-                        .name(photo.getName())
-                        .description(photo.getDescription())
-                        .build()).toList())
+                .productPhoto(ProductPhotoUrls.toFileDtos(product))
                 .color(sparklingWine.getColor().getName())
                 .subcategory(sparklingWine.getSubcategory().getName())
                 .content(sparklingWine.getSugarContent().getName())

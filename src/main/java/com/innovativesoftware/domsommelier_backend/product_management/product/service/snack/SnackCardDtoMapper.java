@@ -8,6 +8,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.mo
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.snack.SnackCardDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.SnackRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductCardDtoMapper;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.ProductPhotoUrls;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -30,12 +31,7 @@ public class SnackCardDtoMapper implements ProductCardDtoMapper {
                 .discount(product.getDiscount())
                 .productCountry(product.getProductCountry().getName())
                 .productCategoryName(product.getProductCategory().getName().name())
-                .productPhoto(product.getProductPhoto().stream().map(photo -> FileDTO.builder()
-                        .id(photo.getId())
-                        .bucket(photo.getBucket())
-                        .name(photo.getName())
-                        .description(photo.getDescription())
-                        .build()).toList())
+                .productPhoto(ProductPhotoUrls.toFileDtos(product))
                 .subcategory(snack.getSubcategory().getName())
                 .build();
     }

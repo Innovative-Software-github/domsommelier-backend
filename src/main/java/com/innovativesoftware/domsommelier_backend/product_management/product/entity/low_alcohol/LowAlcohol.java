@@ -22,7 +22,7 @@ public class LowAlcohol {
     private UUID id;
 
     @MapsId
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id")
     private Product product;
 

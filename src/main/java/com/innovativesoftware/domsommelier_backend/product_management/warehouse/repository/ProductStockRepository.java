@@ -19,4 +19,6 @@ public interface ProductStockRepository extends JpaRepository<ProductStock, UUID
 
     /** Есть ли товар в наличии (quantity > 0) хотя бы в одной винотеке города. */
     boolean existsByProduct_IdAndWineStore_CityAndQuantityGreaterThan(UUID productId, String city, int quantity);
+
+    void deleteByProduct_Id(UUID productId);
 }

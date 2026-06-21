@@ -26,8 +26,8 @@ public class WineDetailsMapper implements ProductDetailsMapper<WineDetailsDto> {
         if (wine == null) return null;
         return WineDetailsDto.builder()
                 .productionYear(wine.getProductionYear())
-                .color(String.valueOf(wine.getColor().getName()))
-                .type(String.valueOf(wine.getType().getName()))
+                .color(wine.getColor() != null ? wine.getColor().getName() : null)
+                .type(wine.getType() != null ? wine.getType().getName() : null)
                 .grapes(wine.getGrapes())
                 .producer(wine.getProducer())
                 .volume(VolumeStrengthUtils.formatVolume(wine.getVolume()))

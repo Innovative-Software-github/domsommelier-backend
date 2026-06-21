@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -56,6 +57,23 @@ public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpec
             """)
     Page<Product> searchForStock(@Param("search") String search, Pageable pageable);
 
+    // Админский список товаров категории с поиском по названию/артикулу (search — непустая строка).
+    @Query(value = """
+            SELECT p FROM Product p JOIN FETCH p.productCategory
+            WHERE p.productCategory.name = :category
+              AND (LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))
+                OR LOWER(p.article) LIKE LOWER(CONCAT('%', :search, '%')))
+            """,
+            countQuery = """
+            SELECT COUNT(p) FROM Product p
+            WHERE p.productCategory.name = :category
+              AND (LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))
+                OR LOWER(p.article) LIKE LOWER(CONCAT('%', :search, '%')))
+            """)
+    Page<Product> searchProductsByCategory(@Param("category") ProductCategoryEnum category,
+                                           @Param("search") String search,
+                                           Pageable pageable);
+
     @Query("SELECT DISTINCT p.productCountry.name FROM Product p")
     Set<String> findDistinctCountries();
 
@@ -65,5 +83,10 @@ public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpec
         WHERE p.productCategory.name = :category
     """)
     Set<String> findDistinctCountriesByCategory(@Param("category") String category);
+
+    /** Снять товар из избранного у всех клиентов (очистка join-таблицы перед удалением товара). */
+    @Modifying
+    @Query(value = "DELETE FROM customer_favorite_product WHERE product_id = :productId", nativeQuery = true)
+    void deleteFavoritesByProductId(@Param("productId") UUID productId);
 
 }

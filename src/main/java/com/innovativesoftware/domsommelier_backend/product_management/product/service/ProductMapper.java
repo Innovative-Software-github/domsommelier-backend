@@ -5,6 +5,7 @@ import com.innovativesoftware.domsommelier_backend.order_management.order.model.
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCardDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductDTO;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.ProductPhotoUrls;
 import com.innovativesoftware.domsommelier_backend.product_management.warehouse.model.StorageHistoryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -34,13 +35,7 @@ public class ProductMapper {
                 .createdAt(product.getCreatedAt())
                 .productCountry(product.getProductCountry().getName())
                 .productCategoryName(product.getProductCategory().getName())
-                .productPhoto(product.getProductPhoto().stream().map(photo -> FileDTO.builder()
-                        .id(photo.getId())
-                        .bucket(photo.getBucket())
-                        .name(photo.getName())
-                        .description(photo.getDescription())
-                        .url(photo.getUrl())
-                        .build()).toList())
+                .productPhoto(ProductPhotoUrls.toFileDtos(product))
                 .orderItems(product.getOrderItems().stream().map(orderItem -> OrderItemDto.builder()
                         .id(orderItem.getId())
                         .quantity(orderItem.getQuantity())

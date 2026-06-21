@@ -7,6 +7,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.mo
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.wine.WineCardDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.WineRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductCardDtoMapper;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.ProductPhotoUrls;
 import com.innovativesoftware.domsommelier_backend.product_management.product.util.VolumeStrengthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -29,15 +30,10 @@ public class WineCardDtoMapper implements ProductCardDtoMapper {
                 .discount(product.getDiscount())
                 .productCountry(product.getProductCountry().getName())
                 .productCategoryName(product.getProductCategory().getName().name())
-                .productPhoto(product.getProductPhoto().stream().map(photo -> FileDTO.builder()
-                        .id(photo.getId())
-                        .bucket(photo.getBucket())
-                        .name(photo.getName())
-                        .description(photo.getDescription())
-                        .build()).toList())
+                .productPhoto(ProductPhotoUrls.toFileDtos(product))
                 .volume(VolumeStrengthUtils.formatVolume(wine.getVolume()))
-                .color(wine.getColor().getName())
-                .type(wine.getType().getName())
+                .color(wine.getColor() != null ? wine.getColor().getName() : null)
+                .type(wine.getType() != null ? wine.getType().getName() : null)
                 .build();
     }
 

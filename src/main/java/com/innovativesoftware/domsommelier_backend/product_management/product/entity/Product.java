@@ -11,6 +11,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,15 +55,15 @@ public class Product {
     private ProductCategory productCategory;
 
     @OneToMany(mappedBy = "product")
-    private List<ProductPhoto> productPhoto;
+    private List<ProductPhoto> productPhoto = new ArrayList<>();
 
     @OneToMany(mappedBy = "product")
-    private List<OrderItem> orderItems;
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     @OneToMany(mappedBy = "product")
-    private List<StorageHistory> products;
+    private List<StorageHistory> products = new ArrayList<>();
 
     /** Остатки товара по винотекам — основа доступности по городам (вариант А). */
     @OneToMany(mappedBy = "product")
-    private List<ProductStock> stocks;
+    private List<ProductStock> stocks = new ArrayList<>();
 }

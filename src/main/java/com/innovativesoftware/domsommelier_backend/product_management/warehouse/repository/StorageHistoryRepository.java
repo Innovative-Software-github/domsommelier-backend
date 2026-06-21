@@ -20,4 +20,6 @@ public interface StorageHistoryRepository extends JpaRepository<StorageHistory, 
             products_new.product_id = products_in_stock.product_id
     """, nativeQuery = true)
     List<ProductNewProjection> findNewProductsInStorageHistory();
+
+    void deleteByProduct_Id(UUID productId);
 }
