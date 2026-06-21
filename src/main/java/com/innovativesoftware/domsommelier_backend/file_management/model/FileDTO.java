@@ -3,6 +3,7 @@ package com.innovativesoftware.domsommelier_backend.file_management.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -11,6 +12,7 @@ import java.util.UUID;
 @Accessors(chain = true)
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class FileDTO implements FileProjection {

@@ -1,10 +1,9 @@
 package com.innovativesoftware.domsommelier_backend.saved_management.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO;
 import com.innovativesoftware.domsommelier_backend.infrastructure.RedisService;
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.ProductPhotoUrls;
 import com.innovativesoftware.domsommelier_backend.saved_management.model.SavedDto;
 import com.innovativesoftware.domsommelier_backend.saved_management.model.SavedItemDto;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ public class SavedService {
 
     private final RedisService redisService;
     private final ProductRepository productRepository;
-    private final ObjectMapper objectMapper;
 
     private String savedKey(UUID customerId) {
         return "saved:" + customerId;
@@ -59,9 +57,7 @@ public class SavedService {
                         .discount(product.getDiscount())
                         .productCountry(product.getProductCountry().getName())
                         .productCategoryName(product.getProductCategory().getName().name())
-                        .productPhoto(product.getProductPhoto().stream()
-                                .map(photo -> objectMapper.convertValue(photo, FileDTO.class))
-                                .toList())
+                        .productPhoto(ProductPhotoUrls.toFileDtos(product))
                         .build())
                 .build();
 

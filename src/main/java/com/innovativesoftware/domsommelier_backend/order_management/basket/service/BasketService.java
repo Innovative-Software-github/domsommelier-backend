@@ -1,7 +1,5 @@
 package com.innovativesoftware.domsommelier_backend.order_management.basket.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO;
 import com.innovativesoftware.domsommelier_backend.infrastructure.RedisService;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.BasketDto;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.BasketItemDto;
@@ -12,6 +10,7 @@ import com.innovativesoftware.domsommelier_backend.order_management.order.entity
 import com.innovativesoftware.domsommelier_backend.order_management.order.service.OrderService;
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.ProductPhotoUrls;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,6 @@ public class BasketService {
     private final ProductRepository productRepository;
     private final PromoRepository promoRepository;
     private final OrderService orderService;
-    private final ObjectMapper objectMapper;
 
     private String basketKey(UUID customerId) {
         return "basket:" + customerId;
@@ -70,11 +68,7 @@ public class BasketService {
                             .discount(product.getDiscount())
                             .productCountry(product.getProductCountry().getName())
                             .productCategoryName(product.getProductCategory().getName().name())
-                            .productPhoto(product.getProductPhoto().stream().map(
-                                    photo -> objectMapper.convertValue(
-                                            photo, FileDTO.class
-                                    )
-                            ).toList())
+                            .productPhoto(ProductPhotoUrls.toFileDtos(product))
                             .build())
                     .quantity(quantity)
                     .build());
