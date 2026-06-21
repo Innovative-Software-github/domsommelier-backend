@@ -2,6 +2,7 @@ package com.innovativesoftware.domsommelier_backend.product_management.product.e
 
 import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.ProductCountry;
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.OrderItem;
+import com.innovativesoftware.domsommelier_backend.product_management.warehouse.entity.ProductStock;
 import com.innovativesoftware.domsommelier_backend.product_management.warehouse.entity.StorageHistory;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -60,4 +61,8 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     private List<StorageHistory> products;
+
+    /** Остатки товара по винотекам — основа доступности по городам (вариант А). */
+    @OneToMany(mappedBy = "product")
+    private List<ProductStock> stocks;
 }

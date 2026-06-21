@@ -5,6 +5,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.mo
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCategoryProjection;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductNewDTO;
+import com.innovativesoftware.domsommelier_backend.product_management.product.service.BaseSpecification;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductNewService;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -104,10 +105,14 @@ public class ProductController {
     @Operation(summary = "Поиск продуктов по фильтру")
     public ResponseEntity<List<ProductCardDto>> getByFilterIdAndFilterOptionId(
             @RequestParam("category") ProductCategoryEnum category,
+            @RequestParam(required = false) String city,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestBody Map<String, Object> params
     ) {
+        if (city != null && !city.isBlank()) {
+            params.put(BaseSpecification.CITY_PARAM, city.trim().toLowerCase());
+        }
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(productService.getAllByFilters(category, params, pageable));
     }

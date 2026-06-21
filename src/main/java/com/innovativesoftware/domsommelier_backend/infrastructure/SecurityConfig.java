@@ -45,6 +45,7 @@ public class SecurityConfig {
             "/api/v1/events/**",
             "/api/v1/news/**",
             "/api/v1/wine-stores/**",
+            "/api/v1/cities/**",
             "/api/v1/filters/**"
     };
 

@@ -44,6 +44,20 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     Page<Product> findAll(Pageable pageable);
 
+    // search — непустая строка (пустая означает «без фильтра»: LIKE '%%' matchает всё).
+    // Не используем «:search IS NULL», т.к. null-параметр в LOWER/LIKE ломает биндинг типа в Postgres.
+    @Query(value = """
+            SELECT p FROM Product p JOIN FETCH p.productCategory
+            WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))
+               OR LOWER(p.article) LIKE LOWER(CONCAT('%', :search, '%'))
+            """,
+            countQuery = """
+            SELECT COUNT(p) FROM Product p
+            WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))
+               OR LOWER(p.article) LIKE LOWER(CONCAT('%', :search, '%'))
+            """)
+    Page<Product> searchForStock(@Param("search") String search, Pageable pageable);
+
     @Query("SELECT DISTINCT p.productCountry.name FROM Product p")
     Set<String> findDistinctCountries();
 

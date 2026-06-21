@@ -31,6 +31,7 @@ public class MultiSqlLoader {
     public void loadSqlScripts() throws Exception {
         List<String> files = List.of(
                 "data/init.sql",
+                "data/cities.sql",
                 "data/stores.sql",
                 "data/accessories.sql",
                 "data/wine.sql",
@@ -38,6 +39,7 @@ public class MultiSqlLoader {
                 "data/spirit.sql",
                 "data/lowalcohol.sql",
                 "data/shampaigne.sql",
+                "data/stock.sql",
                 "data/users.sql",
                 "data/user_favorites.sql",
                 "data/filters.sql"
