@@ -41,6 +41,9 @@ public class EventFilterRequest {
     @Schema(description = "ID винотеки", example = "1")
     private Long wineStoreId;
 
+    @Schema(description = "Город (slug винотеки) — мероприятия по всем винотекам города", example = "moscow")
+    private String city;
+
     @Schema(description = "Номер страницы (с 0)", example = "0")
     private Integer page = 0;
 

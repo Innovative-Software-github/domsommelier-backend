@@ -91,7 +91,7 @@ public class EventService {
     public Page<EventListDTO> getFilteredEvents(
             OffsetDateTime dateStart, OffsetDateTime endDate,
             Integer priceMin, Integer priceMax,
-            EventType type, Long wineStoreId, int page, int size
+            EventType type, Long wineStoreId, String city, int page, int size
     ) {
         Specification<Event> spec = Specification.where(null);
 
@@ -117,6 +117,12 @@ public class EventService {
 
         if (wineStoreId != null) {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("wineStore").get("id"), wineStoreId));
+        }
+
+        // Город: мероприятия по всем винотекам выбранного города (event -> wineStore -> city)
+        if (city != null && !city.isBlank()) {
+            String citySlug = city.trim().toLowerCase();
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("wineStore").get("city"), citySlug));
         }
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("datetime").descending());

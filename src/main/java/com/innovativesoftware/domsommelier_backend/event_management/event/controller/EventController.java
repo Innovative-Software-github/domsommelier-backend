@@ -99,6 +99,7 @@ public class EventController {
                 filter.getPriceMax(),
                 eventType,
                 filter.getWineStoreId(),
+                filter.getCity(),
                 filter.getPage(),
                 filter.getSize()
         );
