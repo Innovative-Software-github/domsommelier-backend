@@ -14,6 +14,9 @@ public interface ProductStockRepository extends JpaRepository<ProductStock, UUID
 
     Optional<ProductStock> findByProduct_IdAndWineStore_Id(UUID productId, Long wineStoreId);
 
+    /** Остатки указанных товаров во всех винотеках (для расчёта доступности корзины по точкам). */
+    List<ProductStock> findByProduct_IdIn(Collection<UUID> productIds);
+
     /** Остатки указанных товаров в конкретной винотеке (для построения склада магазина). */
     List<ProductStock> findByWineStore_IdAndProduct_IdIn(Long wineStoreId, Collection<UUID> productIds);
 

@@ -18,6 +18,8 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.en
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.store.entity.WineStore;
 import com.innovativesoftware.domsommelier_backend.product_management.store.repository.WineStoreRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.warehouse.entity.ProductStock;
+import com.innovativesoftware.domsommelier_backend.product_management.warehouse.repository.ProductStockRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,6 +34,7 @@ import java.nio.file.AccessDeniedException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -46,6 +49,7 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final CustomerRepository customerRepository;
     private final WineStoreRepository wineStoreRepository;
+    private final ProductStockRepository productStockRepository;
     private final PromoRepository promoRepository;
     private final OrderDtoMapper orderDtoMapper;
 
@@ -62,6 +66,9 @@ public class OrderService {
 
         WineStore wineStore = wineStoreRepository.findById(wineStoreId)
                 .orElseThrow(() -> new EntityNotFoundException("Винотека не найдена: " + wineStoreId));
+
+        // 1.5 Проверяем, что все товары есть в наличии в выбранной винотеке (наличие + количество)
+        validateStockAvailability(basket, wineStore);
 
         // 2. Определяем статус заказа
         OrderStatus status = orderStatusRepository.findById("NEW")
@@ -120,6 +127,39 @@ public class OrderService {
 
         // 6. Сохраняем заказ вместе с позициями (cascade)
         return orderRepository.save(order);
+    }
+
+    /**
+     * Проверяет, что каждая позиция корзины доступна в выбранной винотеке в нужном количестве.
+     * Источник правды — остаток на пару (товар, винотека). Если у товара нет строки остатка
+     * в этой точке (например, он из ассортимента другого города), доступное количество = 0.
+     * Все проблемные позиции собираются в одно сообщение и отдаются как 409 Conflict.
+     */
+    private void validateStockAvailability(BasketDto basket, WineStore wineStore) {
+        List<String> problems = basket.getItems().stream()
+                .map(item -> {
+                    int requested = item.getQuantity();
+                    int available = productStockRepository
+                            .findByProduct_IdAndWineStore_Id(item.getProduct().getId(), wineStore.getId())
+                            .map(ProductStock::getQuantity)
+                            .orElse(0);
+                    if (available >= requested) {
+                        return null;
+                    }
+                    String name = item.getProduct().getName();
+                    return available == 0
+                            ? String.format("«%s» — нет в наличии", name)
+                            : String.format("«%s» — доступно %d из %d", name, available, requested);
+                })
+                .filter(Objects::nonNull)
+                .toList();
+
+        if (!problems.isEmpty()) {
+            throw new IllegalStateException(
+                    "Некоторые товары недоступны в винотеке «" + wineStore.getName()
+                            + "» (" + wineStore.getCity() + "): " + String.join("; ", problems)
+                            + ". Измените винотеку или состав заказа.");
+        }
     }
 
     public Optional<Order> findOrderById(UUID orderId) {

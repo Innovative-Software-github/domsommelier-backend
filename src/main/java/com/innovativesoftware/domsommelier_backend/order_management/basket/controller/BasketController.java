@@ -2,12 +2,14 @@ package com.innovativesoftware.domsommelier_backend.order_management.basket.cont
 
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.BasketDto;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.CheckoutRequestDto;
+import com.innovativesoftware.domsommelier_backend.order_management.basket.model.StoreAvailabilityDto;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.service.BasketService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin
@@ -21,6 +23,11 @@ public class BasketController {
     @GetMapping("/{customerId}")
     public ResponseEntity<BasketDto> getBasket(@PathVariable UUID customerId) {
         return ResponseEntity.ok(basketService.getBasket(customerId));
+    }
+
+    @GetMapping("/{customerId}/availability")
+    public ResponseEntity<List<StoreAvailabilityDto>> getStoreAvailability(@PathVariable UUID customerId) {
+        return ResponseEntity.ok(basketService.getStoreAvailability(customerId));
     }
 
     @PostMapping("/{customerId}/add/{productId}")

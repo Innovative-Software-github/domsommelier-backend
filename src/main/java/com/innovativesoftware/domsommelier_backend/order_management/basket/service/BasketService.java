@@ -4,6 +4,7 @@ import com.innovativesoftware.domsommelier_backend.infrastructure.RedisService;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.BasketDto;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.BasketItemDto;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.CheckoutRequestDto;
+import com.innovativesoftware.domsommelier_backend.order_management.basket.model.StoreAvailabilityDto;
 import com.innovativesoftware.domsommelier_backend.order_management.discount.entity.Promo;
 import com.innovativesoftware.domsommelier_backend.order_management.discount.repository.PromoRepository;
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.Order;
@@ -11,13 +12,19 @@ import com.innovativesoftware.domsommelier_backend.order_management.order.servic
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.util.ProductPhotoUrls;
+import com.innovativesoftware.domsommelier_backend.product_management.store.entity.WineStore;
+import com.innovativesoftware.domsommelier_backend.product_management.store.repository.WineStoreRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.warehouse.entity.ProductStock;
+import com.innovativesoftware.domsommelier_backend.product_management.warehouse.repository.ProductStockRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,9 +35,51 @@ public class BasketService {
     private final ProductRepository productRepository;
     private final PromoRepository promoRepository;
     private final OrderService orderService;
+    private final WineStoreRepository wineStoreRepository;
+    private final ProductStockRepository productStockRepository;
 
     private String basketKey(UUID customerId) {
         return "basket:" + customerId;
+    }
+
+    /**
+     * Доступность текущей корзины по всем винотекам: для каждой точки — хватает ли остатков
+     * на все позиции корзины (наличие + количество). Используется модалкой выбора винотеки,
+     * чтобы не дать выбрать точку, где нужных товаров нет (например, товар из другого города).
+     * Пустая корзина → все винотеки доступны.
+     */
+    @Transactional(readOnly = true)
+    public List<StoreAvailabilityDto> getStoreAvailability(UUID customerId) {
+        BasketDto basket = getBasket(customerId);
+        List<WineStore> stores = wineStoreRepository.findAll();
+
+        Map<UUID, Integer> requestedByProduct = basket.getItems().stream()
+                .collect(Collectors.toMap(it -> it.getProduct().getId(), BasketItemDto::getQuantity, Integer::sum));
+
+        if (requestedByProduct.isEmpty()) {
+            return stores.stream()
+                    .map(store -> new StoreAvailabilityDto(store.getId(), true, List.of()))
+                    .toList();
+        }
+
+        Map<UUID, String> nameByProduct = basket.getItems().stream()
+                .collect(Collectors.toMap(it -> it.getProduct().getId(), it -> it.getProduct().getName(), (a, b) -> a));
+
+        // storeId -> (productId -> остаток) одним запросом
+        Map<Long, Map<UUID, Integer>> qtyByStore = productStockRepository.findByProduct_IdIn(requestedByProduct.keySet())
+                .stream()
+                .collect(Collectors.groupingBy(
+                        stock -> stock.getWineStore().getId(),
+                        Collectors.toMap(stock -> stock.getProduct().getId(), ProductStock::getQuantity)));
+
+        return stores.stream().map(store -> {
+            Map<UUID, Integer> available = qtyByStore.getOrDefault(store.getId(), Map.of());
+            List<String> missing = requestedByProduct.entrySet().stream()
+                    .filter(entry -> available.getOrDefault(entry.getKey(), 0) < entry.getValue())
+                    .map(entry -> nameByProduct.get(entry.getKey()))
+                    .toList();
+            return new StoreAvailabilityDto(store.getId(), missing.isEmpty(), missing);
+        }).toList();
     }
 
     // Получить корзину (если нет в Redis — создать пустую)
