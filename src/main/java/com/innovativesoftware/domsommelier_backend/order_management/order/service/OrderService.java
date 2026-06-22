@@ -236,6 +236,10 @@ public class OrderService {
                 .customerName(orderDtoMapper.resolveCustomerName(order))
                 .pickupDate(order.getPickupDate())
                 .paymentMethod(order.getPaymentMethod())
+                .storeName(order.getWineStore() != null ? order.getWineStore().getName() : null)
+                .storeAddress(order.getWineStore() != null ? order.getWineStore().getAddress() : null)
+                .storePhone(order.getWineStore() != null ? order.getWineStore().getPhone() : null)
+                .storeWorkingHours(order.getWineStore() != null ? order.getWineStore().getWorkingHours() : null)
                 .build();
     }
 }

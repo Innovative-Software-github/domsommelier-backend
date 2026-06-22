@@ -22,4 +22,10 @@ public class OrderFullDto {
     private String customerName;
     private LocalDate pickupDate;
     private String paymentMethod;
+
+    // Реквизиты винотеки самовывоза
+    private String storeName;
+    private String storeAddress;
+    private String storePhone;
+    private String storeWorkingHours;
 }
