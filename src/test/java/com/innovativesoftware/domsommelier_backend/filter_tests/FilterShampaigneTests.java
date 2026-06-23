@@ -61,8 +61,8 @@ public class FilterShampaigneTests {
 
         String responseBody = mvcResult.getResponse().getContentAsString();
 
-        return objectMapper.readValue(
-                responseBody,
+        return objectMapper.convertValue(
+                objectMapper.readTree(responseBody).get("content"),
                 new TypeReference<>() {}
         );
     }

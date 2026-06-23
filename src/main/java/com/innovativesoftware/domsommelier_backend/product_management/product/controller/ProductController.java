@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -99,9 +100,10 @@ public class ProductController {
 
     @PostMapping(value = "/filter", produces = "application/json; charset=UTF-8")
     @Operation(summary = "Поиск продуктов по фильтру")
-    public ResponseEntity<List<ProductCardDto>> getByFilterIdAndFilterOptionId(
+    public ResponseEntity<Page<ProductCardDto>> getByFilterIdAndFilterOptionId(
             @RequestParam("category") ProductCategoryEnum category,
             @RequestParam(required = false) String city,
+            @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestBody Map<String, Object> params
@@ -109,8 +111,23 @@ public class ProductController {
         if (city != null && !city.isBlank()) {
             params.put(BaseSpecification.CITY_PARAM, city.trim().toLowerCase());
         }
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, resolveSort(sort));
         return ResponseEntity.ok(productService.getAllByFilters(category, params, pageable));
+    }
+
+    /**
+     * Токен сортировки витрины → {@link Sort} по полям связанного {@code product}.
+     * Вторичная сортировка по {@code id} даёт стабильный порядок между страницами.
+     */
+    private Sort resolveSort(String sort) {
+        String key = sort == null ? "" : sort.trim().toLowerCase();
+        Sort byId = Sort.by("product.id");
+        return switch (key) {
+            case "price_asc" -> Sort.by(Sort.Direction.ASC, "product.price").and(byId);
+            case "price_desc" -> Sort.by(Sort.Direction.DESC, "product.price").and(byId);
+            case "new" -> Sort.by(Sort.Direction.DESC, "product.createdAt").and(byId);
+            default -> byId; // popular / неизвестное — стабильный дефолтный порядок
+        };
     }
 
     @Hidden

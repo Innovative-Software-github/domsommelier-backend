@@ -90,8 +90,8 @@ public class FilterWineTests {
 
         String responseBody = mvcResult.getResponse().getContentAsString();
 
-        return objectMapper.readValue(
-                responseBody,
+        return objectMapper.convertValue(
+                objectMapper.readTree(responseBody).get("content"),
                 new TypeReference<>() {}
         );
     }

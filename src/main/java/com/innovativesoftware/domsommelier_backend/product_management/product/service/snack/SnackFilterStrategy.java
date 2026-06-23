@@ -6,10 +6,10 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.mo
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.SnackRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -21,10 +21,9 @@ public class SnackFilterStrategy implements ProductFilterStrategy {
     private final ProductMapper productMapper;
 
     @Override
-    public List<ProductCardDto> filter(Map<String, Object> params, Pageable pageable) {
+    public Page<ProductCardDto> filter(Map<String, Object> params, Pageable pageable) {
         return snackRepository.findAll(snackSpecification.byFilter(params), pageable)
-                .map(snack -> productMapper.toCardDto(snack.getProduct()))
-                .toList();
+                .map(snack -> productMapper.toCardDto(snack.getProduct()));
     }
 
     @Override

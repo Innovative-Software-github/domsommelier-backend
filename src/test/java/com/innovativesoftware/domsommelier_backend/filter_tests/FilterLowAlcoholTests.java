@@ -61,8 +61,8 @@ public class FilterLowAlcoholTests {
 
         String responseBody = mvcResult.getResponse().getContentAsString();
 
-        return objectMapper.readValue(
-                responseBody,
+        return objectMapper.convertValue(
+                objectMapper.readTree(responseBody).get("content"),
                 new TypeReference<>() {}
         );
     }

@@ -137,7 +137,7 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductCardDto> getAllByFilters(ProductCategoryEnum category, Map<String, Object> params, Pageable pageable) {
+    public Page<ProductCardDto> getAllByFilters(ProductCategoryEnum category, Map<String, Object> params, Pageable pageable) {
         params.put("category", category.name());
         return strategyFactory.getStrategy(category).filter(params, pageable);
     }

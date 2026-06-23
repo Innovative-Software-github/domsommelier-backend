@@ -6,10 +6,10 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.mo
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.LowAlcoholRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -20,10 +20,9 @@ public class LowAlcoholFilterStrategy implements ProductFilterStrategy {
     private final ProductMapper productMapper;
 
     @Override
-    public List<ProductCardDto> filter(Map<String, Object> params, Pageable pageable) {
+    public Page<ProductCardDto> filter(Map<String, Object> params, Pageable pageable) {
         return lowAlcoholRepository.findAll(lowAlcoholSpecification.byFilter(params), pageable)
-                .map(lowAlcohol -> productMapper.toCardDto(lowAlcohol.getProduct()))
-                .toList();
+                .map(lowAlcohol -> productMapper.toCardDto(lowAlcohol.getProduct()));
     }
 
     @Override

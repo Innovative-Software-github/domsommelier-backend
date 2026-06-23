@@ -1,10 +1,12 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.service;
 
+import com.innovativesoftware.domsommelier_backend.product_management.warehouse.entity.ProductStock;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
@@ -59,25 +61,27 @@ public abstract class BaseSpecification<T> {
      * Ограничивает выборку товарами, доступными в указанном городе:
      * есть остаток ({@code quantity > 0}) хотя бы в одной винотеке этого города.
      * <p>
-     * Применяется ко всем категориям, т.к. корень спецификации — подтип товара,
-     * связанный с {@code Product} через {@code product}. Если город не задан —
-     * предикат не добавляется и поведение остаётся прежним.
+     * Реализовано через {@code EXISTS}-подзапрос, а не join + {@code DISTINCT}:
+     * при {@code DISTINCT} PostgreSQL требует, чтобы все выражения {@code ORDER BY}
+     * (сортировка витрины по полям {@code product.*}) присутствовали в списке выборки,
+     * что несовместимо с {@code DISTINCT} по колонкам подтипа. {@code EXISTS} убирает
+     * дубликаты без {@code DISTINCT}. Если город не задан — предикат не добавляется.
      */
     private void addCityAvailabilityPredicate(Map<String, Object> params, Root<T> root, CriteriaQuery<?> query,
                                               CriteriaBuilder cb, List<Predicate> predicates) {
         Object city = params.get(CITY_PARAM);
-        if (isEmpty(city)) return;
+        if (isEmpty(city) || query == null) return;
 
-        Join<?, ?> stock = root.join("product").join("stocks");
+        Subquery<Integer> stockExists = query.subquery(Integer.class);
+        Root<ProductStock> stock = stockExists.from(ProductStock.class);
         Join<?, ?> store = stock.join("wineStore");
-
-        predicates.add(cb.equal(store.get("city"), city.toString()));
-        predicates.add(cb.gt(stock.get("quantity"), 0));
-
-        // join к коллекции остатков может дублировать строки товара — убираем дубликаты
-        if (query != null) {
-            query.distinct(true);
-        }
+        stockExists.select(cb.literal(1));
+        stockExists.where(
+                cb.equal(stock.get("product"), root.get("product")),
+                cb.equal(store.get("city"), city.toString()),
+                cb.gt(stock.get("quantity"), 0)
+        );
+        predicates.add(cb.exists(stockExists));
     }
 
     public Specification<T> byFilter(Map<String, Object> params) {
