@@ -38,7 +38,10 @@ public class SecurityConfig {
             "/api/v1/event-orders/**",
             "/v3/api-docs/**",
             "/swagger-ui/**",
-            "/dev/**"
+            "/dev/**",
+            // Spring Boot 3 + Security 6 фильтруют ERROR-dispatch: без открытого /error
+            // любое исключение контроллера (404/400/500) маскируется под 401.
+            "/error"
     };
 
     // Открытые только для чтения (GET)
