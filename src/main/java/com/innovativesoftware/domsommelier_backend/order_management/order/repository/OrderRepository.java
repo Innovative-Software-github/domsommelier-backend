@@ -21,4 +21,6 @@ public interface OrderRepository extends JpaRepository<Order, UUID>, JpaSpecific
     Page<Order> findAllByCustomerId(UUID customerId, Pageable pageable);
 
     boolean existsByWineStore_Id(Long wineStoreId);
+
+    long countByOrderStatus_Name(String statusName);
 }
