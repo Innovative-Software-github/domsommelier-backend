@@ -130,6 +130,11 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-docker}
+      # Разово поставить true в .env на сервере, чтобы засеять тестовые данные
+      # (города/товары/фильтры/винотеки), затем вернуть в false и перезапустить —
+      # иначе при каждом рестарте контейнера попытается вставить те же строки
+      # заново и упадёт на дубликатах.
+      - DB_INIT_MODE=${DB_INIT_MODE:-false}
     volumes:
       - vault-secrets:/run/secrets:ro
       - ./vault/scripts/app-entrypoint.sh:/app/entrypoint.sh:ro
