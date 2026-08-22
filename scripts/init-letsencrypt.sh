@@ -37,7 +37,13 @@ echo "==> Ждём, пока nginx поднимется..."
 sleep 3
 
 echo "==> Запрашиваем сертификат у Let's Encrypt для: ${DOMAINS[*]}"
-docker compose run --rm certbot certonly \
+# --entrypoint certbot обязателен: у сервиса certbot в docker-compose.yaml
+# задан свой entrypoint (бесконечный цикл renew раз в 12ч, для автопродления).
+# docker compose run переопределяет только command, а не entrypoint — без
+# --entrypoint команда certonly ниже молча игнорируется, и вместо неё
+# выполняется тот самый renew-цикл (который ничего не делает, если
+# сертификата ещё не было ни разу, и просто "виснет" на 12 часов).
+docker compose run --rm --entrypoint certbot certbot certonly \
   --webroot -w /var/www/certbot \
   --email "$EMAIL" \
   --agree-tos --no-eff-email \
