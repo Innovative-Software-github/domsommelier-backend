@@ -38,6 +38,10 @@ public class SecurityConfig {
             "/api/v1/event-orders/**",
             "/v3/api-docs/**",
             "/swagger-ui/**",
+            // Редирект-шорткат springdoc, отдельно от "/swagger-ui/**" — паттерн
+            // не покрывает путь без "/" после "swagger-ui". Именно на него
+            // проксирует /docs в infrastructure/nginx/nginx.conf.
+            "/swagger-ui.html",
             "/dev/**",
             // Spring Boot 3 + Security 6 фильтруют ERROR-dispatch: без открытого /error
             // любое исключение контроллера (404/400/500) маскируется под 401.
