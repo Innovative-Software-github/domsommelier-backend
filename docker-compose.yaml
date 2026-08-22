@@ -88,8 +88,13 @@ services:
   domsommelier-frontend:
     build:
       context: ../domsommelier-frontend
+      args:
+        # Нужен именно здесь (build-time), а не только в environment ниже —
+        # next.config.ts запекает адрес бэкенда в rewrites() во время сборки.
+        BROWSER_BACKEND_SERVER: domsommelier-app:8080
     environment:
-      # Внутри docker-сети зовём бэкенд по имени сервиса — быстрее и не зависит от DNS/SSL наружу.
+      # Для прямых серверных fetch (getBackendHost() в customFetch.ts) —
+      # этот путь читает env в рантайме корректно, в отличие от rewrites().
       - BROWSER_BACKEND_SERVER=domsommelier-app:8080
     # Порт наружу — пока нет домена/nginx-роутинга, ходим прямо по IP:3000.
     # Убрать (или оставить — не мешает), когда подключим nginx с доменом.
