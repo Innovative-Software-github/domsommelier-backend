@@ -22,6 +22,7 @@ jobs:
       MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
       MAIL_PROTOCOL: ${{ secrets.MAIL_PROTOCOL }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      VITE_YANDEX_MAPS_API_KEY: ${{ secrets.VITE_YANDEX_MAPS_API_KEY }}
     steps:
       - name: Deploy to server
         uses: appleboy/ssh-action@master
@@ -29,7 +30,7 @@ jobs:
           username: root
           host: ${{ secrets.HOST }}
           password: ${{ secrets.SSH_PASSWORD }}
-          envs: DB_USER,DB_PASSWORD,DB_NAME,MINIO_ROOT_USER,MINIO_ROOT_PASSWORD,MINIO_ACCESS_NAME,MINIO_ACCESS_SECRET,MAIL_HOST,MAIL_PORT,MAIL_USERNAME,MAIL_PASSWORD,MAIL_PROTOCOL,JWT_SECRET
+          envs: DB_USER,DB_PASSWORD,DB_NAME,MINIO_ROOT_USER,MINIO_ROOT_PASSWORD,MINIO_ACCESS_NAME,MINIO_ACCESS_SECRET,MAIL_HOST,MAIL_PORT,MAIL_USERNAME,MAIL_PASSWORD,MAIL_PROTOCOL,JWT_SECRET,VITE_YANDEX_MAPS_API_KEY
           script: |
             PROJECT_DIR=~/projects/domsommelier-backend
 
@@ -41,6 +42,19 @@ jobs:
               git clone git@github.com:Innovative-Software-github/domsommelier-backend.git "$PROJECT_DIR"
               cd "$PROJECT_DIR"
             fi
+
+            # На совсем новом сервере фронтенды-соседи (../domsommelier-frontend,
+            # ../domsommelier-admin-frontend) ещё не клонированы, а docker-compose.yaml
+            # уже ссылается на них как на build context — без этого шага сборка
+            # свежего сервера упадёт. На обычных редеплоях бэкенда эти репозитории
+            # не трогаем — они обновляются каждый своим собственным workflow.
+            for REPO in domsommelier-frontend domsommelier-admin-frontend; do
+              REPO_DIR=~/projects/$REPO
+              if [ ! -d "$REPO_DIR/.git" ]; then
+                echo "==> Клонируем $REPO (сосед бэкенда для docker-compose build context)"
+                git clone "git@github.com:Innovative-Software-github/$REPO.git" "$REPO_DIR"
+              fi
+            done
 
             # Ensure production Spring profile is set in .env
             if ! grep -q 'SPRING_PROFILES_ACTIVE' "$PROJECT_DIR/.env" 2>/dev/null; then
@@ -77,7 +91,7 @@ jobs:
               echo "==> Fresh deploy: starting all services sequentially"
               docker-compose down -v
 
-              docker-compose build domsommelier-app
+              docker-compose build domsommelier-app domsommelier-frontend domsommelier-admin-frontend
 
               docker-compose up -d vault
               sleep 5
@@ -87,8 +101,12 @@ jobs:
               docker-compose up -d db redis minio
               echo "Waiting for DB to be healthy..."
               timeout 120 sh -c 'while ! docker inspect --format="{{.State.Health.Status}}" db 2>/dev/null | grep -q healthy; do sleep 3; done'
-              echo "DB is healthy, starting app..."
-              docker-compose up -d
+              echo "DB is healthy, starting app + фронтенды..."
+              # nginx/certbot сюда намеренно не входят — сертификатов ещё нет,
+              # nginx.conf их требует и упадёт. Первый выпуск — вручную,
+              # см. scripts/init-letsencrypt.sh (одноразово на новом сервере).
+              docker-compose up -d domsommelier-app domsommelier-frontend domsommelier-admin-frontend
+              echo "==> Бэкенд и оба фронтенда подняты. nginx/HTTPS — см. scripts/init-letsencrypt.sh, если ещё не запускали."
             else
               echo "==> Regular deploy: rebuilding and restarting app only"
               docker-compose build domsommelier-app
@@ -100,7 +118,7 @@ jobs:
             sleep 15
             echo "==> Checking all services..."
             FAILED=false
-            for SVC in vault db redis minio domsommelier-app; do
+            for SVC in vault db redis minio domsommelier-app domsommelier-frontend domsommelier-admin-frontend; do
               if docker ps --filter "name=$SVC" --filter "status=running" -q | grep -q .; then
                 echo "  OK: $SVC is running"
               else

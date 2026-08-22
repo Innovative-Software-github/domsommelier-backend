@@ -43,17 +43,78 @@ services:
       - app-network
 
   # ── Nginx reverse proxy ──
+  # Домен devdomsomm.ru — свой (не domsommelier.ru заказчика, тот пока не
+  # используем). nginx.conf — финальный конфиг (HTTP+HTTPS, домены).
+  # nginx.bootstrap.conf — временный HTTP-only конфиг для самого первого
+  # выпуска сертификатов (см. scripts/init-letsencrypt.sh), нужен один раз,
+  # пока сертификатов ещё нет — до этого момента сервис не поднимаем, иначе
+  # nginx.conf упадёт (ssl_certificate ссылается на несуществующие файлы).
+  # Прямые ports у domsommelier-frontend/domsommelier-admin-frontend ниже
+  # можно продолжать использовать для отладки — не мешают nginx.
   nginx:
     image: nginx:latest
     container_name: reverse_proxy
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./infrastructure/nginx/${NGINX_CONF:-nginx.conf}:/etc/nginx/nginx.conf:ro
+      - certbot-etc:/etc/letsencrypt:ro
+      - certbot-webroot:/var/www/certbot:ro
     networks:
       - app-network
     depends_on:
       - domsommelier-app
+      - domsommelier-frontend
+      - domsommelier-admin-frontend
+
+  # ── Certbot — выпуск и продление Let's Encrypt сертификатов ──
+  # Разово выпустить сертификаты: см. scripts/init-letsencrypt.sh.
+  # Дальше этот сервис раз в 12 часов сам проверяет срок и продлевает,
+  # nginx отдельно нужно перечитать конфиг после продления (docker exec ... nginx -s reload).
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-webroot:/var/www/certbot
+    entrypoint: >
+      sh -c "trap exit TERM;
+      while :; do
+        certbot renew --webroot -w /var/www/certbot --quiet;
+        sleep 12h & wait $${!};
+      done"
+
+  # ── Клиентский сайт (Next.js) ──
+  domsommelier-frontend:
+    build:
+      context: ../domsommelier-frontend
+    environment:
+      # Внутри docker-сети зовём бэкенд по имени сервиса — быстрее и не зависит от DNS/SSL наружу.
+      - BROWSER_BACKEND_SERVER=domsommelier-app:8080
+    # Порт наружу — пока нет домена/nginx-роутинга, ходим прямо по IP:3000.
+    # Убрать (или оставить — не мешает), когда подключим nginx с доменом.
+    ports:
+      - "3000:3000"
+    depends_on:
+      - domsommelier-app
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  # ── Админка (Vite/React) ──
+  domsommelier-admin-frontend:
+    build:
+      context: ../domsommelier-admin-frontend
+      args:
+        VITE_YANDEX_MAPS_API_KEY: ${VITE_YANDEX_MAPS_API_KEY:-}
+    # Порт наружу — пока нет домена/nginx-роутинга, ходим прямо по IP:8081.
+    ports:
+      - "8081:80"
+    depends_on:
+      - domsommelier-app
+    restart: unless-stopped
+    networks:
+      - app-network
 
   # ── Spring Boot application ──
   domsommelier-app:
@@ -159,3 +220,5 @@ volumes:
   vault-data:
   vault-keys:
   vault-secrets:
+  certbot-etc:
+  certbot-webroot:
