@@ -54,14 +54,17 @@ ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin/docker-compo
 `HOST`, `SSH_PASSWORD`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`,
 `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, `MINIO_ACCESS_NAME`, `MINIO_ACCESS_SECRET`,
 `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_PROTOCOL`,
-`JWT_SECRET`, `VITE_YANDEX_MAPS_API_KEY` (последний — новый, нужен для сборки админки
-в fresh-deploy ветке этого же workflow).
+`JWT_SECRET`.
 
 **domsommelier-frontend** (новые):
 `HOST`, `SSH_PASSWORD` — те же значения, тот же сервер.
 
 **domsommelier-admin-frontend** (новые):
-`HOST`, `SSH_PASSWORD`, `VITE_YANDEX_MAPS_API_KEY` — те же значения.
+`HOST`, `SSH_PASSWORD` — те же значения.
+
+Яндекс.Карты (и на витрине, и в форме винотеки в админке) работают без
+API-ключа — сознательное решение, чтобы не заводить и не ротировать
+отдельный секрет ради карты. Отдельного секрета под это заводить не нужно.
 
 `HOST` — новый IP сервера (не старый, оставшийся от прошлого разработчика).
 `SSH_PASSWORD` — пароль root на новом сервере.

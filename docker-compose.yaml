@@ -107,11 +107,12 @@ services:
       - app-network
 
   # ── Админка (Vite/React) ──
+  # Яндекс.Карты в форме винотеки работают без API-ключа (неавторизованный
+  # режим, как и на витрине domsommelier-frontend) — сознательно, чтобы не
+  # держать лишний секрет.
   domsommelier-admin-frontend:
     build:
       context: ../domsommelier-admin-frontend
-      args:
-        VITE_YANDEX_MAPS_API_KEY: ${VITE_YANDEX_MAPS_API_KEY:-}
     # Порт наружу — пока нет домена/nginx-роутинга, ходим прямо по IP:8081.
     ports:
       - "8081:80"

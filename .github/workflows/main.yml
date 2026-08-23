@@ -22,7 +22,6 @@ jobs:
       MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
       MAIL_PROTOCOL: ${{ secrets.MAIL_PROTOCOL }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      VITE_YANDEX_MAPS_API_KEY: ${{ secrets.VITE_YANDEX_MAPS_API_KEY }}
     steps:
       - name: Deploy to server
         uses: appleboy/ssh-action@master
@@ -30,7 +29,7 @@ jobs:
           username: root
           host: ${{ secrets.HOST }}
           password: ${{ secrets.SSH_PASSWORD }}
-          envs: DB_USER,DB_PASSWORD,DB_NAME,MINIO_ROOT_USER,MINIO_ROOT_PASSWORD,MINIO_ACCESS_NAME,MINIO_ACCESS_SECRET,MAIL_HOST,MAIL_PORT,MAIL_USERNAME,MAIL_PASSWORD,MAIL_PROTOCOL,JWT_SECRET,VITE_YANDEX_MAPS_API_KEY
+          envs: DB_USER,DB_PASSWORD,DB_NAME,MINIO_ROOT_USER,MINIO_ROOT_PASSWORD,MINIO_ACCESS_NAME,MINIO_ACCESS_SECRET,MAIL_HOST,MAIL_PORT,MAIL_USERNAME,MAIL_PASSWORD,MAIL_PROTOCOL,JWT_SECRET
           script: |
             PROJECT_DIR=~/projects/domsommelier-backend
 
