@@ -3,6 +3,7 @@ package com.innovativesoftware.domsommelier_backend.product_management.product.s
 import com.innovativesoftware.domsommelier_backend.filter_management.service.ProductFilterFieldProvider;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.SpiritRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.RussianLabelTranslator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +43,7 @@ public class SpiritFilterFieldProvider implements ProductFilterFieldProvider {
             case "producer" -> spiritRepo.getDistinctProducer();
             case "volume" -> spiritRepo.getDistinctVolume();
             case "countries" -> spiritRepo.findDistinctCountryNames();
-            case "features" -> spiritRepo.getDistinctFeature();
+            case "features" -> RussianLabelTranslator.translateFeatures(spiritRepo.getDistinctFeature());
             default -> Set.of();
         };
     }

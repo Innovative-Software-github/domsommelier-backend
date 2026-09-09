@@ -12,6 +12,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.re
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.WineColorRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.WineRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.WineTypeRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.RussianLabelTranslator;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -76,8 +77,14 @@ public class WineWriteStrategy extends AbstractProductWriteStrategy {
         wine.setType(resolveType(request.getType()));
         wine.setProducer(trimToNull(request.getProducer()));
         wine.setVolume(request.getVolume());
-        wine.setGrapes(replaceStrings(wine.getGrapes(), request.getGrapes()));
-        wine.setFeatures(replaceStrings(wine.getFeatures(), request.getFeatures()));
+        // Форма редактирования в админке подтягивает текущие значения товара
+        // через тот же эндпоинт, что и витрина — то есть уже переведённые на
+        // русский (см. WineDetailsMapper). Если админ сохранит форму, не
+        // трогая эти поля, придёт русская подпись вместо исходного кода —
+        // untranslate возвращает известные подписи назад, а всё остальное
+        // (новый сорт/особенность, которых нет в словаре) пропускает как есть.
+        wine.setGrapes(replaceStrings(wine.getGrapes(), RussianLabelTranslator.untranslateGrapes(request.getGrapes())));
+        wine.setFeatures(replaceStrings(wine.getFeatures(), RussianLabelTranslator.untranslateFeatures(request.getFeatures())));
     }
 
     private WineColor resolveColor(String name) {

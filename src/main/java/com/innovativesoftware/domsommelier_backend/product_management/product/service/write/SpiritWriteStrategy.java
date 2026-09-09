@@ -10,6 +10,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.re
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductCountryRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.SpiritCategoryRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.SpiritRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.RussianLabelTranslator;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -65,7 +66,9 @@ public class SpiritWriteStrategy extends AbstractProductWriteStrategy {
         spirit.setStrength(req.getStrength());
         spirit.setProducer(trimToNull(req.getProducer()));
         spirit.setVolume(req.getVolume());
-        spirit.setFeatures(replaceStrings(spirit.getFeatures(), req.getFeatures()));
+        // См. WineWriteStrategy — форма админки подтягивает уже переведённые
+        // значения, untranslate нормализует их назад к исходному коду.
+        spirit.setFeatures(replaceStrings(spirit.getFeatures(), RussianLabelTranslator.untranslateFeatures(req.getFeatures())));
     }
 
     private SpiritCategory resolveSubcategory(String name) {

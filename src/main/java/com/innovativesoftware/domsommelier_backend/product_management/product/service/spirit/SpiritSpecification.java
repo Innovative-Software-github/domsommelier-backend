@@ -2,6 +2,7 @@ package com.innovativesoftware.domsommelier_backend.product_management.product.s
 
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.spirit.Spirit;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.BaseSpecification;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.RussianLabelTranslator;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
@@ -20,7 +21,9 @@ public class SpiritSpecification extends BaseSpecification<Spirit> {
                 case "subcategory" -> predicates.add(root.get("category").get("name").in((List<?>) value));
                 case "strength" -> predicates.add(root.get("strength").in((List<?>) value));
                 case "volume" -> predicates.add(root.get("volume").in((List<?>) value));
-                case "features" -> predicates.add(root.join("features").in((List<?>) value));
+                // См. WineSpecification — фронтенд шлёт label, а в БД лежит
+                // исходный английский код, переводим обратно перед запросом.
+                case "features" -> predicates.add(root.join("features").in(untranslate((List<?>) value, RussianLabelTranslator::untranslateFeature)));
             }
         });
     }

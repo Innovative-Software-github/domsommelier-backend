@@ -12,6 +12,8 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 public abstract class BaseSpecification<T> {
 
@@ -23,6 +25,19 @@ public abstract class BaseSpecification<T> {
         if (value instanceof List<?> list) return list.isEmpty();
         if (value instanceof String str) return str.trim().isEmpty();
         return false;
+    }
+
+    /**
+     * Прогоняет список значений фильтра (пришедших от клиента как label,
+     * см. MultiSelectFilter.tsx на фронтенде) через переводчик обратно к
+     * тому, что реально хранится в колонке БД — нужно там, где отображаемая
+     * подпись (после перевода на русский) отличается от исходного значения
+     * в базе (grape/features, см. RussianLabelTranslator).
+     */
+    protected List<String> untranslate(List<?> values, UnaryOperator<String> untranslator) {
+        return values.stream()
+                .map(v -> untranslator.apply(String.valueOf(v)))
+                .collect(Collectors.toList());
     }
 
     protected Number toNumber(Object obj) {

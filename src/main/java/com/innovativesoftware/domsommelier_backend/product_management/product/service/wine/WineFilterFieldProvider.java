@@ -3,6 +3,7 @@ package com.innovativesoftware.domsommelier_backend.product_management.product.s
 import com.innovativesoftware.domsommelier_backend.filter_management.service.ProductFilterFieldProvider;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.WineRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.RussianLabelTranslator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,8 +41,8 @@ public class WineFilterFieldProvider implements ProductFilterFieldProvider {
         return switch (field) {
             case "color" -> wineRepo.findDistinctColors();
             case "type" -> wineRepo.findDistinctTypes();
-            case "grape" -> wineRepo.findDistinctGrapes();
-            case "features" -> wineRepo.findDistinctFeatures();
+            case "grape" -> RussianLabelTranslator.translateGrapes(wineRepo.findDistinctGrapes());
+            case "features" -> RussianLabelTranslator.translateFeatures(wineRepo.findDistinctFeatures());
             case "countries" -> wineRepo.findDistinctCountryNames();
             case "producer" -> wineRepo.findDistinctProducers();
             case "volume" -> wineRepo.findDistinctVolumes();

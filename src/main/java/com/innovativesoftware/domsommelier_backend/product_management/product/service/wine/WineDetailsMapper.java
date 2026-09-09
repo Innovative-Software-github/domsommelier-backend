@@ -6,6 +6,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.en
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.wine.WineDetailsDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.WineRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.ProductDetailsMapper;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.RussianLabelTranslator;
 import com.innovativesoftware.domsommelier_backend.product_management.product.util.VolumeStrengthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -28,10 +29,10 @@ public class WineDetailsMapper implements ProductDetailsMapper<WineDetailsDto> {
                 .productionYear(wine.getProductionYear())
                 .color(wine.getColor() != null ? wine.getColor().getName() : null)
                 .type(wine.getType() != null ? wine.getType().getName() : null)
-                .grapes(wine.getGrapes())
+                .grapes(RussianLabelTranslator.translateGrapes(wine.getGrapes()))
                 .producer(wine.getProducer())
                 .volume(VolumeStrengthUtils.formatVolume(wine.getVolume()))
-                .features(wine.getFeatures())
+                .features(RussianLabelTranslator.translateFeatures(wine.getFeatures()))
                 .build();
     }
 }
