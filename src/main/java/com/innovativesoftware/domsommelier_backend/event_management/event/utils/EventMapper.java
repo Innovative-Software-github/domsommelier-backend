@@ -1,13 +1,17 @@
 package com.innovativesoftware.domsommelier_backend.event_management.event.utils;
 
 import com.innovativesoftware.domsommelier_backend.event_management.event.entity.Event;
+import com.innovativesoftware.domsommelier_backend.event_management.event.entity.FaqItem;
 import com.innovativesoftware.domsommelier_backend.event_management.event.model.EventDTO;
 import com.innovativesoftware.domsommelier_backend.event_management.event.model.EventFullDTO;
 import com.innovativesoftware.domsommelier_backend.event_management.event.model.EventListDTO;
+import com.innovativesoftware.domsommelier_backend.event_management.event.model.FaqItemDto;
 import com.innovativesoftware.domsommelier_backend.product_management.store.entity.WineStore;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EventMapper {
 
@@ -27,6 +31,9 @@ public class EventMapper {
         dto.setAddress(event.getAddress());
         dto.setDescription(event.getDescription());
         dto.setRegistrationLink(event.getRegistrationLink());
+        dto.setAbout(event.getAbout());
+        dto.setHowItGoes(event.getHowItGoes());
+        dto.setFaq(toFaqDtos(event.getFaqItems()));
         dto.setWineStoreId(resolveWineStoreId(event));
         return dto;
     }
@@ -40,6 +47,55 @@ public class EventMapper {
         event.setLargeCover(dto.getLargeCover());
         event.setDescription(dto.getDescription());
         event.setRegistrationLink(dto.getRegistrationLink());
+        event.setAbout(dto.getAbout());
+        event.setHowItGoes(dto.getHowItGoes());
+        applyFaqItems(event, dto.getFaq());
+    }
+
+    /**
+     * Заменяет FAQ целиком, переиспользуя существующий список Hibernate
+     * (на update нельзя подменять ссылку на управляемую коллекцию — см. тот же
+     * приём в AbstractProductWriteStrategy.replaceStrings).
+     */
+    private static void applyFaqItems(Event event, List<FaqItemDto> faqDtos) {
+        List<FaqItem> target = event.getFaqItems();
+        if (target == null) {
+            target = new ArrayList<>();
+            event.setFaqItems(target);
+        }
+        target.clear();
+        if (faqDtos != null) {
+            faqDtos.stream()
+                    .filter(item -> item != null && (isNotBlank(item.getQuestion()) || isNotBlank(item.getAnswer())))
+                    .map(item -> new FaqItem(trimToNull(item.getQuestion()), trimToNull(item.getAnswer())))
+                    .forEach(target::add);
+        }
+    }
+
+    private static List<FaqItemDto> toFaqDtos(List<FaqItem> faqItems) {
+        if (faqItems == null) {
+            return List.of();
+        }
+        return faqItems.stream()
+                .map(item -> {
+                    FaqItemDto dto = new FaqItemDto();
+                    dto.setQuestion(item.getQuestion());
+                    dto.setAnswer(item.getAnswer());
+                    return dto;
+                })
+                .toList();
+    }
+
+    private static boolean isNotBlank(String value) {
+        return value != null && !value.isBlank();
+    }
+
+    private static String trimToNull(String value) {
+        if (value == null) {
+            return null;
+        }
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 
     public static void applyWineStoreLocation(Event event, WineStore wineStore) {
@@ -61,6 +117,9 @@ public class EventMapper {
                 .address(event.getAddress())
                 .description(event.getDescription())
                 .registrationLink(event.getRegistrationLink())
+                .about(event.getAbout())
+                .howItGoes(event.getHowItGoes())
+                .faq(toFaqDtos(event.getFaqItems()))
                 .wineStoreId(resolveWineStoreId(event))
                 .wineStoreName(resolveWineStoreName(event))
                 .build();

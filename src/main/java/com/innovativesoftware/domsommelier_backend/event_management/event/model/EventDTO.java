@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -24,6 +25,9 @@ public class EventDTO {
     private String address;
     private String description;
     private String registrationLink;
+    private String about;
+    private String howItGoes;
+    private List<FaqItemDto> faq;
     @NotNull(message = "Укажите винотеку")
     private Long wineStoreId;
 }
