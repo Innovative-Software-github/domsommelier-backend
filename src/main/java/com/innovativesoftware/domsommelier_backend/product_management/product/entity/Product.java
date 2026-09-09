@@ -40,6 +40,15 @@ public class Product {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "aroma", columnDefinition = "TEXT")
+    private String aroma;
+
+    @Column(name = "taste", columnDefinition = "TEXT")
+    private String taste;
+
+    @Column(name = "food_pairing", columnDefinition = "TEXT")
+    private String foodPairing;
+
     @Column(name = "discount")
     private Integer discount;
 

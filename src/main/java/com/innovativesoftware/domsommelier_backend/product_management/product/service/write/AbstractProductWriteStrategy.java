@@ -42,6 +42,9 @@ public abstract class AbstractProductWriteStrategy implements ProductWriteStrate
         product.setInitialPrice(request.getInitialPrice());
         product.setPrice(request.getPrice());
         product.setDescription(request.getDescription());
+        product.setAroma(request.getAroma());
+        product.setTaste(request.getTaste());
+        product.setFoodPairing(request.getFoodPairing());
         product.setDiscount(request.getDiscount());
         product.setProductCountry(resolveCountry(request.getCountry()));
         product.setProductCategory(resolveCategory(request.getCategory()));

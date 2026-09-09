@@ -23,6 +23,9 @@ public class ProductDTO {
     private BigDecimal initialPrice;
     private BigDecimal price;
     private String description;
+    private String aroma;
+    private String taste;
+    private String foodPairing;
     private Integer discount;
     private OffsetDateTime createdAt;
     private String productCountry;

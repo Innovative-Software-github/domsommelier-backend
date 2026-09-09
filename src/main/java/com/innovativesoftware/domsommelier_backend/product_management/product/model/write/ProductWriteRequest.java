@@ -50,6 +50,12 @@ public abstract class ProductWriteRequest {
 
     private String description;
 
+    private String aroma;
+
+    private String taste;
+
+    private String foodPairing;
+
     @Min(0)
     @Max(100)
     private Integer discount;
