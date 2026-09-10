@@ -124,8 +124,9 @@ public class EventPhotoController {
     @Operation(summary="Удалить фото по photoId")
     @DeleteMapping("/{photoId}")
     @RequiresAdmin
-    public void deletePhoto(@PathVariable UUID photoId) {
+    public ResponseEntity<Void> deletePhoto(@PathVariable UUID photoId) {
         service.deletePhoto(photoId);
+        return ResponseEntity.noContent().build();
     }
 }
 
