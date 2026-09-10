@@ -5,6 +5,7 @@ import com.innovativesoftware.domsommelier_backend.event_management.event.entity
 import com.innovativesoftware.domsommelier_backend.event_management.event.model.EventPhotoDTO;
 import com.innovativesoftware.domsommelier_backend.event_management.event.repository.EventPhotoRepository;
 import com.innovativesoftware.domsommelier_backend.event_management.event.repository.EventRepository;
+import com.innovativesoftware.domsommelier_backend.event_management.event.util.EventPhotoUrls;
 import com.innovativesoftware.domsommelier_backend.exceptions.InvalidValueException;
 import com.innovativesoftware.domsommelier_backend.file_management.service.FileOperationService;
 import jakarta.transaction.Transactional;
@@ -38,7 +39,7 @@ public class EventPhotoOperationService extends FileOperationService {
         // Проверка, что файлы с такими именами уже есть (если есть, значит нафиг)
         for (MultipartFile mf : files) {
             String fileName = mf.getOriginalFilename();
-            if (eventPhotoRepository.existsByUrlAndEventId(fileUrl(bucket, eventId, fileName), event.getId())) {
+            if (eventPhotoRepository.existsByUrlAndEventId(EventPhotoUrls.publicUrl(event.getId(), fileName), event.getId())) {
                 throw new InvalidValueException(
                         "Файл с названием " + fileName + " уже существует", "INVALID_FILENAME", "Файл существует"
                 );
@@ -49,12 +50,13 @@ public class EventPhotoOperationService extends FileOperationService {
 
         List<EventPhotoDTO> dtos = new ArrayList<>();
         for (MultipartFile mf : uploadedFiles) {
+            String publicUrl = EventPhotoUrls.publicUrl(event.getId(), mf.getOriginalFilename());
             EventPhoto photo = EventPhoto.builder()
                     .name(mf.getOriginalFilename()) // файл сохраняется под этим названием
                     .bucket(bucket)
                     .description(description)
                     .event(event)
-                    .url(fileUrl(bucket, eventId, mf.getOriginalFilename()))
+                    .url(publicUrl)
                     .build();
             eventPhotoRepository.save(photo);
 
@@ -64,7 +66,7 @@ public class EventPhotoOperationService extends FileOperationService {
                     .name(photo.getName())
                     .description(photo.getDescription())
                     .bucket(photo.getBucket())
-                    .url(fileUrl(bucket, eventId, mf.getOriginalFilename()))
+                    .url(publicUrl)
                     .build());
         }
         return dtos;
@@ -83,7 +85,7 @@ public class EventPhotoOperationService extends FileOperationService {
                         .name(photo.getName())
                         .bucket(photo.getBucket())
                         .description(photo.getDescription())
-                        .url(fileUrl(photo.getBucket(), String.valueOf(eventId), photo.getName()))
+                        .url(EventPhotoUrls.publicUrl(eventId, photo.getName()))
                         .build())
                 .collect(Collectors.toList());
     }
@@ -100,7 +102,7 @@ public class EventPhotoOperationService extends FileOperationService {
                 .name(photo.getName())
                 .bucket(photo.getBucket())
                 .description(photo.getDescription())
-                .url(fileUrl(photo.getBucket(), String.valueOf(photo.getEvent().getId()), photo.getName()))
+                .url(EventPhotoUrls.publicUrl(photo.getEvent().getId(), photo.getName()))
                 .build();
     }
 
@@ -117,9 +119,13 @@ public class EventPhotoOperationService extends FileOperationService {
     public PhotoDownloadData getPhotoDataById(UUID photoId) {
         EventPhoto photo = eventPhotoRepository.findById(photoId)
                 .orElseThrow(() -> new NoSuchElementException("Photo not found"));
-        byte[] bytes = getBytesFromFile(photo.getBucket(), photo.getName());
-        return new PhotoDownloadData(photo.getName(), bytes, fileUrl(photo.getBucket(),
-                String.valueOf(photo.getEvent().getId()), photo.getName()));
+        // Реальный объект в MinIO лежит под ключом "{eventId}/{имя файла}"
+        // (см. MinioService.uploadOneFile) — без префикса eventId getBytesFromFile
+        // не находит файл.
+        String objectKey = photo.getEvent().getId() + "/" + photo.getName();
+        byte[] bytes = getBytesFromFile(photo.getBucket(), objectKey);
+        return new PhotoDownloadData(photo.getName(), bytes,
+                EventPhotoUrls.publicUrl(photo.getEvent().getId(), photo.getName()));
     }
 
     /**
@@ -167,7 +173,10 @@ public class EventPhotoOperationService extends FileOperationService {
     }
 
     private void deletePhotoEntity(EventPhoto photo) {
-        fileService.deleteFile(photo.getBucket(), photo.getName());
+        // Тот же префикс eventId, что и при загрузке (MinioService.uploadOneFile) —
+        // без него удаляли не тот ключ, и файл оставался висеть в MinIO.
+        String objectKey = photo.getEvent().getId() + "/" + photo.getName();
+        fileService.deleteFile(photo.getBucket(), objectKey);
         eventPhotoRepository.delete(photo);
     }
 }

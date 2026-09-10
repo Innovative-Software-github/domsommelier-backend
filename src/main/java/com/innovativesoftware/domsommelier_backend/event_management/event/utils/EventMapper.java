@@ -1,6 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.event_management.event.utils;
 
 import com.innovativesoftware.domsommelier_backend.event_management.event.entity.Event;
+import com.innovativesoftware.domsommelier_backend.event_management.event.entity.EventPhoto;
 import com.innovativesoftware.domsommelier_backend.event_management.event.entity.FaqItem;
 import com.innovativesoftware.domsommelier_backend.event_management.event.model.EventDTO;
 import com.innovativesoftware.domsommelier_backend.event_management.event.model.EventFullDTO;
@@ -104,15 +105,16 @@ public class EventMapper {
         event.setAddress(wineStore.getAddress());
     }
 
-    public static EventFullDTO toFullDto(Event event, String smallCoverUrl, String largeCoverUrl) {
+    public static EventFullDTO toFullDto(Event event) {
+        String cover = resolveCover(event);
         return EventFullDTO.builder()
                 .id(event.getId().toString())
                 .type(event.getType())
                 .price(event.getPrice())
                 .dateTime(formatToIsoWithMillisZ(event.getDatetime()))
                 .title(event.getTitle())
-                .smallCover(smallCoverUrl)
-                .largeCover(largeCoverUrl)
+                .smallCover(cover)
+                .largeCover(cover)
                 .city(event.getCity())
                 .address(event.getAddress())
                 .description(event.getDescription())
@@ -125,18 +127,31 @@ public class EventMapper {
                 .build();
     }
 
-    public static EventListDTO toListDto(Event event, String smallCoverUrl) {
+    public static EventListDTO toListDto(Event event) {
         return EventListDTO.builder()
                 .id(event.getId().toString())
                 .type(event.getType())
                 .price(event.getPrice())
                 .dateTime(formatToIsoWithMillisZ(event.getDatetime()))
                 .title(event.getTitle())
-                .smallCover(smallCoverUrl)
+                .smallCover(resolveCover(event))
                 .city(event.getCity())
                 .wineStoreId(resolveWineStoreId(event))
                 .wineStoreName(resolveWineStoreName(event))
                 .build();
+    }
+
+    /**
+     * Event.smallCover/largeCover никогда реально не заполняются (в админке это
+     * скрытые пустые поля) — обложкой считаем первое реально загруженное фото
+     * из EventPhotoManager (как productPhoto[0] у товаров).
+     */
+    private static String resolveCover(Event event) {
+        List<EventPhoto> photos = event.getPhotos();
+        if (photos == null || photos.isEmpty()) {
+            return null;
+        }
+        return photos.get(0).getUrl();
     }
 
     private static Long resolveWineStoreId(Event event) {

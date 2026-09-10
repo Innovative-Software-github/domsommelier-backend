@@ -73,19 +73,13 @@ public class EventService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending().and(Sort.by("time").descending()));
         Page<Event> eventPage = eventRepository.findAll(pageable);
 
-        return eventPage.map(event ->
-                EventMapper.toListDto(event, event.getSmallCover())
-        );
+        return eventPage.map(EventMapper::toListDto);
     }
 
     public EventFullDTO getEventById(UUID id) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Event not found"));
-        return EventMapper.toFullDto(
-                event,
-                event.getSmallCover(),
-                event.getLargeCover()
-        );
+        return EventMapper.toFullDto(event);
     }
 
     public Page<EventListDTO> getFilteredEvents(
@@ -128,7 +122,7 @@ public class EventService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("datetime").descending());
         Page<Event> eventPage = eventRepository.findAll(spec, pageable);
 
-        return eventPage.map(event -> EventMapper.toListDto(event, event.getSmallCover()));
+        return eventPage.map(EventMapper::toListDto);
     }
 
     private void applyWineStore(Event event, Long wineStoreId) {

@@ -55,7 +55,8 @@ public class SecurityConfig {
             "/api/v1/wine-stores/**",
             "/api/v1/cities/**",
             "/api/v1/filters/**",
-            "/products/files/**"
+            "/products/files/**",
+            "/events/files/**"
     };
 
     @Bean
