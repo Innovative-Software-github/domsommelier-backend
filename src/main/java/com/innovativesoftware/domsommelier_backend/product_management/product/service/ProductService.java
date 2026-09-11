@@ -57,7 +57,7 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public Page<ProductCardDto> searchProducts(ProductSearchRequest request) {
-        String query = normalizeQuery(request.getQ());
+        SearchQuery query = SearchQuery.parse(request.getQ());
         if (query.isEmpty()) {
             return Page.empty();
         }
@@ -66,14 +66,11 @@ public class ProductService {
         int page = request.getPage() != null ? Math.max(request.getPage(), 0) : 0;
         int size = capPageSize(request.getSize());
 
+        // Без Sort: порядок (релевантность, затем название) задаёт сама спецификация.
         Pageable pageable = PageRequest.of(page, size);
         Specification<Product> spec = ProductSearchSpecification.byQueryAndCity(query, city);
 
         return productRepository.findAll(spec, pageable).map(productMapper::toCardDto);
-    }
-
-    private static String normalizeQuery(String q) {
-        return q == null ? "" : q.trim();
     }
 
     private static String normalizeCity(String city) {
