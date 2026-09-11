@@ -35,6 +35,11 @@ public class SavedService {
         return SavedDto.builder().customerId(customerId).build();
     }
 
+    /**
+     * Идемпотентно: если товар уже в избранном, просто возвращает текущий список.
+     * Витрина открывает товары в новых вкладках, и повторное «добавить» из вкладки
+     * с устаревшим состоянием — нормальный сценарий, а не ошибка клиента.
+     */
     public SavedDto addItem(UUID customerId, UUID productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NoSuchElementException("Product not found"));
@@ -45,7 +50,7 @@ public class SavedService {
         boolean alreadySaved = updatedItems.stream()
                 .anyMatch(item -> item.getProduct().getId().equals(productId));
         if (alreadySaved) {
-            throw new IllegalArgumentException("Product already in saved");
+            return saved;
         }
 
         SavedItemDto newItem = SavedItemDto.builder()
@@ -67,13 +72,14 @@ public class SavedService {
         return saved;
     }
 
+    /** Идемпотентно, по той же причине, что и {@link #addItem}: товара нет — возвращаем текущий список. */
     public SavedDto removeItem(UUID customerId, UUID productId) {
         SavedDto saved = getSaved(customerId);
         List<SavedItemDto> updatedItems = new ArrayList<>(saved.getItems());
 
         boolean removed = updatedItems.removeIf(item -> item.getProduct().getId().equals(productId));
         if (!removed) {
-            throw new NoSuchElementException("Product not found in saved");
+            return saved;
         }
 
         saved.setItems(updatedItems);
