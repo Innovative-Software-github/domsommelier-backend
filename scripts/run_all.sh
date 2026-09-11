@@ -37,6 +37,7 @@ run_suite "test_basket.sh"        "Basket"
 run_suite "test_saved.sh"         "Saved"
 run_suite "test_orders.sh"        "Orders"
 run_suite "test_news.sh"          "News"
+run_suite "test_discounts.sh"     "Discounts"
 
 echo ""
 echo -e "${BLUE}============================================${NC}"
