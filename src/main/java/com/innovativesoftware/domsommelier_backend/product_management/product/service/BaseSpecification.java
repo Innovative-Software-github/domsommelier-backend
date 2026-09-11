@@ -3,6 +3,7 @@ package com.innovativesoftware.domsommelier_backend.product_management.product.s
 import com.innovativesoftware.domsommelier_backend.product_management.warehouse.entity.ProductStock;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
@@ -50,12 +51,7 @@ public abstract class BaseSpecification<T> {
         params.forEach((key, value) -> {
             if (isEmpty(value)) return;
             switch (key) {
-                case "price" -> {
-                    if (value instanceof List<?> priceRange && priceRange.size() == 2) {
-                        predicates.add(cb.ge(root.get("product").get("price"), toNumber(priceRange.get(0))));
-                        predicates.add(cb.le(root.get("product").get("price"), toNumber(priceRange.get(1))));
-                    }
-                }
+                case "price" -> addRangePredicates(value, root.get("product").<Number>get("price"), cb, predicates);
                 case "countries" -> predicates.add(root.get("product").get("productCountry").get("name").in((List<?>) value));
                 case "producer" -> {
                     if (value instanceof List<?> l) {
@@ -71,6 +67,45 @@ public abstract class BaseSpecification<T> {
     }
 
     protected abstract void addSpecificPredicates(Map<String, Object> params, Root<T> root, CriteriaBuilder cb, List<Predicate> predicates);
+
+    /**
+     * Range-фильтр приходит как [от, до], и любая граница может быть null («до 5000 ₽»).
+     * Раньше обе границы прогонялись через toNumber, и фильтр с одной границей падал 400.
+     */
+    protected void addRangePredicates(Object value, Expression<? extends Number> field,
+                                      CriteriaBuilder cb, List<Predicate> predicates) {
+        if (!(value instanceof List<?> range) || range.size() != 2) {
+            return;
+        }
+        if (range.get(0) != null) {
+            predicates.add(cb.ge(field, toNumber(range.get(0))));
+        }
+        if (range.get(1) != null) {
+            predicates.add(cb.le(field, toNumber(range.get(1))));
+        }
+    }
+
+    /**
+     * Значение multi_select-фильтра, по которому {@link FacetCounter} считает, сколько
+     * товаров даст каждый вариант. null — поле фасетами не считается.
+     */
+    public Expression<?> facetValue(String field, Root<T> root) {
+        return switch (field) {
+            case "countries" -> root.get("product").get("productCountry").get("name");
+            case "producer" -> root.get("producer");
+            default -> specificFacetValue(field, root);
+        };
+    }
+
+    protected abstract Expression<?> specificFacetValue(String field, Root<T> root);
+
+    /**
+     * Значение из БД → подпись варианта в том виде, в каком её отдаёт FilterFieldProvider
+     * и присылает фронт. Переопределяется там, где в БД лежат коды (особенности, сорта).
+     */
+    public String facetLabel(String field, String rawValue) {
+        return rawValue;
+    }
 
     /**
      * Ограничивает выборку товарами, доступными в указанном городе:

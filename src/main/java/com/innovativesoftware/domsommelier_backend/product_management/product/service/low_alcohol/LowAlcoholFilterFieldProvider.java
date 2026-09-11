@@ -3,6 +3,7 @@ package com.innovativesoftware.domsommelier_backend.product_management.product.s
 import com.innovativesoftware.domsommelier_backend.filter_management.service.ProductFilterFieldProvider;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.LowAlcoholRepository;
+import com.innovativesoftware.domsommelier_backend.product_management.product.util.RussianLabelTranslator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,7 @@ public class LowAlcoholFilterFieldProvider implements ProductFilterFieldProvider
     @Override
     public Set<String> getLabels(String field) {
         return switch (field) {
-            case "subcategory" -> lowAlcoholRepo.findDistinctCategories();
+            case "subcategory" -> RussianLabelTranslator.translateLowAlcoholCategories(lowAlcoholRepo.findDistinctCategories());
             case "countries" -> lowAlcoholRepo.findDistinctCountryNames();
             case "producer" -> lowAlcoholRepo.findDistinctProducers();
             case "volume" -> lowAlcoholRepo.findDistinctVolumes();

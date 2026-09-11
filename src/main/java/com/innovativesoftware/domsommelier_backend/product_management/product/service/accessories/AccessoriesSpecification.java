@@ -3,6 +3,7 @@ package com.innovativesoftware.domsommelier_backend.product_management.product.s
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.accessories.Accessories;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.BaseSpecification;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Component;
@@ -20,5 +21,10 @@ public class AccessoriesSpecification extends BaseSpecification<Accessories> {
                 case "features" -> predicates.add(root.join("features").in((List<?>) value));
             }
         });
+    }
+
+    @Override
+    protected Expression<?> specificFacetValue(String field, Root<Accessories> root) {
+        return "features".equals(field) ? root.join("features") : null;
     }
 }

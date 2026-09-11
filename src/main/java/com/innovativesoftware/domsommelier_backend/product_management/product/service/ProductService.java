@@ -1,6 +1,9 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.service;
 
 import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.ProductCountry;
+import com.innovativesoftware.domsommelier_backend.filter_management.entity.Filter;
+import com.innovativesoftware.domsommelier_backend.filter_management.enums.FilterType;
+import com.innovativesoftware.domsommelier_backend.filter_management.repository.FilterRepository;
 import com.innovativesoftware.domsommelier_backend.filter_management.service.ProductFilterStrategyFactory;
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
@@ -8,6 +11,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.mo
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCategoryProjection;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCountryProjection;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductDTO;
+import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductFacetsDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductSearchRequest;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductCategoryRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductCountryRepository;
@@ -44,6 +48,7 @@ public class ProductService {
     private final ProductMapper productMapper;
     @Autowired
     private final ProductCardDtoMapperRegistry mapperRegistry;
+    private final FilterRepository filterRepository;
 
     @Transactional(readOnly = true)
     public List<ProductCountryProjection> getCountriesWithWines() {
@@ -137,6 +142,17 @@ public class ProductService {
     public Page<ProductCardDto> getAllByFilters(ProductCategoryEnum category, Map<String, Object> params, Pageable pageable) {
         params.put("category", category.name());
         return strategyFactory.getStrategy(category).filter(params, pageable);
+    }
+
+    /** Счётчики вариантов для всех multi_select-фильтров раздела при текущем выборе. */
+    @Transactional(readOnly = true)
+    public ProductFacetsDto getFacets(ProductCategoryEnum category, Map<String, Object> params) {
+        params.put("category", category.name());
+        List<String> fields = filterRepository.findByProductCategories(category).stream()
+                .filter(filter -> filter.getType() == FilterType.multi_select)
+                .map(Filter::getField)
+                .toList();
+        return strategyFactory.getStrategy(category).facets(params, fields);
     }
 
     @Transactional(readOnly = true)

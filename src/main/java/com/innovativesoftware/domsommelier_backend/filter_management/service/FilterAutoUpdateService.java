@@ -42,7 +42,9 @@ public class FilterAutoUpdateService {
                     .collect(Collectors.toMap(f -> f.getField().toLowerCase(), f -> f));
 
             for (String field : supportedFields) {
-                Filter filterEntity = filterEntities.get(field);
+                // Ключи filterEntities — в нижнем регистре; без toLowerCase camelCase-поле
+                // (sugarContent) не находилось, и его варианты никогда не заполнялись.
+                Filter filterEntity = filterEntities.get(field.toLowerCase());
                 if (filterEntity == null) {
                     continue;
                 }

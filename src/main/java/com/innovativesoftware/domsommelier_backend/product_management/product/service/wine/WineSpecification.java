@@ -4,6 +4,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.en
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.BaseSpecification;
 import com.innovativesoftware.domsommelier_backend.product_management.product.util.RussianLabelTranslator;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Component;
@@ -27,14 +28,30 @@ public class WineSpecification extends BaseSpecification<Wine> {
                 // в отличие от color/type) — переводим обратно перед запросом.
                 case "features" -> predicates.add(root.join("features").in(untranslate((List<?>) value, RussianLabelTranslator::untranslateFeature)));
                 case "grape" -> predicates.add(root.join("grapes").in(untranslate((List<?>) value, RussianLabelTranslator::untranslateGrape)));
-                case "year" -> {
-                    if (value instanceof List<?> yearRange && yearRange.size() == 2) {
-                        predicates.add(cb.ge(root.get("productionYear"), toNumber(yearRange.get(0))));
-                        predicates.add(cb.le(root.get("productionYear"), toNumber(yearRange.get(1))));
-                    }
-                }
+                case "year" -> addRangePredicates(value, root.<Number>get("productionYear"), cb, predicates);
                 case "in_stock" -> predicates.add(cb.equal(root.get("product").get("inStock"), value));
             }
         });
+    }
+
+    @Override
+    protected Expression<?> specificFacetValue(String field, Root<Wine> root) {
+        return switch (field) {
+            case "type" -> root.get("type").get("name");
+            case "color" -> root.get("color").get("name");
+            case "volume" -> root.get("volume");
+            case "features" -> root.join("features");
+            case "grape" -> root.join("grapes");
+            default -> null;
+        };
+    }
+
+    @Override
+    public String facetLabel(String field, String rawValue) {
+        return switch (field) {
+            case "features" -> RussianLabelTranslator.translateFeature(rawValue);
+            case "grape" -> RussianLabelTranslator.translateGrape(rawValue);
+            default -> rawValue;
+        };
     }
 }

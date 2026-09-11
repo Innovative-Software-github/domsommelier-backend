@@ -39,7 +39,8 @@ public final class SearchQuery {
             "сидр", "cider",
             "лимонад", "lemonade",
             "радлер", "radler",
-            "сельтцер", "seltzer");
+            "сельтцер", "seltzer",
+            "зельтцер", "seltzer");
 
     private final String phrase;
     private final List<List<String>> tokenVariants;

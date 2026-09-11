@@ -43,8 +43,21 @@ public final class RussianLabelTranslator {
             Map.entry("award_winning", "Премированное")
     );
 
+    /**
+     * low_alcohol_category.name хранит коды, а в фильтре каталога (и в плашках вида
+     * напитка над сеткой) без перевода показывались «cider», «hard_lemonade».
+     */
+    private static final Map<String, String> LOW_ALCOHOL_CATEGORY_NAMES = Map.ofEntries(
+            Map.entry("cider", "Сидр"),
+            Map.entry("fruit_wine", "Фруктовое вино"),
+            Map.entry("hard_lemonade", "Алкогольный лимонад"),
+            Map.entry("radler", "Радлер"),
+            Map.entry("seltzer", "Хард-зельтцер")
+    );
+
     private static final Map<String, String> GRAPE_CODES_BY_NAME = reverse(GRAPE_NAMES);
     private static final Map<String, String> FEATURE_CODES_BY_NAME = reverse(FEATURE_NAMES);
+    private static final Map<String, String> LOW_ALCOHOL_CATEGORY_CODES_BY_NAME = reverse(LOW_ALCOHOL_CATEGORY_NAMES);
 
     public static String translateGrape(String raw) {
         return translate(raw, GRAPE_NAMES);
@@ -52,6 +65,18 @@ public final class RussianLabelTranslator {
 
     public static String translateFeature(String raw) {
         return translate(raw, FEATURE_NAMES);
+    }
+
+    public static String translateLowAlcoholCategory(String raw) {
+        return translate(raw, LOW_ALCOHOL_CATEGORY_NAMES);
+    }
+
+    public static Set<String> translateLowAlcoholCategories(Set<String> raw) {
+        return translateAll(raw, LOW_ALCOHOL_CATEGORY_NAMES);
+    }
+
+    public static String untranslateLowAlcoholCategory(String label) {
+        return translate(label, LOW_ALCOHOL_CATEGORY_CODES_BY_NAME);
     }
 
     /**

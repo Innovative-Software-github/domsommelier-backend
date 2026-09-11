@@ -2,6 +2,7 @@ package com.innovativesoftware.domsommelier_backend.product_management.product.c
 
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCardDto;
+import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductFacetsDto;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductCategoryProjection;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductDTO;
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductNewDTO;
@@ -113,6 +114,19 @@ public class ProductController {
         }
         Pageable pageable = PageRequest.of(page, size, resolveSort(sort));
         return ResponseEntity.ok(productService.getAllByFilters(category, params, pageable));
+    }
+
+    @PostMapping(value = "/filter/facets", produces = "application/json; charset=UTF-8")
+    @Operation(summary = "Сколько товаров даст каждый вариант фильтров при текущем выборе")
+    public ProductFacetsDto getFilterFacets(
+            @RequestParam("category") ProductCategoryEnum category,
+            @RequestParam(required = false) String city,
+            @RequestBody Map<String, Object> params
+    ) {
+        if (city != null && !city.isBlank()) {
+            params.put(BaseSpecification.CITY_PARAM, city.trim().toLowerCase());
+        }
+        return productService.getFacets(category, params);
     }
 
     /**

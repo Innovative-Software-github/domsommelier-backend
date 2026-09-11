@@ -58,9 +58,12 @@ insert into multi_select_filter (id) values ('e8ea11c1-412e-444d-ac9f-8bac813fcd
 insert into filter (id, name, field, product_category, type) values ('9580517c-8792-445e-94e0-823147645972', 'Субкатегория', 'subcategory', 'spirit', 'multi_select');
 insert into multi_select_filter (id) values ('9580517c-8792-445e-94e0-823147645972');
 
--- Крепость (multi_select)
-insert into filter (id, name, field, product_category, type) values ('9443537a-433c-447d-845d-17b3006e2649', 'Крепость', 'strength', 'spirit', 'multi_select');
-insert into multi_select_filter (id) values ('9443537a-433c-447d-845d-17b3006e2649');
+-- Крепость (range)
+insert into filter (id, name, field, product_category, type) values ('9443537a-433c-447d-845d-17b3006e2649', 'Крепость', 'strength', 'spirit', 'range');
+insert into range_filter (id, min, max, unit) values ('9443537a-433c-447d-845d-17b3006e2649', 0, 100, '%');
+insert into range_filter_step (range_filter_id, min, max, label) values ('9443537a-433c-447d-845d-17b3006e2649', 0, 39.9, 'до 40%');
+insert into range_filter_step (range_filter_id, min, max, label) values ('9443537a-433c-447d-845d-17b3006e2649', 40, 45, '40% - 45%');
+insert into range_filter_step (range_filter_id, min, max, label) values ('9443537a-433c-447d-845d-17b3006e2649', 45.1, 100, 'Свыше 45%');
 
 -- Объем (multi_select)
 insert into filter (id, name, field, product_category, type) values ('9443537a-433c-447d-845d-17b3006e2149', 'Объем', 'volume', 'spirit', 'multi_select');
@@ -190,7 +193,7 @@ insert into filter (id, name, field, product_category, type) values ('8fc2deeb-2
 insert into multi_select_filter (id) values ('8fc2deeb-25c1-4cc7-8397-63f0d8c1b1ef');
 
 -- Содержание сахара (multi_select)
-insert into filter (id, name, field, product_category, type) values ('c098ed6e-8a3d-4efe-8a09-f512d1c7f8e6', 'Содержание сахара', 'sugarСontent', 'champagne_and_sparkling', 'multi_select');
+insert into filter (id, name, field, product_category, type) values ('c098ed6e-8a3d-4efe-8a09-f512d1c7f8e6', 'Содержание сахара', 'sugarContent', 'champagne_and_sparkling', 'multi_select');
 insert into multi_select_filter (id) values ('c098ed6e-8a3d-4efe-8a09-f512d1c7f8e6');
 
 -- Производитель (multi_select)

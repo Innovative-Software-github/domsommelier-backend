@@ -3,6 +3,7 @@ package com.innovativesoftware.domsommelier_backend.product_management.product.s
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.champaigne_sparkling.SparklingWine;
 import com.innovativesoftware.domsommelier_backend.product_management.product.service.BaseSpecification;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Component;
@@ -24,5 +25,17 @@ public class ShampaigneSparklingSpecification extends BaseSpecification<Sparklin
                 case "color" -> predicates.add(root.join("color").get("name").in((List<?>) value));
             }
         });
+    }
+
+    @Override
+    protected Expression<?> specificFacetValue(String field, Root<SparklingWine> root) {
+        return switch (field) {
+            case "subcategory" -> root.get("subcategory").get("name");
+            case "sugarContent" -> root.get("sugarContent").get("name");
+            case "volume" -> root.get("volume");
+            case "features" -> root.join("features");
+            case "color" -> root.get("color").get("name");
+            default -> null;
+        };
     }
 }
