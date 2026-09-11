@@ -4,6 +4,7 @@ import com.innovativesoftware.domsommelier_backend.shared.domain.Role;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Data
@@ -19,4 +20,9 @@ public class AdminCustomerDetailDto {
     private Role role;
     private Long defaultWineStoreId;
     private String defaultWineStoreName;
+    /** Личная скидка в процентах, 0 — скидки нет. */
+    private Integer discountPercent;
+    /** Основание для скидки — только для админки, клиенту не отдаётся. */
+    private String discountComment;
+    private OffsetDateTime discountUpdatedAt;
 }

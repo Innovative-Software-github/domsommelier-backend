@@ -26,7 +26,8 @@ public class ProductDTO {
     private String aroma;
     private String taste;
     private String foodPairing;
-    private Integer discount;
+    /** Акционная цена для всех покупателей, {@code null} — акции нет. */
+    private BigDecimal salePrice;
     private OffsetDateTime createdAt;
     private String productCountry;
     private ProductCategoryEnum productCategoryName;
@@ -34,4 +35,10 @@ public class ProductDTO {
     private List<OrderItemDto> orderItems;
     private List<StorageHistoryDto> storageHistories;
     private Object details;
+
+    /** @deprecated старое имя поля {@code salePrice}, см. {@link ProductCardDto#getDiscount()}. */
+    @Deprecated
+    public BigDecimal getDiscount() {
+        return salePrice;
+    }
 }

@@ -1,11 +1,10 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.model.write;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -56,9 +55,14 @@ public abstract class ProductWriteRequest {
 
     private String foodPairing;
 
-    @Min(0)
-    @Max(100)
-    private Integer discount;
+    /**
+     * Акционная цена в рублях (не процент). {@code null}/0 — акции нет.
+     * {@code @JsonAlias("discount")} — совместимость со старой админкой, которая слала это же
+     * значение под именем discount. Удалить вместе с алиасами в DTO после релиза.
+     */
+    @DecimalMin(value = "0.0")
+    @JsonAlias("discount")
+    private BigDecimal salePrice;
 
     @NotBlank
     private String country;

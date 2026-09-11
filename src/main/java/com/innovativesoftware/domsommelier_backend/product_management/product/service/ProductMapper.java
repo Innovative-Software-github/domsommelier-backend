@@ -34,7 +34,7 @@ public class ProductMapper {
                 .aroma(product.getAroma())
                 .taste(product.getTaste())
                 .foodPairing(product.getFoodPairing())
-                .discount(product.getDiscount())
+                .salePrice(product.getSalePrice())
                 .createdAt(product.getCreatedAt())
                 .productCountry(product.getProductCountry().getName())
                 .productCategoryName(product.getProductCategory().getName())

@@ -1,5 +1,6 @@
 package com.innovativesoftware.domsommelier_backend.order_management.basket.service;
 
+import com.innovativesoftware.domsommelier_backend.customer_management.discount.CustomerDiscountResolver;
 import com.innovativesoftware.domsommelier_backend.infrastructure.RedisService;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.BasketDto;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.BasketItemDto;
@@ -21,9 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +37,8 @@ public class BasketService {
     private final OrderService orderService;
     private final WineStoreRepository wineStoreRepository;
     private final ProductStockRepository productStockRepository;
+    private final BasketPriceCalculator priceCalculator;
+    private final CustomerDiscountResolver discountResolver;
 
     private String basketKey(UUID customerId) {
         return "basket:" + customerId;
@@ -86,7 +88,7 @@ public class BasketService {
     public BasketDto getBasket(UUID customerId) {
         BasketDto basket = redisService.getObject(basketKey(customerId), BasketDto.class);
         if (basket != null) {
-            return recalculateBasket(basket);
+            return recalculateBasket(customerId, basket);
         }
         return BasketDto.builder().customerId(customerId).build();
     }
@@ -114,7 +116,7 @@ public class BasketService {
                             .name(product.getName())
                             .article(product.getArticle())
                             .price(product.getPrice())
-                            .discount(product.getDiscount())
+                            .salePrice(product.getSalePrice())
                             .productCountry(product.getProductCountry().getName())
                             .productCategoryName(product.getProductCategory().getName().name())
                             .productPhoto(ProductPhotoUrls.toFileDtos(product))
@@ -123,7 +125,7 @@ public class BasketService {
                     .build());
         }
         basket.setItems(updatedItems);
-        BasketDto result = recalculateBasket(basket);
+        BasketDto result = recalculateBasket(customerId, basket);
         redisService.save(basketKey(customerId), result);
         return result;
     }
@@ -135,7 +137,7 @@ public class BasketService {
                 .toList();
 
         basket.setItems(updated);
-        BasketDto result = recalculateBasket(basket);
+        BasketDto result = recalculateBasket(customerId, basket);
         redisService.save(basketKey(customerId), result);
         return result;
     }
@@ -149,16 +151,16 @@ public class BasketService {
                 .orElseThrow(() -> new NoSuchElementException("Promo not found"));
 
         BasketDto basket = getBasket(customerId);
-        basket.setDiscount(promo.getDiscount());
-        BasketDto result = recalculateBasket(basket);
+        basket.setPromoDiscountPercent(promo.getDiscount());
+        BasketDto result = recalculateBasket(customerId, basket);
         redisService.save(basketKey(customerId), result);
         return result;
     }
 
     public BasketDto removePromo(UUID customerId) {
         BasketDto basket = getBasket(customerId);
-        basket.setDiscount(0);
-        BasketDto result = recalculateBasket(basket);
+        basket.setPromoDiscountPercent(0);
+        BasketDto result = recalculateBasket(customerId, basket);
         redisService.save(basketKey(customerId), result);
         return result;
     }
@@ -171,20 +173,39 @@ public class BasketService {
         return addItem(customerId, productId, quantity);
     }
 
-    private BasketDto recalculateBasket(BasketDto basket) {
-        BigDecimal total = basket.getItems().stream()
-                .map(item -> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    /**
+     * Пересчитывает корзину: освежает цены из БД, подтягивает актуальную личную скидку клиента
+     * и отдаёт расчёт в {@link BasketPriceCalculator}.
+     *
+     * <p>Личная скидка намеренно не хранится в корзине, а читается на каждом пересчёте — иначе
+     * изменение скидки в админке не подхватилось бы в уже собранной корзине.
+     */
+    private BasketDto recalculateBasket(UUID customerId, BasketDto basket) {
+        refreshPrices(basket);
+        return priceCalculator.recalculate(basket, discountResolver.resolvePercent(customerId));
+    }
 
-        int discount = basket.getDiscount() != null ? basket.getDiscount() : 0;
-        BigDecimal discounted = discount > 0
-                ? total.subtract(total.multiply(
-                        BigDecimal.valueOf(discount)).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP))
-                : total;
+    /**
+     * Цены в позициях — снапшот на момент добавления товара. Освежаем их из БД, чтобы корзина
+     * показывала то же, по чему {@code OrderService} потом создаст заказ (он берёт цены из Product).
+     */
+    private void refreshPrices(BasketDto basket) {
+        List<BasketItemDto> items = basket.getItems();
+        if (items == null || items.isEmpty()) {
+            return;
+        }
+        Map<UUID, Product> actual = productRepository
+                .findAllById(items.stream().map(item -> item.getProduct().getId()).toList())
+                .stream()
+                .collect(Collectors.toMap(Product::getId, Function.identity()));
 
-        basket.setTotalPrice(total);
-        basket.setDiscountedPrice(discounted);
-        return basket;
+        items.forEach(item -> {
+            Product product = actual.get(item.getProduct().getId());
+            if (product != null) {
+                item.getProduct().setPrice(product.getPrice());
+                item.getProduct().setSalePrice(product.getSalePrice());
+            }
+        });
     }
 
     // Оформить заказ (Basket -> Order)

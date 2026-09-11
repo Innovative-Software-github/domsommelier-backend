@@ -14,10 +14,20 @@ public abstract class ProductCardDto {
     private UUID id;
     private String article;
     private String name;
+    /** Цена по прайсу. При наличии {@link #salePrice} показывается зачёркнутой. */
     private BigDecimal price;
-    private Integer discount;
+    /** Акционная цена для всех покупателей, {@code null} — акции нет. */
+    private BigDecimal salePrice;
     private String productCountry;
     private String productCategoryName;
     private List<FileDTO> productPhoto;
 
+    /**
+     * @deprecated старое имя поля {@code salePrice}. Оставлено на один релиз, чтобы не сломать
+     * фронт, задеплоенный до бэкенда. Удалить вместе с {@code @JsonAlias} в ProductWriteRequest.
+     */
+    @Deprecated
+    public BigDecimal getDiscount() {
+        return salePrice;
+    }
 }

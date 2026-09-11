@@ -16,7 +16,17 @@ public class OrderFullDto {
     private OffsetDateTime date;
     private String statusName;
     private String pickupAddress;
+    /** Сумма к оплате — после всех скидок. */
     private BigDecimal totalAmount;
+
+    // Снапшот скидок на момент оформления (у старых заказов — null)
+    /** Сумма позиций по прайсу, до скидок. */
+    private BigDecimal itemsTotal;
+    /** Экономия за счёт акционных цен. */
+    private BigDecimal saleDiscountAmount;
+    private Integer personalDiscountPercent;
+    private BigDecimal personalDiscountAmount;
+
     private List<OrderedProductDto> items;
     private String customerPhone;
     private String customerName;

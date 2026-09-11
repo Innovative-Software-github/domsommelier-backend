@@ -21,6 +21,17 @@ public class OrderDtoMapper {
         return calculateTotalFromCurrentPrices(order.getOrderItems());
     }
 
+    /**
+     * Сумма позиций по прайсу. У заказов, оформленных до появления скидок, снапшота нет —
+     * тогда это просто сумма зафиксированных цен позиций (скидок в них и не было).
+     */
+    public BigDecimal resolveItemsTotal(Order order) {
+        if (order.getItemsTotal() != null) {
+            return order.getItemsTotal();
+        }
+        return sumOfItems(order.getOrderItems());
+    }
+
     public List<OrderedProductDto> mapOrderItems(List<OrderItem> items) {
         if (items == null) {
             return List.of();
@@ -77,6 +88,21 @@ public class OrderDtoMapper {
         }
         return items.stream()
                 .map(item -> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    /** Сумма по зафиксированным в заказе ценам позиций. */
+    private BigDecimal sumOfItems(List<OrderItem> items) {
+        if (items == null) {
+            return BigDecimal.ZERO;
+        }
+        return items.stream()
+                .map(item -> {
+                    BigDecimal price = item.getUnitPrice() != null
+                            ? item.getUnitPrice()
+                            : item.getProduct().getPrice();
+                    return price.multiply(BigDecimal.valueOf(item.getQuantity()));
+                })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

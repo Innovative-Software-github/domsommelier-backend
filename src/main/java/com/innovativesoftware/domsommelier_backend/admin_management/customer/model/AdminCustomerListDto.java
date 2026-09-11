@@ -15,4 +15,6 @@ public class AdminCustomerListDto {
     private String phone;
     private Role role;
     private String defaultWineStoreName;
+    /** Личная скидка в процентах, 0 — скидки нет. */
+    private Integer discountPercent;
 }

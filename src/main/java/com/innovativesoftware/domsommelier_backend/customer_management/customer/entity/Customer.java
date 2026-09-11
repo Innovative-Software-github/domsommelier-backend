@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -52,6 +53,21 @@ public class Customer {
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
     private List<Product> favoriteProducts = new ArrayList<>();
+
+    /**
+     * Личная скидка клиента в процентах (0..100). {@code null} — скидки нет.
+     * Nullable намеренно: {@code ddl-auto: update} добавляет колонку без default,
+     * поэтому «нет скидки» трактуется как {@code null == 0} в {@code CustomerDiscountResolver}.
+     */
+    @Column(name = "discount_percent")
+    private Integer discountPercent;
+
+    /** Основание для скидки — видно только в админке. */
+    @Column(name = "discount_comment")
+    private String discountComment;
+
+    @Column(name = "discount_updated_at")
+    private OffsetDateTime discountUpdatedAt;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)

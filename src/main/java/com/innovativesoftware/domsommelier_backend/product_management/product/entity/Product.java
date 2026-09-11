@@ -49,8 +49,12 @@ public class Product {
     @Column(name = "food_pairing", columnDefinition = "TEXT")
     private String foodPairing;
 
-    @Column(name = "discount")
-    private Integer discount;
+    /**
+     * Акционная цена товара для всех покупателей (не процент!). {@code null} — акции нет.
+     * Эффективная цена = {@code salePrice != null ? salePrice : price}, см. {@code PriceCalculator}.
+     */
+    @Column(name = "sale_price", precision = 12, scale = 2)
+    private BigDecimal salePrice;
 
     @Column(name = "created_at")
     private OffsetDateTime createdAt;

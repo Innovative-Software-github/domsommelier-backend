@@ -27,7 +27,7 @@ public class WineCardDtoMapper implements ProductCardDtoMapper {
                 .name(product.getName())
                 .article(product.getArticle())
                 .price(product.getPrice())
-                .discount(product.getDiscount())
+                .salePrice(product.getSalePrice())
                 .productCountry(product.getProductCountry().getName())
                 .productCategoryName(product.getProductCategory().getName().name())
                 .productPhoto(ProductPhotoUrls.toFileDtos(product))

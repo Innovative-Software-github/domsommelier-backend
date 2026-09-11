@@ -10,6 +10,7 @@ import com.innovativesoftware.domsommelier_backend.product_management.product.re
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,7 @@ public abstract class AbstractProductWriteStrategy implements ProductWriteStrate
         product.setAroma(request.getAroma());
         product.setTaste(request.getTaste());
         product.setFoodPairing(request.getFoodPairing());
-        product.setDiscount(request.getDiscount());
+        product.setSalePrice(normalizeSalePrice(request.getSalePrice()));
         product.setProductCountry(resolveCountry(request.getCountry()));
         product.setProductCategory(resolveCategory(request.getCategory()));
     }
@@ -65,6 +66,14 @@ public abstract class AbstractProductWriteStrategy implements ProductWriteStrate
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный тип запроса для категории");
         }
         return type.cast(request);
+    }
+
+    /**
+     * Пустая акция (не заполнено или 0) хранится как {@code null} — иначе {@code salePrice = 0}
+     * читалось бы как «товар бесплатный» и обнуляло бы эффективную цену.
+     */
+    private BigDecimal normalizeSalePrice(BigDecimal salePrice) {
+        return salePrice == null || salePrice.signum() <= 0 ? null : salePrice;
     }
 
     protected String trimToNull(String value) {

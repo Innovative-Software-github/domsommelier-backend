@@ -12,13 +12,13 @@ import java.util.UUID;
 
 public interface WineRepository extends JpaRepository<Wine, UUID>, JpaSpecificationExecutor<Wine> {
     @Query("""
-        select product.id as id, product.name as name, product.price as price, product.discount as discount from Product product
+        select product.id as id, product.name as name, product.price as price, product.salePrice as salePrice from Product product
          inner join Wine wine on product.id = wine.id
     """)
     List<WineProjection> findAllWines();
 
     @Query("""
-        select product.id as id, product.name as name, product.price as price, product.discount as discount from Product product
+        select product.id as id, product.name as name, product.price as price, product.salePrice as salePrice from Product product
          inner join Wine wine on product.id = wine.id
          where product.productCountry.name = :country
     """)

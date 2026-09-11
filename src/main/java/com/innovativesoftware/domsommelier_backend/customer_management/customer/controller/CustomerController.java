@@ -7,6 +7,7 @@ import com.innovativesoftware.domsommelier_backend.customer_management.customer.
 import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.model.CustomerRecommendationsDTO;
 import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.repository.CustomerRepository;
 import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.service.CustomerRecommendationsService;
+import com.innovativesoftware.domsommelier_backend.customer_management.discount.CustomerDiscountResolver;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class CustomerController {
     private final CustomerRecommendationsService customerRecommendationsService;
     private final CustomerRepository customerRepository;
+    private final CustomerDiscountResolver discountResolver;
 
     @GetMapping("{id}/recommendations")
     public List<CustomerRecommendationsDTO> getUserRecommendations(@PathVariable("id") String userId) {
@@ -70,6 +72,7 @@ public class CustomerController {
                 .email(customer.getEmail())
                 .phone(customer.getPhone())
                 .role(customer.getRoleOrDefault())
+                .discountPercent(discountResolver.resolvePercent(customer))
                 .build();
     }
 

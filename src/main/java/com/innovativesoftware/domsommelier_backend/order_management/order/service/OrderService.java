@@ -4,6 +4,7 @@ import com.innovativesoftware.domsommelier_backend.customer_management.customer.
 import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.repository.CustomerRepository;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.BasketDto;
 import com.innovativesoftware.domsommelier_backend.order_management.basket.model.CheckoutRequestDto;
+import com.innovativesoftware.domsommelier_backend.order_management.basket.service.BasketPriceCalculator;
 import com.innovativesoftware.domsommelier_backend.order_management.discount.repository.PromoRepository;
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.Order;
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.OrderItem;
@@ -51,6 +52,7 @@ public class OrderService {
     private final WineStoreRepository wineStoreRepository;
     private final ProductStockRepository productStockRepository;
     private final PromoRepository promoRepository;
+    private final BasketPriceCalculator priceCalculator;
     private final OrderDtoMapper orderDtoMapper;
 
     @Transactional
@@ -96,34 +98,30 @@ public class OrderService {
             );
         }
 
-        // 4. OrderItems со snapshot цены
+        // 4. OrderItems со snapshot ЭФФЕКТИВНОЙ цены (с учётом акции), а не прайсовой:
+        //    иначе сумма позиций в заказе не сходится с тем, что клиент видел в корзине.
         List<OrderItem> orderItems = basket.getItems().stream()
                 .map(basketItemDto -> {
                     Product product = productRepository.findById(basketItemDto.getProduct().getId())
                             .orElseThrow(() -> new NoSuchElementException("Товар не найден: " + basketItemDto.getProduct().getId()));
-                    BigDecimal unitPrice = product.getPrice();
                     OrderItem orderItem = new OrderItem();
                     orderItem.setOrder(order);
                     orderItem.setProduct(product);
                     orderItem.setQuantity(basketItemDto.getQuantity());
-                    orderItem.setUnitPrice(unitPrice);
+                    orderItem.setUnitPrice(priceCalculator.effectiveUnitPrice(product.getPrice(), product.getSalePrice()));
                     return orderItem;
                 })
                 .collect(Collectors.toList());
 
         order.setOrderItems(orderItems);
 
-        // 5. Считаем totalAmount из snapshot (с учётом скидки корзины)
-        BigDecimal rawTotal = orderItems.stream()
-                .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        int discount = basket.getDiscount() != null ? basket.getDiscount() : 0;
-        BigDecimal total = discount > 0
-                ? rawTotal.subtract(rawTotal.multiply(BigDecimal.valueOf(discount))
-                        .divide(BigDecimal.valueOf(100), 2, java.math.RoundingMode.HALF_UP))
-                : rawTotal;
-        order.setTotalAmount(total);
+        // 5. Снапшот скидок. Корзина уже пересчитана в BasketService.getBasket() с актуальной
+        //    личной скидкой клиента, поэтому просто фиксируем её значения в заказе.
+        order.setItemsTotal(basket.getItemsTotal());
+        order.setSaleDiscountAmount(basket.getSaleDiscountAmount());
+        order.setPersonalDiscountPercent(basket.getPersonalDiscountPercent());
+        order.setPersonalDiscountAmount(basket.getPersonalDiscountAmount());
+        order.setTotalAmount(basket.getPayableTotal());
 
         // 6. Сохраняем заказ вместе с позициями (cascade)
         return orderRepository.save(order);
@@ -231,6 +229,10 @@ public class OrderService {
                 .statusName(order.getOrderStatus().getName())
                 .pickupAddress(orderDtoMapper.resolvePickupAddress(order))
                 .totalAmount(orderDtoMapper.resolveTotalAmount(order))
+                .itemsTotal(orderDtoMapper.resolveItemsTotal(order))
+                .saleDiscountAmount(order.getSaleDiscountAmount())
+                .personalDiscountPercent(order.getPersonalDiscountPercent())
+                .personalDiscountAmount(order.getPersonalDiscountAmount())
                 .items(orderDtoMapper.mapOrderItems(order.getOrderItems()))
                 .customerPhone(orderDtoMapper.resolveCustomerPhone(order))
                 .customerName(orderDtoMapper.resolveCustomerName(order))

@@ -5,9 +5,11 @@ import com.innovativesoftware.domsommelier_backend.admin_management.customer.mod
 import com.innovativesoftware.domsommelier_backend.admin_management.customer.model.AdminCustomerFilterRequest;
 import com.innovativesoftware.domsommelier_backend.admin_management.customer.model.AdminCustomerListDto;
 import com.innovativesoftware.domsommelier_backend.admin_management.customer.model.AdminCustomerOrderDto;
+import com.innovativesoftware.domsommelier_backend.admin_management.customer.model.UpdateCustomerDiscountRequest;
 import com.innovativesoftware.domsommelier_backend.admin_management.customer.spec.CustomerSpecifications;
 import com.innovativesoftware.domsommelier_backend.customer_management.customer.entity.Customer;
 import com.innovativesoftware.domsommelier_backend.customer_management.customer_recommendations.repository.CustomerRepository;
+import com.innovativesoftware.domsommelier_backend.customer_management.discount.CustomerDiscountResolver;
 import com.innovativesoftware.domsommelier_backend.order_management.order.entity.Order;
 import com.innovativesoftware.domsommelier_backend.order_management.order.mapper.OrderDtoMapper;
 import com.innovativesoftware.domsommelier_backend.order_management.order.repository.OrderRepository;
@@ -20,6 +22,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Service
@@ -29,6 +32,7 @@ public class AdminCustomerService {
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
     private final CustomerDisplayMapper customerDisplayMapper;
+    private final CustomerDiscountResolver discountResolver;
     private final OrderDtoMapper orderDtoMapper;
 
     @Transactional(readOnly = true)
@@ -40,6 +44,23 @@ public class AdminCustomerService {
     @Transactional(readOnly = true)
     public AdminCustomerDetailDto getCustomer(UUID customerId) {
         Customer customer = findCustomerWithDefaultWineStore(customerId);
+        return mapToDetailDto(customer);
+    }
+
+    /**
+     * Назначает или снимает личную скидку клиента. Первый write в модуле клиентов — поэтому
+     * фиксируем время изменения: скидка это деньги, нужен след, кто и когда её поставил.
+     */
+    @Transactional
+    public AdminCustomerDetailDto updateDiscount(UUID customerId, UpdateCustomerDiscountRequest request) {
+        Customer customer = findCustomerWithDefaultWineStore(customerId);
+        int percent = request.getPercent();
+
+        customer.setDiscountPercent(percent == 0 ? null : percent);
+        customer.setDiscountComment(percent == 0 ? null : request.getComment());
+        customer.setDiscountUpdatedAt(OffsetDateTime.now());
+        customerRepository.save(customer);
+
         return mapToDetailDto(customer);
     }
 
@@ -65,6 +86,7 @@ public class AdminCustomerService {
                 .phone(customer.getPhone())
                 .role(customer.getRoleOrDefault())
                 .defaultWineStoreName(wineStore != null ? wineStore.getName() : null)
+                .discountPercent(discountResolver.resolvePercent(customer))
                 .build();
     }
 
@@ -81,6 +103,9 @@ public class AdminCustomerService {
                 .role(customer.getRoleOrDefault())
                 .defaultWineStoreId(wineStore != null ? wineStore.getId() : null)
                 .defaultWineStoreName(wineStore != null ? wineStore.getName() : null)
+                .discountPercent(discountResolver.resolvePercent(customer))
+                .discountComment(customer.getDiscountComment())
+                .discountUpdatedAt(customer.getDiscountUpdatedAt())
                 .build();
     }
 

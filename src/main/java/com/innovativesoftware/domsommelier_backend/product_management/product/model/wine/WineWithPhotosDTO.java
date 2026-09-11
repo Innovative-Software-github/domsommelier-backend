@@ -4,6 +4,7 @@ import com.innovativesoftware.domsommelier_backend.file_management.model.FileDTO
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,6 +18,6 @@ public class WineWithPhotosDTO implements WineProjection, EntityWithFiles<FileDT
     private UUID id;
     private String name;
     private Integer price;
-    private Integer discount;
+    private BigDecimal salePrice;
     private List<FileDTO> files;
 }

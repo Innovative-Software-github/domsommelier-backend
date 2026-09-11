@@ -27,4 +27,10 @@ public class AdminOrderDetailDto {
     private String customerEmail;
     private Long wineStoreId;
     private Integer promoDiscount;
+
+    // Снапшот скидок на момент оформления (у старых заказов — null)
+    private BigDecimal itemsTotal;
+    private BigDecimal saleDiscountAmount;
+    private Integer personalDiscountPercent;
+    private BigDecimal personalDiscountAmount;
 }

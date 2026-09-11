@@ -125,6 +125,10 @@ public class AdminOrderService {
                 .customerEmail(order.getCustomer() != null ? order.getCustomer().getEmail() : null)
                 .wineStoreId(order.getWineStore() != null ? order.getWineStore().getId() : null)
                 .promoDiscount(promoDiscount)
+                .itemsTotal(orderDtoMapper.resolveItemsTotal(order))
+                .saleDiscountAmount(order.getSaleDiscountAmount())
+                .personalDiscountPercent(order.getPersonalDiscountPercent())
+                .personalDiscountAmount(order.getPersonalDiscountAmount())
                 .build();
     }
 }

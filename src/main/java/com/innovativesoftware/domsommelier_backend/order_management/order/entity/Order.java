@@ -57,6 +57,24 @@ public class Order {
     @Column(name = "payment_method")
     private String paymentMethod;
 
+    /**
+     * Снапшот скидок на момент оформления. Процент клиента меняется в админке, а история заказов
+     * меняться не должна — поэтому фиксируем и процент, и рубли, а не пересчитываем при чтении.
+     * Nullable: у заказов, созданных до появления скидок, этих значений нет.
+     */
+    @Column(name = "items_total", precision = 12, scale = 2)
+    private BigDecimal itemsTotal;
+
+    @Column(name = "sale_discount_amount", precision = 12, scale = 2)
+    private BigDecimal saleDiscountAmount;
+
+    @Column(name = "personal_discount_percent")
+    private Integer personalDiscountPercent;
+
+    @Column(name = "personal_discount_amount", precision = 12, scale = 2)
+    private BigDecimal personalDiscountAmount;
+
+    /** Сумма к оплате (после всех скидок). */
     @Column(name = "total_amount", precision = 10, scale = 2)
     private BigDecimal totalAmount;
 }

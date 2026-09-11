@@ -16,4 +16,6 @@ public class CustomerProfileDto {
     private String email;
     private String phone;
     private Role role;
+    /** Личная скидка в процентах, 0 — скидки нет. */
+    private Integer discountPercent;
 }
