@@ -115,6 +115,10 @@ jobs:
             # Verify all services are running
             echo "Waiting for app to start..."
             timeout 180 sh -c 'until curl -fsS http://localhost:8080/api/v1/filters >/dev/null; do sleep 3; done'
+            # Validate the current host config before replacing the bind-mounted proxy.
+            docker-compose run --rm --no-deps nginx nginx -t
+            docker-compose up -d --no-deps --force-recreate nginx
+            timeout 60 sh -c 'until curl -fsS https://api.devdomsomm.ru/api/v1/filters >/dev/null; do sleep 3; done'
             echo "==> Checking all services..."
             FAILED=false
             for SVC in vault db redis minio domsommelier-app domsommelier-frontend domsommelier-admin-frontend; do

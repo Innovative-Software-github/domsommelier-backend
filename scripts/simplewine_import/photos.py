@@ -161,7 +161,8 @@ def _run_photos(batch, raw_dir, photo_dir, state_path, api=None, apply=False, de
                 try:
                     upload(api, old['productId'], photo)
                     journal[key]['status'] = 'uploaded'; save(); photo['status'] = 'uploaded'
-                except Exception:
+                except Exception as error:
+                    photo['error'] = str(error)
                     photo['status'] = 'uncertain'; report['status'] = 'stopped'; return report
     report['status'] = 'complete'
     return report
