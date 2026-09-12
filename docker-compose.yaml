@@ -136,6 +136,8 @@ services:
       # иначе при каждом рестарте контейнера попытается вставить те же строки
       # заново и упадёт на дубликатах.
       - DB_INIT_MODE=${DB_INIT_MODE:-false}
+      - SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE=10MB
+      - SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE=11MB
     volumes:
       - vault-secrets:/run/secrets:ro
       - ./vault/scripts/app-entrypoint.sh:/app/entrypoint.sh:ro

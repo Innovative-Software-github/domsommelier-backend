@@ -10,6 +10,9 @@ import java.util.List;
 @Setter
 @Builder
 public class SpiritDetailsDto {
+    @com.fasterxml.jackson.annotation.JsonUnwrapped
+    private com.innovativesoftware.domsommelier_backend.product_management.product.model.attributes.CatalogAttributes.SpiritAttributes extendedDetails;
+
     private String category;
     private String strength;
     private String producer;

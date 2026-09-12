@@ -10,6 +10,9 @@ import java.util.List;
 @Setter
 @Builder
 public class WineDetailsDto {
+    @com.fasterxml.jackson.annotation.JsonUnwrapped
+    private com.innovativesoftware.domsommelier_backend.product_management.product.model.attributes.CatalogAttributes.WineAttributes extendedDetails;
+
     private Integer productionYear;
     private String color;
     private String type;

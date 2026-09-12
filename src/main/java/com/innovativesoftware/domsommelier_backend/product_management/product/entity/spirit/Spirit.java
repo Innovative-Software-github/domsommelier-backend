@@ -17,6 +17,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Spirit {
 
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
+    @Column(name = "extended_details", columnDefinition = "jsonb")
+    private com.innovativesoftware.domsommelier_backend.product_management.product.model.attributes.CatalogAttributes.SpiritAttributes extendedDetails;
+
     @Id
     @Column(name = "id", nullable = false)
     private UUID id;

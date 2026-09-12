@@ -15,6 +15,16 @@ import java.util.List;
 @Setter
 public class WineWriteRequest extends ProductWriteRequest {
 
+    @jakarta.validation.Valid
+    private com.innovativesoftware.domsommelier_backend.product_management.product.model.attributes.CatalogAttributes.WineAttributes extendedDetails;
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private boolean extendedDetailsProvided;
+
+    public void setExtendedDetails(com.innovativesoftware.domsommelier_backend.product_management.product.model.attributes.CatalogAttributes.WineAttributes value) {
+        this.extendedDetails = value;
+        this.extendedDetailsProvided = true;
+    }
+
     @NotNull
     @Min(1900)
     @Max(2100)

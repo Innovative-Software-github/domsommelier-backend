@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class FilterService {
+    private final com.innovativesoftware.domsommelier_backend.filter_management.catalog.CatalogFilterConfigService catalogConfig;
     private final FilterRepository filterRepository;
     private final CheckboxFilterRepository checkboxFilterRepository;
     private final MultiSelectFilterRepository multiSelectFilterRepository;
@@ -52,17 +53,12 @@ public class FilterService {
                 filters.add(FilterMapper.toDto(rangeFilterRepository.getReferenceById(id)))
         );
 
-        return filters.stream()
-                .collect(Collectors.groupingBy(
-                        filterDto -> filterDto.getCategory().name(),
-                        LinkedHashMap::new,
-                        Collectors.toMap(
-                                FilterDto::getField, // имя фильтра как ключ
-                                f -> f,             // объект фильтра как значение
-                                (f1, f2) -> f1,     // если совпадения по названию - взять первый
-                                LinkedHashMap::new
-                        )
-                ));
+        Map<String, Map<String, FilterDto>> result = new LinkedHashMap<>();
+        for (var category : ProductCategoryEnum.values()) {
+            result.put(category.name(), catalogConfig.enrich(category,
+                filters.stream().filter(f -> f.getCategory() == category).toList()));
+        }
+        return result;
     }
 
 
@@ -234,17 +230,7 @@ public class FilterService {
                 filters.add(FilterMapper.toDto(rangeFilterRepository.getReferenceById(id)))
         );
 
-        return filters.stream()
-                .collect(Collectors.groupingBy(
-                        filterDto -> filterDto.getCategory().name(),
-                        LinkedHashMap::new,
-                        Collectors.toMap(
-                                FilterDto::getName, // имя фильтра как ключ
-                                f -> f,             // объект фильтра как значение
-                                (f1, f2) -> f1,     // если совпадения по названию - взять первый
-                                LinkedHashMap::new
-                        )
-                ));
+        return Map.of(productCategoryEnum.name(), catalogConfig.enrich(productCategoryEnum, filters));
     }
 
     @Transactional(readOnly = true)
@@ -283,7 +269,7 @@ public class FilterService {
 
     public List<FilterDto> getByCategory(ProductCategoryEnum categoryName) {
         var filters = filterRepository.findByProductCategories(categoryName);
-        return filters.stream().map(filter -> {
+        var dtos = filters.stream().map(filter -> {
             switch (filter.getType()) {
                 case range -> {
                     return FilterMapper.toDto(rangeFilterRepository.findById(filter.getId()).orElseThrow());
@@ -299,5 +285,6 @@ public class FilterService {
                 }
             }
         }).toList();
+        return new ArrayList<>(catalogConfig.enrich(categoryName, dtos).values());
     }
 }

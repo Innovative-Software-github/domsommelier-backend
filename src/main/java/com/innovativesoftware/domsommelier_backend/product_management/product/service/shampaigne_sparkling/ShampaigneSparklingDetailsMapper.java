@@ -34,6 +34,7 @@ public class ShampaigneSparklingDetailsMapper implements ProductDetailsMapper<Sh
                 .color(sparklingWine.getColor().getName())
                 .producer(sparklingWine.getProducer())
                 .volume(VolumeStrengthUtils.formatVolume(sparklingWine.getVolume()))
+                .extendedDetails(sparklingWine.getExtendedDetails())
                 .build();
     }
 }

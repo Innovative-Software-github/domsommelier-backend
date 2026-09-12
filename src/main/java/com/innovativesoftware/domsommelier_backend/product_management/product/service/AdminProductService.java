@@ -44,6 +44,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AdminProductService {
 
+    private final com.innovativesoftware.domsommelier_backend.product_management.product.attributes.AttributeReferenceService attributeReferences;
     private final ProductWriteStrategyRegistry strategyRegistry;
     private final ProductMapper productMapper;
     private final ProductRepository productRepository;
@@ -70,6 +71,7 @@ public class AdminProductService {
 
     @Transactional
     public UUID create(ProductWriteRequest request) {
+        attributeReferences.validate(request);
         return strategyRegistry.get(request.getCategory()).create(request).getId();
     }
 
@@ -82,6 +84,7 @@ public class AdminProductService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Нельзя менять категорию товара");
         }
 
+        attributeReferences.validate(request);
         strategyRegistry.get(request.getCategory()).update(id, request);
     }
 

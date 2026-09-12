@@ -17,6 +17,8 @@ import java.util.UUID;
 @Setter
 @Builder
 public class ProductDTO {
+    private com.innovativesoftware.domsommelier_backend.product_management.product.model.attributes.CatalogAttributes.Reference brand;
+    private com.innovativesoftware.domsommelier_backend.product_management.product.model.attributes.CatalogAttributes.Packaging packaging;
     private UUID id;
     private String article;
     private String name;

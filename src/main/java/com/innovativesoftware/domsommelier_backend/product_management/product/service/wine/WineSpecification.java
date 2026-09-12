@@ -27,7 +27,8 @@ public class WineSpecification extends BaseSpecification<Wine> {
                 // английский код (grape/feature не мигрировали на русский текст,
                 // в отличие от color/type) — переводим обратно перед запросом.
                 case "features" -> predicates.add(root.join("features").in(untranslate((List<?>) value, RussianLabelTranslator::untranslateFeature)));
-                case "grape" -> predicates.add(root.join("grapes").in(untranslate((List<?>) value, RussianLabelTranslator::untranslateGrape)));
+                case "grape" -> predicates.add(cb.or(untranslate((List<?>) value, RussianLabelTranslator::untranslateGrape).stream()
+                    .map(code -> cb.isMember(code, root.<java.util.Collection<String>>get("grapes"))).toArray(Predicate[]::new)));
                 case "year" -> addRangePredicates(value, root.<Number>get("productionYear"), cb, predicates);
                 case "in_stock" -> predicates.add(cb.equal(root.get("product").get("inStock"), value));
             }

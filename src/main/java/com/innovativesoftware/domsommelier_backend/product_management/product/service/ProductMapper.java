@@ -25,6 +25,8 @@ public class ProductMapper {
 
     public ProductDTO toProductDto(Product product) {
         ProductDTO.ProductDTOBuilder builder = ProductDTO.builder()
+                .brand(product.getBrand())
+                .packaging(product.getPackaging())
                 .id(product.getId())
                 .article(product.getArticle())
                 .name(product.getName())

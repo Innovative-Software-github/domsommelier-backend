@@ -1,0 +1,208 @@
+{
+  "brand": {
+    "bellevoye": {
+      "code": "bellevoye",
+      "label": "Bellevoye"
+    },
+    "camus": {
+      "code": "camus",
+      "label": "Camus"
+    }
+  },
+  "region": {
+    "мальборо": {
+      "code": "marlborough",
+      "label": "Мальборо"
+    },
+    "венето": {
+      "code": "veneto",
+      "label": "Венето"
+    },
+    "коньяк": {
+      "code": "cognac",
+      "label": "Коньяк"
+    },
+    "мендоса": {
+      "code": "mendoza",
+      "label": "Мендоса"
+    },
+    "кубань": {
+      "code": "kuban",
+      "label": "Кубань"
+    },
+    "трентино-альто адидже": {
+      "code": "trentino_alto_adige",
+      "label": "Трентино-Альто Адидже"
+    },
+    "кастилия и леон": {
+      "code": "castilla_y_leon",
+      "label": "Кастилия и Леон"
+    },
+    "мозель": {
+      "code": "mosel",
+      "label": "Мозель"
+    },
+    "крым": {
+      "code": "crimea",
+      "label": "Крым"
+    },
+    "тоскана": {
+      "code": "tuscany",
+      "label": "Тоскана"
+    },
+    "пьемонт": {
+      "code": "piedmont",
+      "label": "Пьемонт"
+    }
+  },
+  "appellation": {
+    "marlborough": {
+      "code": "marlborough",
+      "label": "Marlborough"
+    },
+    "prosecco doc": {
+      "code": "prosecco_doc",
+      "label": "Prosecco DOC"
+    },
+    "cognac aoc": {
+      "code": "cognac_aoc",
+      "label": "Cognac AOC"
+    },
+    "mendoza": {
+      "code": "mendoza",
+      "label": "Mendoza"
+    },
+    "згу кубань. анапа": {
+      "code": "pgi_kuban_anapa",
+      "label": "ЗГУ Кубань. Анапа"
+    },
+    "vigneti delle dolomiti igt": {
+      "code": "vigneti_delle_dolomiti_igt",
+      "label": "Vigneti delle Dolomiti IGT"
+    },
+    "toro do": {
+      "code": "toro_do",
+      "label": "Toro DO"
+    },
+    "mosel": {
+      "code": "mosel",
+      "label": "Mosel"
+    },
+    "згу крым": {
+      "code": "pgi_crimea",
+      "label": "ЗГУ Крым"
+    },
+    "toscana igt": {
+      "code": "toscana_igt",
+      "label": "Toscana IGT"
+    },
+    "знмп сикоры. семигорье": {
+      "code": "pdo_sikory_semigorye",
+      "label": "ЗНМП Сикоры. Семигорье"
+    },
+    "barbera d'asti docg": {
+      "code": "barbera_d_asti_docg",
+      "label": "Barbera d'Asti DOCG"
+    }
+  },
+  "grape": {
+    "совиньон блан": {
+      "code": "sauvignon_blanc",
+      "label": "Совиньон Блан"
+    },
+    "глера": {
+      "code": "glera",
+      "label": "Глера"
+    },
+    "мальбек": {
+      "code": "malbec",
+      "label": "Мальбек"
+    },
+    "каберне совиньон": {
+      "code": "cabernet_sauvignon",
+      "label": "Каберне Совиньон"
+    },
+    "саперави": {
+      "code": "saperavi",
+      "label": "Саперави"
+    },
+    "пино бьянко": {
+      "code": "pinot_bianco",
+      "label": "Пино Бьянко"
+    },
+    "шардоне": {
+      "code": "chardonnay",
+      "label": "Шардоне"
+    },
+    "темпранильо": {
+      "code": "tempranillo",
+      "label": "Темпранильо"
+    },
+    "рислинг": {
+      "code": "riesling",
+      "label": "Рислинг"
+    },
+    "мускат": {
+      "code": "muscat",
+      "label": "Мускат"
+    },
+    "верментино": {
+      "code": "vermentino",
+      "label": "Верментино"
+    },
+    "треббьяно": {
+      "code": "trebbiano",
+      "label": "Треббьяно"
+    },
+    "барбера": {
+      "code": "barbera",
+      "label": "Барбера"
+    }
+  },
+  "vessel": {
+    "нейтральная ёмкость": {
+      "code": "neutral_vessel",
+      "label": "Нейтральная ёмкость"
+    },
+    "бочка": {
+      "code": "barrel",
+      "label": "Бочка"
+    }
+  },
+  "sparkling_method": {
+    "шарма": {
+      "code": "charmat",
+      "label": "Шарма"
+    }
+  },
+  "whisky_type": {
+    "солодовый": {
+      "code": "malt",
+      "label": "Солодовый"
+    }
+  },
+  "age_classification": {
+    "nas": {
+      "code": "nas",
+      "label": "NAS"
+    }
+  },
+  "sensory_dimension": {
+    "spicy": {
+      "code": "spicy",
+      "label": "Пряность"
+    },
+    "fruity": {
+      "code": "fruity",
+      "label": "Фруктовость"
+    },
+    "floral": {
+      "code": "floral",
+      "label": "Цветочность"
+    },
+    "woody": {
+      "code": "woody",
+      "label": "Древесность"
+    }
+  }
+}

@@ -71,6 +71,7 @@ public class SparklingWineWriteStrategy extends AbstractProductWriteStrategy {
     }
 
     private void applyFields(SparklingWine sparkling, SparklingWriteRequest req) {
+        if (req.isExtendedDetailsProvided()) sparkling.setExtendedDetails(req.getExtendedDetails());
         sparkling.setSubcategory(resolveSubcategory(req.getSubcategory()));
         sparkling.setSugarContent(resolveSugarContent(req.getSugarContent()));
         sparkling.setColor(resolveColor(req.getColor()));

@@ -62,6 +62,11 @@ public class SpiritWriteStrategy extends AbstractProductWriteStrategy {
     }
 
     private void applyFields(Spirit spirit, SpiritWriteRequest req) {
+        if (req.isExtendedDetailsProvided()) spirit.setExtendedDetails(req.getExtendedDetails());
+        if (spirit.getExtendedDetails() != null) {
+            com.innovativesoftware.domsommelier_backend.product_management.product.attributes.AttributeReferenceService
+                .validateSpiritSubtype(req.getSubcategory(), spirit.getExtendedDetails());
+        }
         spirit.setCategory(resolveSubcategory(req.getSubcategory()));
         spirit.setStrength(req.getStrength());
         spirit.setProducer(trimToNull(req.getProducer()));

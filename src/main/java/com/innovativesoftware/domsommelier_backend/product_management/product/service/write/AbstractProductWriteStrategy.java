@@ -38,6 +38,8 @@ public abstract class AbstractProductWriteStrategy implements ProductWriteStrate
     }
 
     protected void applyBaseFields(Product product, ProductWriteRequest request) {
+        if (request.isBrandProvided()) product.setBrand(request.getBrand());
+        if (request.isPackagingProvided()) product.setPackaging(request.getPackaging());
         product.setArticle(request.getArticle().trim());
         product.setName(request.getName().trim());
         product.setInitialPrice(request.getInitialPrice());

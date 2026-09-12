@@ -30,6 +30,24 @@ import java.math.BigDecimal;
 })
 public abstract class ProductWriteRequest {
 
+    @jakarta.validation.Valid
+    private com.innovativesoftware.domsommelier_backend.product_management.product.model.attributes.CatalogAttributes.Reference brand;
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private boolean brandProvided;
+    public void setBrand(com.innovativesoftware.domsommelier_backend.product_management.product.model.attributes.CatalogAttributes.Reference value) {
+        this.brand = value;
+        this.brandProvided = true;
+    }
+
+    @jakarta.validation.Valid
+    private com.innovativesoftware.domsommelier_backend.product_management.product.model.attributes.CatalogAttributes.Packaging packaging;
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private boolean packagingProvided;
+    public void setPackaging(com.innovativesoftware.domsommelier_backend.product_management.product.model.attributes.CatalogAttributes.Packaging value) {
+        this.packaging = value;
+        this.packagingProvided = true;
+    }
+
     @NotNull
     private ProductCategoryEnum category;
 

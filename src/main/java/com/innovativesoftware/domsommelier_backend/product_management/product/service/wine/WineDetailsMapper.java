@@ -29,10 +29,13 @@ public class WineDetailsMapper implements ProductDetailsMapper<WineDetailsDto> {
                 .productionYear(wine.getProductionYear())
                 .color(wine.getColor() != null ? wine.getColor().getName() : null)
                 .type(wine.getType() != null ? wine.getType().getName() : null)
-                .grapes(RussianLabelTranslator.translateGrapes(wine.getGrapes()))
+                .grapes(wine.getExtendedDetails() != null && wine.getExtendedDetails().grapeComposition() != null
+                    ? wine.getExtendedDetails().grapeComposition().stream().map(share -> share.grape().label()).toList()
+                    : RussianLabelTranslator.translateGrapes(wine.getGrapes()))
                 .producer(wine.getProducer())
                 .volume(VolumeStrengthUtils.formatVolume(wine.getVolume()))
                 .features(RussianLabelTranslator.translateFeatures(wine.getFeatures()))
+                .extendedDetails(wine.getExtendedDetails())
                 .build();
     }
 }

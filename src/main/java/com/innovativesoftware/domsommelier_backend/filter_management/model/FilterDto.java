@@ -15,6 +15,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public abstract class FilterDto {
+    /** null keeps the legacy label-based request contract. */
+    private String selectionMode;
+    /** whisky/cognac: visible only when exactly that subtype is selected. */
+    private String subtype;
     private UUID id;
     private FilterType type;
     private String name;

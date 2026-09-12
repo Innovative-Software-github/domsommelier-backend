@@ -13,6 +13,16 @@ import java.util.List;
 @Setter
 public class SpiritWriteRequest extends ProductWriteRequest {
 
+    @jakarta.validation.Valid
+    private com.innovativesoftware.domsommelier_backend.product_management.product.model.attributes.CatalogAttributes.SpiritAttributes extendedDetails;
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private boolean extendedDetailsProvided;
+
+    public void setExtendedDetails(com.innovativesoftware.domsommelier_backend.product_management.product.model.attributes.CatalogAttributes.SpiritAttributes value) {
+        this.extendedDetails = value;
+        this.extendedDetailsProvided = true;
+    }
+
     @NotBlank
     private String subcategory;
 

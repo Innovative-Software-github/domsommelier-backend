@@ -31,6 +31,7 @@ public class SpiritDetailsMapper implements ProductDetailsMapper<SpiritDetailsDt
                 .strength(VolumeStrengthUtils.formatStrength(spirit.getStrength()))
                 .producer(spirit.getProducer())
                 .features(RussianLabelTranslator.translateFeatures(spirit.getFeatures()))
+                .extendedDetails(spirit.getExtendedDetails())
                 .build();
     }
 }

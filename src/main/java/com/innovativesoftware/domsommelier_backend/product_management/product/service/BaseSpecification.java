@@ -1,6 +1,8 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.service;
 
 import com.innovativesoftware.domsommelier_backend.product_management.warehouse.entity.ProductStock;
+import com.innovativesoftware.domsommelier_backend.filter_management.catalog.CatalogFilterFields;
+import com.innovativesoftware.domsommelier_backend.filter_management.catalog.CatalogAttributePredicates;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
@@ -89,7 +91,10 @@ public abstract class BaseSpecification<T> {
      * Значение multi_select-фильтра, по которому {@link FacetCounter} считает, сколько
      * товаров даст каждый вариант. null — поле фасетами не считается.
      */
-    public Expression<?> facetValue(String field, Root<T> root) {
+    public Expression<?> facetValue(String field, Root<T> root, CriteriaBuilder cb) {
+        String category = CatalogFilterFields.category(root.getJavaType());
+        var extended = CatalogFilterFields.ALL.stream().filter(f -> f.key().equals(field) && f.supports(category) && !f.range()).findFirst();
+        if (extended.isPresent()) return CatalogAttributePredicates.value(extended.get(), root, cb);
         return switch (field) {
             case "countries" -> root.get("product").get("productCountry").get("name");
             case "producer" -> root.get("producer");
@@ -137,8 +142,10 @@ public abstract class BaseSpecification<T> {
     public Specification<T> byFilter(Map<String, Object> params) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
-            addCommonPredicates(params, root, cb, predicates);
-            addSpecificPredicates(params, root, cb, predicates);
+            var normalized = CatalogFilterFields.normalize(params);
+            addCommonPredicates(normalized, root, cb, predicates);
+            addSpecificPredicates(normalized, root, cb, predicates);
+            CatalogAttributePredicates.add(CatalogFilterFields.category(root.getJavaType()), normalized, root, cb, predicates);
             addCityAvailabilityPredicate(params, root, query, cb, predicates);
             return cb.and(predicates.toArray(new Predicate[0]));
         };

@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "products": [
+    {
+      "url": "https://simplewine.ru/catalog/product/paddle_creek_sauvignon_blanc_2025_075_160429/",
+      "category": "wine",
+      "snapshot": "snapshots/160429.txt",
+      "snapshotKind": "indexed_factual_excerpt",
+      "snapshotRetrievedAt": "2026-09-12",
+      "article": null,
+      "initialPrice": null,
+      "price": null,
+      "reviewed": false,
+      "overrides": {},
+      "notes": [
+        "В старом реестре указана стальная ёмкость; текущая таблица источника говорит только «нейтральная ёмкость». Не конкретизируем материал."
+      ]
+    },
+    {
+      "url": "https://simplewine.ru/catalog/product/prosecco_brut_075_160963/",
+      "category": "champagne_and_sparkling",
+      "snapshot": "snapshots/160963.txt",
+      "snapshotKind": "indexed_factual_excerpt",
+      "snapshotRetrievedAt": "2026-09-12",
+      "article": null,
+      "initialPrice": null,
+      "price": null,
+      "reviewed": false,
+      "overrides": {},
+      "notes": [
+        "В основном блоке нет винтажа, в дополнительном тексте встречается 2025. Год не перенесён."
+      ]
+    },
+    {
+      "url": "https://simplewine.ru/catalog/product/bellevoye_finition_grain_fin_07_gift_141968/",
+      "category": "spirit",
+      "snapshot": "snapshots/141968.txt",
+      "snapshotKind": "indexed_factual_excerpt",
+      "snapshotRetrievedAt": "2026-09-12",
+      "article": null,
+      "initialPrice": null,
+      "price": null,
+      "reviewed": false,
+      "overrides": {},
+      "notes": [
+        "Срок выдержки и производитель не подтверждены в таблице. Сведения из описания о triple malt и бочках оставлены для проверки."
+      ]
+    },
+    {
+      "url": "https://simplewine.ru/catalog/product/camus_ile_de_re_fine_island_07_gift_156688/",
+      "category": "spirit",
+      "snapshot": "snapshots/156688.txt",
+      "snapshotKind": "indexed_factual_excerpt",
+      "snapshotRetrievedAt": "2026-09-12",
+      "article": null,
+      "initialPrice": null,
+      "price": null,
+      "reviewed": false,
+      "overrides": {},
+      "notes": [
+        "Источник по-разному описывает возраст (3 года / свыше 3 лет). Заявленный возраст не перенесён."
+      ]
+    }
+  ]
+}

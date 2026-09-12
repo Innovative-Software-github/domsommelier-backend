@@ -72,6 +72,7 @@ public class WineWriteStrategy extends AbstractProductWriteStrategy {
     }
 
     private void applyWineFields(Wine wine, WineWriteRequest request) {
+        if (request.isExtendedDetailsProvided()) wine.setExtendedDetails(request.getExtendedDetails());
         wine.setProductionYear(request.getProductionYear());
         wine.setColor(resolveColor(request.getColor()));
         wine.setType(resolveType(request.getType()));
@@ -84,6 +85,11 @@ public class WineWriteStrategy extends AbstractProductWriteStrategy {
         // untranslate возвращает известные подписи назад, а всё остальное
         // (новый сорт/особенность, которых нет в словаре) пропускает как есть.
         wine.setGrapes(replaceStrings(wine.getGrapes(), RussianLabelTranslator.untranslateGrapes(request.getGrapes())));
+        if (wine.getExtendedDetails() != null
+                && wine.getExtendedDetails().grapeComposition() != null) {
+            wine.setGrapes(replaceStrings(wine.getGrapes(), wine.getExtendedDetails().grapeComposition()
+                .stream().map(share -> share.grape().code()).toList()));
+        }
         wine.setFeatures(replaceStrings(wine.getFeatures(), RussianLabelTranslator.untranslateFeatures(request.getFeatures())));
     }
 

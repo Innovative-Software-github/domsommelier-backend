@@ -1,6 +1,8 @@
 package com.innovativesoftware.domsommelier_backend.product_management.product.service;
 
 import com.innovativesoftware.domsommelier_backend.product_management.product.model.ProductFacetsDto;
+import com.innovativesoftware.domsommelier_backend.filter_management.catalog.CatalogFilterFields;
+import java.util.LinkedHashSet;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -32,9 +34,15 @@ public class FacetCounter {
     public <T> ProductFacetsDto count(Class<T> entityClass, BaseSpecification<T> specification,
                                       Map<String, Object> params, Collection<String> fields) {
         Map<String, Map<String, Long>> options = new LinkedHashMap<>();
-        for (String field : fields) {
+        var allFields = new LinkedHashSet<>(fields);
+        CatalogFilterFields.ALL.stream().filter(f -> f.supports(CatalogFilterFields.category(entityClass)) && !f.range()
+                && (f.subtype() == null || f.subtype().equals(CatalogFilterFields.subtype(params.get("subcategory")))))
+            .forEach(f -> allFields.add(f.key()));
+        for (String field : allFields) {
             Map<String, Object> otherFilters = new HashMap<>(params);
             otherFilters.remove(field);
+            if (field.equals("subcategory")) CatalogFilterFields.ALL.stream().filter(f -> f.subtype() != null)
+                .forEach(f -> otherFilters.remove(f.key()));
 
             Map<String, Long> counts = countField(entityClass, specification, otherFilters, field);
             if (counts != null) {
@@ -50,7 +58,7 @@ public class FacetCounter {
         CriteriaQuery<Tuple> query = cb.createTupleQuery();
         Root<T> root = query.from(entityClass);
 
-        Expression<?> value = specification.facetValue(field, root);
+        Expression<?> value = specification.facetValue(field, root, cb);
         if (value == null) {
             return null;
         }
@@ -66,7 +74,10 @@ public class FacetCounter {
         for (Tuple row : entityManager.createQuery(query).getResultList()) {
             String raw = row.get(0, String.class);
             if (raw != null) {
-                counts.merge(specification.facetLabel(field, raw), row.get(1, Long.class), Long::sum);
+                String translated = specification.facetLabel(field, raw);
+                counts.merge(translated, row.get(1, Long.class), Long::sum);
+                // Wine grape now uses dictionary codes; keep label keys for existing clients too.
+                if (field.equals("grape") && !raw.equals(translated)) counts.merge(raw, row.get(1, Long.class), Long::sum);
             }
         }
         return counts;

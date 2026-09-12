@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -26,16 +30,20 @@ jobs:
       - name: Deploy to server
         uses: appleboy/ssh-action@master
         with:
+          command_timeout: 30m
           username: root
           host: ${{ secrets.HOST }}
           password: ${{ secrets.SSH_PASSWORD }}
           envs: DB_USER,DB_PASSWORD,DB_NAME,MINIO_ROOT_USER,MINIO_ROOT_PASSWORD,MINIO_ACCESS_NAME,MINIO_ACCESS_SECRET,MAIL_HOST,MAIL_PORT,MAIL_USERNAME,MAIL_PASSWORD,MAIL_PROTOCOL,JWT_SECRET
           script: |
+            set -eu
+            exec 9>/root/.domsommelier-deploy.lock
+            flock -w 1800 9
             PROJECT_DIR=~/projects/domsommelier-backend
 
             # Pull latest code (or clone if first deploy)
             if [ -d "$PROJECT_DIR/.git" ]; then
-              cd "$PROJECT_DIR" && git fetch origin main && git reset --hard origin/main
+              cd "$PROJECT_DIR" && git fetch origin main && git merge --ff-only origin/main
             else
               mkdir -p ~/projects
               git clone git@github.com:Innovative-Software-github/domsommelier-backend.git "$PROJECT_DIR"
@@ -62,8 +70,15 @@ jobs:
               sed -i 's/^SPRING_PROFILES_ACTIVE=.*/SPRING_PROFILES_ACTIVE=docker,prod/' "$PROJECT_DIR/.env"
             fi
 
+            if grep -q '^DB_INIT_MODE=' "$PROJECT_DIR/.env"; then
+              sed -i 's/^DB_INIT_MODE=.*/DB_INIT_MODE=false/' "$PROJECT_DIR/.env"
+            else
+              echo 'DB_INIT_MODE=false' >> "$PROJECT_DIR/.env"
+            fi
+
             # Generate init-secrets.env only if it doesn't exist
             # To update secrets: delete the file on server, then redeploy
+            FIRST_DEPLOY=false
             SECRETS_FILE="$PROJECT_DIR/vault/init-secrets.env"
             if [ ! -f "$SECRETS_FILE" ]; then
               echo "==> First deploy: generating init-secrets.env"
@@ -88,33 +103,18 @@ jobs:
 
             if [ -z "$VAULT_RUNNING" ] || [ "$FIRST_DEPLOY" = "true" ]; then
               echo "==> Fresh deploy: starting all services sequentially"
-              docker-compose down -v
-
-              docker-compose build domsommelier-app domsommelier-frontend domsommelier-admin-frontend
-
-              docker-compose up -d vault
-              sleep 5
-              docker-compose up -d vault-init
-              echo "Waiting for vault-init..."
-              timeout 60 sh -c 'while docker ps -a --filter name=vault-init --format "{{.Status}}" | grep -qv "Exited (0)"; do sleep 2; done'
-              docker-compose up -d db redis minio
-              echo "Waiting for DB to be healthy..."
-              timeout 120 sh -c 'while ! docker inspect --format="{{.State.Health.Status}}" db 2>/dev/null | grep -q healthy; do sleep 3; done'
-              echo "DB is healthy, starting app + фронтенды..."
-              # nginx/certbot сюда намеренно не входят — сертификатов ещё нет,
-              # nginx.conf их требует и упадёт. Первый выпуск — вручную,
-              # см. scripts/init-letsencrypt.sh (одноразово на новом сервере).
-              docker-compose up -d domsommelier-app domsommelier-frontend domsommelier-admin-frontend
-              echo "==> Бэкенд и оба фронтенда подняты. nginx/HTTPS — см. scripts/init-letsencrypt.sh, если ещё не запускали."
+              echo "Automatic first deployment is disabled: inspect Vault and existing volumes manually."
+              exit 1
             else
               echo "==> Regular deploy: rebuilding and restarting app only"
               docker-compose build domsommelier-app
+              bash scripts/deploy/migrate-catalog.sh
               docker-compose up -d --no-deps domsommelier-app
             fi
 
             # Verify all services are running
             echo "Waiting for app to start..."
-            sleep 15
+            timeout 180 sh -c 'until curl -fsS http://localhost:8080/api/v1/filters >/dev/null; do sleep 3; done'
             echo "==> Checking all services..."
             FAILED=false
             for SVC in vault db redis minio domsommelier-app domsommelier-frontend domsommelier-admin-frontend; do

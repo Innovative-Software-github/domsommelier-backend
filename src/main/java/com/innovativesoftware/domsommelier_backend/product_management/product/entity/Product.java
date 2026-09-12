@@ -20,6 +20,14 @@ import java.util.UUID;
 @Entity
 @Table(name = "product")
 public class Product {
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
+    @Column(name = "brand", columnDefinition = "jsonb")
+    private com.innovativesoftware.domsommelier_backend.product_management.product.model.attributes.CatalogAttributes.Reference brand;
+
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
+    @Column(name = "packaging", columnDefinition = "jsonb")
+    private com.innovativesoftware.domsommelier_backend.product_management.product.model.attributes.CatalogAttributes.Packaging packaging;
+
     @Id
     @UuidGenerator
     @Column(name = "id", nullable = false)

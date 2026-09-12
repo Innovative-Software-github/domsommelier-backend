@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "products": [
+    {
+      "url": "https://simplewine.ru/catalog/product/paddle_creek_sauvignon_blanc_2025_075_160429/",
+      "category": "wine",
+      "article": "SW-WINE-160429",
+      "initialPrice": 1374.0,
+      "price": 2290,
+      "reviewed": true,
+      "overrides": {},
+      "notes": [
+        "Цена в RUB по доступному веб-представлению SimpleWine (Москва), проверено 2026-09-12; использована отображаемая цена с учётом акции, если есть. Источник может быть кэширован.",
+        "initialPrice = price × 0.60; характеристики карточки ещё требуют проверки.",
+        "Источник цены: https://simplewine.ru/catalog/product/paddle_creek_sauvignon_blanc_2025_075_160429/"
+      ]
+    },
+    {
+      "url": "https://simplewine.ru/catalog/product/malbec_2024_075_159766/",
+      "category": "wine",
+      "article": "SW-WINE-159766",
+      "initialPrice": 1674.0,
+      "price": 2790,
+      "reviewed": true,
+      "overrides": {},
+      "notes": [
+        "Цена в RUB по доступному веб-представлению SimpleWine (Москва), проверено 2026-09-12; использована отображаемая цена с учётом акции, если есть. Источник может быть кэширован.",
+        "initialPrice = price × 0.60; характеристики карточки ещё требуют проверки.",
+        "Источник цены: https://simplewine.ru/catalog/product/malbec_2024_075_159766/"
+      ]
+    },
+    {
+      "url": "https://simplewine.ru/catalog/product/petrikor_krasnoe_2022_075_153783/",
+      "category": "wine",
+      "article": "SW-WINE-153783",
+      "initialPrice": 1494.0,
+      "price": 2490,
+      "reviewed": true,
+      "overrides": {},
+      "notes": [
+        "Цена в RUB по доступному веб-представлению SimpleWine (Москва), проверено 2026-09-12; использована отображаемая цена с учётом акции, если есть. Источник может быть кэширован.",
+        "initialPrice = price × 0.60; характеристики карточки ещё требуют проверки.",
+        "Цена подтверждена на странице отзывов того же товара: https://simplewine.ru/catalog/product/petrikor_krasnoe_2022_075_153783/reviews/"
+      ]
+    },
+    {
+      "url": "https://simplewine.ru/catalog/product/pfefferer_sun_2025_075_161229/",
+      "category": "wine",
+      "article": "SW-WINE-161229",
+      "initialPrice": 1794.0,
+      "price": 2990,
+      "reviewed": true,
+      "overrides": {},
+      "notes": [
+        "Цена в RUB по доступному веб-представлению SimpleWine (Москва), проверено 2026-09-12; использована отображаемая цена с учётом акции, если есть. Источник может быть кэширован.",
+        "initialPrice = price × 0.60; характеристики карточки ещё требуют проверки.",
+        "Источник цены: https://simplewine.ru/catalog/product/pfefferer_sun_2025_075_161229/"
+      ]
+    },
+    {
+      "url": "https://simplewine.ru/catalog/product/el_picaro_2025_075_160228/",
+      "category": "wine",
+      "article": "SW-WINE-160228",
+      "initialPrice": 985.8,
+      "price": 1643,
+      "reviewed": true,
+      "overrides": {},
+      "notes": [
+        "Цена в RUB по доступному веб-представлению SimpleWine (Москва), проверено 2026-09-12; использована отображаемая цена с учётом акции, если есть. Источник может быть кэширован.",
+        "initialPrice = price × 0.60; характеристики карточки ещё требуют проверки.",
+        "Источник цены: https://simplewine.ru/catalog/product/el_picaro_2025_075_160228/"
+      ]
+    },
+    {
+      "url": "https://simplewine.ru/catalog/product/urban_riesling_2024_075_153776/",
+      "category": "wine",
+      "article": "SW-WINE-153776",
+      "initialPrice": 954.0,
+      "price": 1590,
+      "reviewed": true,
+      "overrides": {},
+      "notes": [
+        "Цена в RUB по доступному веб-представлению SimpleWine (Москва), проверено 2026-09-12; использована отображаемая цена с учётом акции, если есть. Источник может быть кэширован.",
+        "initialPrice = price × 0.60; характеристики карточки ещё требуют проверки.",
+        "Источник цены: https://simplewine.ru/catalog/product/urban_riesling_2024_075_153776/"
+      ]
+    },
+    {
+      "url": "https://simplewine.ru/catalog/product/loco_cimbali_orange_2024_075_162077/",
+      "category": "wine",
+      "article": "SW-WINE-162077",
+      "initialPrice": 1254.0,
+      "price": 2090,
+      "reviewed": true,
+      "overrides": {},
+      "notes": [
+        "Цена в RUB по доступному веб-представлению SimpleWine (Москва), проверено 2026-09-12; использована отображаемая цена с учётом акции, если есть. Источник может быть кэширован.",
+        "initialPrice = price × 0.60; характеристики карточки ещё требуют проверки.",
+        "Источник цены: https://simplewine.ru/catalog/product/loco_cimbali_orange_2024_075_162077/",
+        "Расхождение винтажа: в URL 2024, в заголовке и характеристиках страницы 2025. Проверить перед импортом."
+      ]
+    },
+    {
+      "url": "https://simplewine.ru/catalog/product/remole_bianco_2025_075_160771/",
+      "category": "wine",
+      "article": "SW-WINE-160771",
+      "initialPrice": 985.8,
+      "price": 1643,
+      "reviewed": true,
+      "overrides": {},
+      "notes": [
+        "Цена в RUB по доступному веб-представлению SimpleWine (Москва), проверено 2026-09-12; использована отображаемая цена с учётом акции, если есть. Источник может быть кэширован.",
+        "initialPrice = price × 0.60; характеристики карточки ещё требуют проверки.",
+        "Источник цены: https://simplewine.ru/catalog/product/remole_bianco_2025_075_160771/"
+      ]
+    },
+    {
+      "url": "https://simplewine.ru/catalog/product/risling_2024_075_159699/",
+      "category": "wine",
+      "article": "SW-WINE-159699",
+      "initialPrice": 1099.2,
+      "price": 1832,
+      "reviewed": true,
+      "overrides": {},
+      "notes": [
+        "Цена в RUB по доступному веб-представлению SimpleWine (Москва), проверено 2026-09-12; использована отображаемая цена с учётом акции, если есть. Источник может быть кэширован.",
+        "initialPrice = price × 0.60; характеристики карточки ещё требуют проверки.",
+        "Источник цены: https://simplewine.ru/catalog/product/risling_2024_075_159699/"
+      ]
+    },
+    {
+      "url": "https://simplewine.ru/catalog/product/barbera_d_asti_2025_075_161237/",
+      "category": "wine",
+      "article": "SW-WINE-161237",
+      "initialPrice": 1494.0,
+      "price": 2490,
+      "reviewed": true,
+      "overrides": {},
+      "notes": [
+        "Цена в RUB по доступному веб-представлению SimpleWine (Москва), проверено 2026-09-12; использована отображаемая цена с учётом акции, если есть. Источник может быть кэширован.",
+        "initialPrice = price × 0.60; характеристики карточки ещё требуют проверки.",
+        "Источник цены: https://simplewine.ru/catalog/product/barbera_d_asti_2025_075_161237/"
+      ]
+    }
+  ]
+}
