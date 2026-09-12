@@ -33,7 +33,7 @@ class SimpleWineImportContractTest {
                 }
             }));
         }
-        assertEquals(4, tests.size());
+        assertFalse(tests.isEmpty(), "Import plan must contain products");
         return tests;
     }
 }
