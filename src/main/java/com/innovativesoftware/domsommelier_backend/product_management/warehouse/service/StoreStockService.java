@@ -1,6 +1,7 @@
 package com.innovativesoftware.domsommelier_backend.product_management.warehouse.service;
 
 import com.innovativesoftware.domsommelier_backend.product_management.product.entity.Product;
+import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 import com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductRepository;
 import com.innovativesoftware.domsommelier_backend.product_management.store.entity.WineStore;
 import com.innovativesoftware.domsommelier_backend.product_management.store.repository.WineStoreRepository;
@@ -30,12 +31,12 @@ public class StoreStockService {
 
     /** Страница ассортимента с остатком каждого товара в указанной винотеке (0, если строки нет). */
     @Transactional(readOnly = true)
-    public Page<StoreStockItemDto> getStoreStock(Long storeId, String search, Pageable pageable) {
+    public Page<StoreStockItemDto> getStoreStock(Long storeId, String search, ProductCategoryEnum category, Pageable pageable) {
         requireStoreExists(storeId);
 
         // Пустая строка = «без фильтра» (LIKE '%%'). Никогда не передаём null — иначе ломается биндинг в SQL.
         String normalizedSearch = (search == null) ? "" : search.trim();
-        Page<Product> products = productRepository.searchForStock(normalizedSearch, pageable);
+        Page<Product> products = productRepository.searchForStock(normalizedSearch, category, pageable);
 
         List<UUID> productIds = products.getContent().stream().map(Product::getId).toList();
         Map<UUID, Integer> quantityByProduct = productIds.isEmpty()

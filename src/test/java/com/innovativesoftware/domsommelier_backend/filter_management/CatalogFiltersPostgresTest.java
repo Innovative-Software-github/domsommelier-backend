@@ -89,6 +89,21 @@ class CatalogFiltersPostgresTest {
             return em.createQuery(q).getResultList();
         }
     }
+    @Test void stockCategoryFilterCombinesWithSearchAndPagination() {
+        try (var em = factory.createEntityManager()) {
+            var repository = new org.springframework.data.jpa.repository.support.JpaRepositoryFactory(em)
+                .getRepository(com.innovativesoftware.domsommelier_backend.product_management.product.repository.ProductRepository.class);
+            var firstPage = org.springframework.data.domain.PageRequest.of(0, 1);
+            var wines = repository.searchForStock("test", ProductCategoryEnum.wine, firstPage);
+            assertEquals(2, wines.getTotalElements());
+            assertEquals(1, wines.getContent().size());
+            assertEquals(ProductCategoryEnum.wine, wines.getContent().get(0).getProductCategory().getName());
+            assertEquals(5, repository.searchForStock("", null, firstPage).getTotalElements());
+            assertEquals(0, repository.searchForStock(whisky1.toString(), ProductCategoryEnum.wine, firstPage).getTotalElements());
+            assertEquals(1, repository.searchForStock(whisky1.toString(), ProductCategoryEnum.spirit, firstPage).getTotalElements());
+            assertEquals(0, repository.searchForStock("missing", ProductCategoryEnum.wine, firstPage).getTotalElements());
+        }
+    }
     @Test void scalarAndNumericFiltersIncludeLegacyProductsWhenUnset() {
         var spec = new WineSpecification();
         assertEquals(2, query(Wine.class, spec, Map.of()).size());

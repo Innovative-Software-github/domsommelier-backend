@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
+import com.innovativesoftware.domsommelier_backend.product_management.product.enums.ProductCategoryEnum;
 
 @RestController
 @CrossOrigin
@@ -38,9 +39,10 @@ public class AdminStoreStockController {
     public Page<StoreStockItemDto> getStoreStock(
             @PathVariable Long storeId,
             @RequestParam(required = false) String search,
+            @RequestParam(required = false) ProductCategoryEnum category,
             @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable
     ) {
-        return storeStockService.getStoreStock(storeId, search, pageable);
+        return storeStockService.getStoreStock(storeId, search, category, pageable);
     }
 
     @PutMapping("/{productId}")
